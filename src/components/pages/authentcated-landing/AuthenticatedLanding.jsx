@@ -21,8 +21,8 @@ const AuthenticatedLanding = () => {
   useEffect(() => {
     const fetchData = async () => {
       const data = await homePage(limit * (page + 1));
-      // setHomePageData((prev) => [...prev, ...data]);
-      setHomePageData(data);
+      setHomePageData((prev) => [...prev, ...data]);
+      // setHomePageData(data);
     };
     fetchData();
   }, [page]);
