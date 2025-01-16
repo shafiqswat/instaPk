@@ -1,0 +1,48 @@
+////////////there is no api for comments delete in the backend
+    deleteComments,
+
+ const [deleteModal, setDeleteModal] = useState(false);
+ const [commentToDelete, setCommentToDelete] = useState(null);
+  
+  const confirmDeleteComments = () => {
+    deleteComments(commentToDelete);
+    setCommentToDelete(null);
+    setDeleteModal(false);
+  };
+
+  const deleteData = [
+    {
+      text: "Delete",
+      action: () => confirmDeleteComments(),
+    },
+    { text: "Cancel", action: () => setDeleteModal(false) },
+  ];
+
+   const handleDeleteComments = (id) => {
+    setDeleteModal(true);
+    setCommentToDelete(id);
+  };
+
+   onClick={() => handleDeleteComments(items?._id)}
+   <Modal
+        showModal={deleteModal}
+        setShowModal={setDeleteModal}
+        className='w-96'>
+        <div>
+          {deleteData.map((items, i) => (
+            <div
+              className={`p-3 text-center ${
+                items.text == "Delete" && "border-b"
+              }`}
+              key={i}
+              onClick={items.action}>
+              <button
+                className={`text-sm font-semibold ${
+                  items.text === "Delete" && "text-red-500"
+                }`}>
+                {items.text}
+              </button>
+            </div>
+          ))}
+        </div>
+      </Modal>

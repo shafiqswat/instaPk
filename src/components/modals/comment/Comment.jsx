@@ -1,0 +1,213 @@
+/** @format */
+
+import React, { useEffect, useState } from "react";
+import Modal from "../modal/Modal";
+import CarouselCustom from "../../carousel/Carousel";
+import HoverCardCustom from "../../cards/hover-card/HoverCard";
+import {
+  HurtIcon,
+  StarIcon,
+  ThreeDotsIcon,
+  VerifyIcon,
+} from "@/constants/SvgIcon";
+import { usePost } from "@/context/PostContext";
+import { useAuth } from "@/context/AuthContext";
+import UpdatePost from "../update-post/UpdatePost";
+import LoadingSkeleton from "@/components/elements/loading-skeleton/loadingSkeleton";
+import Report from "../report/Report";
+import { useFollow } from "@/context/FollowContext";
+import CommentsForm from "@/components/form-items/comments-form/CommentsForm";
+import { useRouter } from "next/navigation";
+
+const Comment = ({
+  showModal,
+  setShowModal,
+  postData,
+  selectedUser,
+  isCurrentUser,
+  profile,
+}) => {
+  const { allComments, comments, loading: commentsLoading } = usePost();
+  const [showUpdateModal, setShowUpdateModal] = useState(false);
+  const router = useRouter();
+  const {
+    user,
+    singleUser,
+    setSingleUserData,
+    singleUserData,
+    loading: userLoading,
+  } = useAuth();
+  const [showReportModal, setShowReportModal] = useState(false);
+  const { Follow } = useFollow();
+  const [isFollow, setIsFollow] = useState(
+    singleUserData?.followers?.includes(user?._id)
+  );
+  useEffect(() => {
+    setIsFollow(singleUserData?.followers?.includes(user?._id));
+  }, [singleUserData]);
+
+  useEffect(() => {
+    if (postData) {
+      {
+        profile
+          ? setSingleUserData(selectedUser)
+          : singleUser(postData?.user?._id);
+      }
+      allComments(postData?._id);
+    }
+  }, [postData]);
+  const handleFollow = () => {
+    Follow(singleUserData?._id, setIsFollow, isFollow);
+  };
+
+  return (
+    <div>
+      <Modal
+        showModal={showModal}
+        setShowModal={setShowModal}
+        className='grid grid-cols-2 gap-0 min-w-[80%]  border-0 '>
+        <div className=''>
+          <CarouselCustom postData={postData}>
+            {postData?.imageUrls?.map((img, i) => (
+              <img
+                key={i}
+                src={img}
+                alt={`slider ${i + 1}`}
+                className='w-full h-full object-cover'
+                onClick={() => router.push(`/${postData?.userName}`)}
+              />
+            ))}
+          </CarouselCustom>
+        </div>
+        <div className='w-full bg-white '>
+          {userLoading ? (
+            <LoadingSkeleton comments={true} />
+          ) : (
+            <div className='flex items-center gap-3 border-b p-4  w-full'>
+              <HoverCardCustom userData={isCurrentUser ? user : singleUserData}>
+                <img
+                  src={selectedUser?.profilePic}
+                  alt='pcb'
+                  className='w-8 h-8 rounded-full cursor-pointer'
+                />
+              </HoverCardCustom>
+              <div className='flex items-center gap-1'>
+                <HoverCardCustom
+                  userData={isCurrentUser ? user : singleUserData}>
+                  <h2 className='font-semibold text-sm text-[#262626] hover:text-gray-600 cursor-pointer'>
+                    {selectedUser?.userName}
+                  </h2>
+                </HoverCardCustom>
+                <VerifyIcon />
+                {!isCurrentUser && (
+                  <>
+                    {!isFollow && (
+                      <button
+                        className='text-sm font-semibold text-sky-500 ms-2'
+                        onClick={handleFollow}>
+                        Follow
+                      </button>
+                    )}
+                  </>
+                )}
+              </div>
+              <div className='ms-auto flex items-center gap-6'>
+                <StarIcon />
+                <ThreeDotsIcon
+                  className='hover:text-gray-500'
+                  onClick={() => {
+                    isCurrentUser
+                      ? setShowUpdateModal(true)
+                      : setShowReportModal(true);
+                  }}
+                />
+              </div>
+            </div>
+          )}
+          <div className='comment scroll-auto h-96 border overflow-y-scroll'>
+            {commentsLoading ? (
+              <>
+                {Array.from({ length: 6 }, (_, i) => {
+                  return (
+                    <LoadingSkeleton
+                      key={i}
+                      comments={true}
+                    />
+                  );
+                })}
+              </>
+            ) : (
+              <>
+                {comments?.map(({ comments }, i) => (
+                  <div
+                    key={i}
+                    className=''>
+                    {comments.map((items, j) => (
+                      <div
+                        className='p-4 flex gap-4 group'
+                        key={j}>
+                        <HoverCardCustom userData={items.user}>
+                          <img
+                            src={items.user.profilePic}
+                            alt='comments'
+                            className='w-8 h-8 rounded-full cursor-pointer'
+                          />
+                        </HoverCardCustom>
+                        <div>
+                          <div className='text-sm'>
+                            <HoverCardCustom userData={items.user}>
+                              <span className='font-semibold text-sm mr-2 text-[#262626] cursor-pointer'>
+                                {items?.user?.userName}
+                              </span>
+                            </HoverCardCustom>
+                            {items?.comment}
+                          </div>
+                          <div className='text-xs text-gray-500 font-semibold flex items-center gap-2 group'>
+                            <span className='cursor-pointer'>1d</span>
+                            <span className='cursor-pointer'>25 likes</span>
+                            <span className='cursor-pointer'>Reply</span>
+                            <span className='opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-opacity'>
+                              <ThreeDotsIcon />
+                            </span>
+                          </div>
+                        </div>
+                        <HurtIcon />
+                      </div>
+                    ))}
+                  </div>
+                ))}
+              </>
+            )}
+          </div>
+          <CommentsForm
+            user={user}
+            items={postData}
+            textareaStyle='px-10 relative'
+            IconStyle='w-5 h-5'
+            pickerStyle='bottom-20'
+            IconParentStyle='left-2 top-1 absolute'
+          />
+        </div>
+      </Modal>
+      <UpdatePost
+        setCommentModal={setShowModal}
+        showModal={showUpdateModal}
+        setShowModal={setShowUpdateModal}
+        postId={postData?._id}
+        preview={postData?.imageUrls}
+        user={user}
+        caption={postData?.caption}
+        postData={postData}
+      />
+      <Report
+        showModal={showReportModal}
+        setShowModal={setShowReportModal}
+        isFollow={isFollow}
+        setIsFollow={setIsFollow}
+        userId={singleUserData._id}
+      />
+    </div>
+  );
+};
+
+export default Comment;
