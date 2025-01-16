@@ -25,8 +25,8 @@ export const PagesProvider = ({ children }) => {
     setLoading(true);
     try {
       const { data } = await pageService.explorePage(limit);
-      console.log(data);
-      setExplorePageData((prevData) => [...prevData, ...data.data]);
+      // setExplorePageData((prevData) => [...prevData, ...data.data]);
+      return data.data;
     } catch (err) {
       setError(err);
     } finally {
@@ -41,6 +41,7 @@ export const PagesProvider = ({ children }) => {
         explorePage,
         explorePageData,
         setHomePageData,
+        setExplorePageData,
         loading,
         error,
       }}>

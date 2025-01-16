@@ -14,12 +14,11 @@ const Followers = ({ showModal, setShowModal, user, isFollowing }) => {
   const filteredUsers = allUsers.filter((user) =>
     user?.userName?.toLowerCase().includes(value.toLowerCase())
   );
-  console.log(user);
   useEffect(() => {
     if (isFollowing) {
-      fetchUsers(user.following);
+      fetchUsers(user?.following);
     } else {
-      fetchUsers(user.followers);
+      fetchUsers(user?.followers);
     }
   }, [user, isFollowing]);
   const handleChange = (e) => {

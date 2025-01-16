@@ -114,7 +114,6 @@ export const AuthProvider = ({ children }) => {
     }
   };
   const fetchUsers = async (userIds) => {
-    console.log(userIds, "user id ");
     setLoading(true);
     try {
       const users = await Promise.all(

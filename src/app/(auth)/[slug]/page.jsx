@@ -34,11 +34,10 @@ const Profile = () => {
   const isCurrentUser = user?.userName === slug;
   const { Follow, UnFollow } = useFollow();
   const [isFollow, setIsFollow] = useState(
-    userData[0]?.followers?.includes(user?._id)
+    user?.following?.includes(userData[0]?._id)
   );
-
   useEffect(() => {
-    setIsFollow(userData[0]?.followers?.includes(user?._id));
+    setIsFollow(user?.following?.includes(userData[0]?._id));
   }, [userData]);
 
   const fetchUser = async () => {
@@ -47,7 +46,7 @@ const Profile = () => {
 
   useEffect(() => {
     fetchUser();
-  }, [slug]);
+  }, [user?._id]);
 
   useEffect(() => {
     if (userData && userData.length > 0) {

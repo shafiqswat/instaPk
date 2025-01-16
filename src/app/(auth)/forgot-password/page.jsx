@@ -29,8 +29,8 @@ const ForgotPassword = () => {
           <ResetPasswordIcon />
           <h2 className='font-semibold'>Trouble logging in?</h2>
           <p className='text-sm'>
-            Enter your email, phone, or username and we'll send you a link to
-            get back into your account.
+            Enter your email, phone, or username and we&apos;ll send you a link
+            to get back into your account.
           </p>
           <input
             value={email}
@@ -51,7 +51,9 @@ const ForgotPassword = () => {
               "Send Login Link"
             )}
           </button>
-          <p className='text-xs text-blue-900'>Can't reset your password?</p>
+          <p className='text-xs text-blue-900'>
+            Can&apos;t reset your password?
+          </p>
           {error && <p className='text-sm text-red-400'>{error.message}</p>}
           <div className="flex items-center font-semibold text-xs text-gray-500 before:content-[''] before:w-28 mt-7 before:h-px before:bg-gray-300 before after:content-[''] before:mr-5 after:w-32 after:h-px after:bg-gray-300 after:ml-5">
             OR

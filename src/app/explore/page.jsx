@@ -17,10 +17,10 @@ const ExplorePage = () => {
   const [selectedPost, setSelectedPost] = useState(false);
   const loader = useRef(null);
 
-  // Fetch the initial data
   useEffect(() => {
     const fetchData = async () => {
-      await explorePage(limit * (page + 1));
+      const data = await explorePage(limit * (page + 1));
+      setExplorePageData(data);
     };
     fetchData();
   }, [page]);
