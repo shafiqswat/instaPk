@@ -38,7 +38,7 @@ const Sidebar = ({ handleClick, width }) => {
     },
     { text: "Explore", icon: <ExploreIcon />, path: "/explore" },
     { text: "Reels", icon: <ReelsIcon className='w-6 h-6' />, path: "/reels" },
-    { text: "Messages", icon: <MessengerIcon />, path: "/inbox" },
+    { text: "Messages", icon: <MessengerIcon />, path: "/message" },
     { text: "Notifications", icon: <HurtIcon />, path: "" },
     { text: "Create", icon: <CreateIcon />, path: "" },
     {

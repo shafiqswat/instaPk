@@ -160,6 +160,17 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const GetAllUsers = async () => {
+    setLoading(true);
+    try {
+      const { data } = await authService.getAllUsers();
+      return data.data.users;
+    } catch {
+      setError(err);
+    } finally {
+      setLoading(false);
+    }
+  };
   return (
     <AuthContext.Provider
       value={{
@@ -182,6 +193,7 @@ export const AuthProvider = ({ children }) => {
         setSingleUserData,
         fetchUsers,
         allUsers,
+        GetAllUsers,
       }}>
       {children}
     </AuthContext.Provider>

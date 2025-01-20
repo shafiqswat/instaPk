@@ -11,4 +11,5 @@ export const authService = {
   singleUser: (userId) => authApi.singleUser(userId),
   profilePicChange: (data) => authApi.profilePicChange(data),
   profileSettings: (data) => authApi.profileSettings(data),
+  getAllUsers: () => authApi.getAllUsers(),
 };

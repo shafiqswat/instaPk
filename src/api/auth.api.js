@@ -18,4 +18,5 @@ export const authApi = {
     });
   },
   profileSettings: (data) => request.put("/profile-settings", data),
+  getAllUsers: () => request.get("/auth/all"),
 };
