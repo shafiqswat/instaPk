@@ -39,9 +39,8 @@ export const AuthProvider = ({ children }) => {
       const { data } = await authService.signInRequest(credentials);
       console.log(data);
       setHeaders(data.data.token);
-      validateSession();
-      // setUser(data.data);
-      // setIsAuthenticated(true);
+      setUser(data.data);
+      setIsAuthenticated(true);
       router.push("/");
     } catch (err) {
       setError(err);
