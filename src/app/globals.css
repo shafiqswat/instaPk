@@ -64,7 +64,9 @@ input[type="number"]::-webkit-outer-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
-
+.scrollbar-none::-webkit-scrollbar {
+  display: none; /* WebKit */
+}
 @layer base {
   :root {
     --radius: 0.5rem;

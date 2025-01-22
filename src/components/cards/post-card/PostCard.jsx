@@ -21,17 +21,26 @@ const PostCard = ({ items, handlePostClick }) => {
   const [isFollow, setIsFollow] = useState(
     user?.following?.includes(items?.user?._id)
   );
+
+  /*<<<<<<<<<<<---------------------  Fetch User Through Hover  ------------------------->>>>>>>>>>>>> */
+
   const handleHover = (selectedUser) => {
     singleUser(selectedUser._id);
   };
+
+  /*<<<<<<<<<<<---------------------   Check The user is Follow or not   ------------------------->>>>>>>>>>>>> */
+
   useEffect(() => {
     if (user?.following && items?._id) {
       setIsFollow(user.following.includes(items?.user?._id));
     }
   }, [user?.following, items?._id]);
   const formattedTime = useCompactTimeFormat(items.createdAt);
+
   return (
     <div className='sm:w-[468px] w-full sm:mx-auto'>
+      {/*<<<<<<<<<<<---------------------  PostCard Header  ------------------------->>>>>>>>>>>>> */}
+
       <div className='flex items-center gap-2'>
         <div className='flex items-center gap-2 cursor-pointer'>
           <HoverCardCustom userData={singleUserData}>
@@ -64,9 +73,11 @@ const PostCard = ({ items, handlePostClick }) => {
           . {formattedTime}
         </p>
         <div className='ml-auto flex items-center gap-3'>
-          <button className='text-sm border py-1 px-2 rounded-lg md:hidden block'>
-            Follow
-          </button>
+          {!isFollow && (
+            <button className='text-sm border py-1 px-2 rounded-lg md:hidden block'>
+              Follow
+            </button>
+          )}
 
           <ThreeDotsIcon
             className='md:block hidden'
@@ -82,7 +93,7 @@ const PostCard = ({ items, handlePostClick }) => {
         </div>
       </div>
 
-      {/* Image */}
+      {/*<<<<<<<<<<<---------------------   Carousel to Display the  Post card Images  ------------------------->>>>>>>>>>>>> */}
       <CarouselCustom postData={items}>
         {items?.imageUrls?.map((img, i) => (
           <img
@@ -93,6 +104,9 @@ const PostCard = ({ items, handlePostClick }) => {
           />
         ))}
       </CarouselCustom>
+
+      {/*<<<<<<<<<<<---------------------  Comments Form  for adding the comments  ------------------------->>>>>>>>>>>>> */}
+
       <CommentsForm
         IconParentStyle='right-0 bottom-9'
         homePage={true}
@@ -103,6 +117,7 @@ const PostCard = ({ items, handlePostClick }) => {
         items={items}
       />
 
+      {/*<<<<<<<<<<<---------------------  Report Modal   ------------------------->>>>>>>>>>>>> */}
       <Report
         showModal={showModal}
         setShowModal={setShowModal}
@@ -110,6 +125,8 @@ const PostCard = ({ items, handlePostClick }) => {
         setIsFollow={setIsFollow}
         userId={items?.user?._id}
       />
+
+      {/*<<<<<<<<<<<---------------------  Share Modal  ------------------------->>>>>>>>>>>>> */}
 
       <Share
         showModal={showShareModal}

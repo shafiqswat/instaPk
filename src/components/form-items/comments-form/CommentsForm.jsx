@@ -33,14 +33,21 @@ const CommentsForm = ({
   const [isSavePost, setIsSavePost] = useState(
     user?.savedPosts?.includes(postData?._id)
   );
+  const [isExpanded, setIsExpanded] = useState(false);
+
+  /*<<<<<<<<<<<---------------------  Check the post is  Like  by the current user or not  ------------------------->>>>>>>>>>>>> */
 
   useEffect(() => {
     setIsLike(postData?.likes?.includes(user?._id));
   }, [postData?.likes]);
 
+  /*<<<<<<<<<<<---------------------  Check the post is  save  by the current user or not  ------------------------->>>>>>>>>>>>> */
+
   useEffect(() => {
     setIsSavePost(user?.savedPosts?.includes(postData?._id));
   }, [postData]);
+
+  /*<<<<<<<<<<<---------------------  Function to handle Like and Dislike  ------------------------->>>>>>>>>>>>> */
 
   const handleLike = () => {
     if (isLike) {
@@ -50,6 +57,8 @@ const CommentsForm = ({
     }
   };
 
+  /*<<<<<<<<<<<---------------------  Function To Post Comments  ------------------------->>>>>>>>>>>>> */
+
   const handleCommentPost = (e) => {
     e.preventDefault();
     commentsOnPost(postData._id, {
@@ -57,6 +66,8 @@ const CommentsForm = ({
     });
     setCommentValue("");
   };
+
+  /*<<<<<<<<<<<--------------------- Function to handle Save and UnSave Posts  ------------------------->>>>>>>>>>>>> */
 
   const handleSavePost = () => {
     if (isSavePost) {
@@ -70,8 +81,10 @@ const CommentsForm = ({
   const formattedTime = useCompactTimeFormat(postData.createdAt);
 
   return (
-    <div>
-      <div className='py-2 px-4'>
+    <div className='w-full'>
+      <div className='py-2'>
+        {/*<<<<<<<<<<<---------------------  Icons Container  ------------------------->>>>>>>>>>>>> */}
+
         <div className='flex gap-3 mt-3 '>
           <HurtIcon
             onClick={handleLike}
@@ -97,6 +110,9 @@ const CommentsForm = ({
             setShowModal={setShowShareModal}
           />
         </div>
+
+        {/*<<<<<<<<<<<---------------------  Post Details or Bio , likes, comments , caption etc   ------------------------->>>>>>>>>>>>> */}
+
         {!homePage && (
           <>
             <h2 className='text-sm font-semibold mt-5'>
@@ -111,18 +127,43 @@ const CommentsForm = ({
           <>
             {postData.likeCount > 0 && (
               <>
-                <p className='text-sm mt-2'>
+                <p className='text-sm mt-2 font-semibold'>
                   Liked by{" "}
                   <strong className='font-semibold cursor-pointer'>
                     {postData.likeCount}
                   </strong>{" "}
                   person
                 </p>
-                <p className='text-sm font-sans mt-2'>
+
+                {/*<<<<<<<<<<<---------------------   Ellipsis  For Caption mean add see more and see less   ------------------------->>>>>>>>>>>>> */}
+
+                <p className='text-sm font-sans font-semibold mt-2'>
                   <strong className='font-sans text-sm font-semibold'>
                     {postData.user.userName}
                   </strong>{" "}
-                  {postData.caption}
+                  {isExpanded ? (
+                    <>
+                      {postData.caption}
+                      <span
+                        className='cursor-pointer font-semibold text-gray-600'
+                        onClick={() => setIsExpanded(false)}>
+                        {""} ...less
+                      </span>
+                    </>
+                  ) : (
+                    <>
+                      {postData?.caption?.slice(0, 100)}
+                      {postData?.caption?.length > 100 && (
+                        <>
+                          <span
+                            className='cursor-pointer text-gray-600 font-semibold'
+                            onClick={() => setIsExpanded(true)}>
+                            {""} ...more
+                          </span>
+                        </>
+                      )}
+                    </>
+                  )}
                 </p>
               </>
             )}
@@ -136,6 +177,9 @@ const CommentsForm = ({
           </>
         )}
       </div>
+
+      {/*<<<<<<<<<<<---------------------  Form Text area for commenting    ------------------------->>>>>>>>>>>>> */}
+
       <form
         className='px-3 relative'
         onSubmit={handleCommentPost}>

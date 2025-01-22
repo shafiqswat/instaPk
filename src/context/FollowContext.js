@@ -12,10 +12,10 @@ export const FollowProvider = ({ children }) => {
     setLoading(true);
     try {
       const { data } = await followService.follow(userId);
+      console.log("FOLLOW User Successfully ", data);
       if (data.status === "success") {
         setIsFollow(!isFollow);
       }
-      console.log("", data);
     } catch (err) {
       setError(err);
     } finally {
@@ -26,6 +26,7 @@ export const FollowProvider = ({ children }) => {
     setLoading(true);
     try {
       const { data } = await followService.unFollow(userId);
+      console.log("UnFollow User Successfully", data);
       if (data.status === "status") {
         setIsFollow(!isFollow);
       }
@@ -127,7 +128,6 @@ export const FollowProvider = ({ children }) => {
     setLoading(true);
     try {
       const { data } = await followService.getStories();
-      console.log(data, "story data ................");
     } catch (err) {
       setError(err);
     } finally {

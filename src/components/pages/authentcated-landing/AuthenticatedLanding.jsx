@@ -2,13 +2,13 @@
 import React, { useEffect, useRef, useState } from "react";
 import PostCard from "../../cards/post-card/PostCard";
 import Link from "next/link";
-import HoverCardCustom from "../../cards/hover-card/HoverCard";
-import { footerData, suggestionDeskTopData } from "@/constants";
+import { footerData } from "@/constants";
 import { usePage } from "@/context/PagesContext";
 import Comment from "@/components/modals/comment/Comment";
 import LoadingSkeleton from "@/components/elements/loading-skeleton/loadingSkeleton";
-import FriendSuggestions from "@/components/friend-suggestions/FriendSuggestions";
 import { useFollow } from "@/context/FollowContext";
+import UserSuggestion from "@/components/suggestions/user-suggestions/UserSuggestion";
+import FriendSuggestions from "@/components/suggestions/friend-suggestions/FriendSuggestions";
 
 const AuthenticatedLanding = () => {
   const { homePage, homePageData, loading, setHomePageData } = usePage();
@@ -18,11 +18,13 @@ const AuthenticatedLanding = () => {
   const [limit] = useState(6);
   const [page, setPage] = useState(0);
   const loader = useRef(null);
+
+  /*<<<<<<<<<<<---------------------   Fetch the Home Page Posts  ------------------------->>>>>>>>>>>>> */
+
   useEffect(() => {
     const fetchData = async () => {
       const data = await homePage(limit * (page + 1));
       setHomePageData((prev) => [...prev, ...data]);
-      // setHomePageData(data);
     };
     fetchData();
   }, [page]);
@@ -31,6 +33,8 @@ const AuthenticatedLanding = () => {
     setSelectedPost(post);
     setShowComment(true);
   };
+
+  /*<<<<<<<<<<<---------------------   Implement The infinite-scroll  ------------------------->>>>>>>>>>>>> */
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -52,12 +56,18 @@ const AuthenticatedLanding = () => {
       }
     };
   }, [loader, loading]);
+
+  /*<<<<<<<<<<<---------------------  Fetch All the Stories  ------------------------->>>>>>>>>>>>> */
+
   useEffect(() => {
     getStories();
   }, []);
+
   return (
-    <div className='flex gap-y-20 px-10 lg:gap-x-20 w-full sm:w-[80%] sm:mx-auto'>
-      <div>
+    <div className='flex gap-y-20 sm:px-10 lg:gap-x-20 w-full sm:w-[80%] sm:mx-auto'>
+      {/*<<<<<<<<<<<---------------------  Friend Suggestion and Post card  ------------------------->>>>>>>>>>>>> */}
+
+      <div className='w-full'>
         <FriendSuggestions />
         <div className='flex flex-col gap-10'>
           {homePageData?.map((items, i) => (
@@ -70,7 +80,6 @@ const AuthenticatedLanding = () => {
           {loading && (
             <LoadingSkeleton
               count={3}
-              className='sm:w-[468px] w-full'
               homePage={true}
             />
           )}
@@ -81,43 +90,10 @@ const AuthenticatedLanding = () => {
         </div>
       </div>
 
+      {/*<<<<<<<<<<<---------------------  User Suggestion and Footer  ------------------------->>>>>>>>>>>>> */}
+
       <div className='lg:block hidden w-80 mt-5'>
-        {suggestionDeskTopData.map((items, i) => (
-          <div
-            className='flex items-center justify-center gap-2 mb-4'
-            key={i}
-            index={i}>
-            {!items.seeAll ? (
-              <>
-                <HoverCardCustom>
-                  <img
-                    src={items.imgPath}
-                    alt='avatar'
-                    className='w-10 h-10 rounded-full cursor-pointer'
-                  />
-                </HoverCardCustom>
-                <div>
-                  <HoverCardCustom>
-                    <h2 className='font-semibold text-sm cursor-pointer'>
-                      {items.userName}
-                    </h2>
-                  </HoverCardCustom>
-                  <p className='text-sm text-gray-400'>{items.name}</p>
-                </div>
-              </>
-            ) : (
-              <h2 className='text-sm font-semibold text-gray-400'>
-                Suggested for you
-              </h2>
-            )}
-            <p
-              className={`ms-auto cursor-pointer text-xs font-semibold ${
-                items.className || "text-[#0095f6] hover:text-[#00376b]"
-              }`}>
-              {items.text}
-            </p>
-          </div>
-        ))}
+        <UserSuggestion />
         <footer>
           <ul className='flex flex-wrap my-10 w-60 gap-2'>
             {footerData.map((items, i) => (
@@ -133,6 +109,9 @@ const AuthenticatedLanding = () => {
           </p>
         </footer>
       </div>
+
+      {/*<<<<<<<<<<<---------------------   Comments Modal  ------------------------->>>>>>>>>>>>> */}
+
       <Comment
         showModal={showComment}
         setShowModal={setShowComment}

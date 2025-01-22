@@ -7,7 +7,6 @@ export const PostProvider = ({ children }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [myPostsData, setMyPostsData] = useState([]);
-  const [singlePostData, setSinglePostData] = useState({});
   const [comments, setComments] = useState([]);
   const [allPosts, setAllPosts] = useState([]);
   const handlePostWithCaption = async ({ credentials, caption }) => {
@@ -52,7 +51,7 @@ export const PostProvider = ({ children }) => {
   const singlePost = async (postId) => {
     setLoading(true);
     try {
-      const { data } = await postService.singlePost(postId);
+      const { data } = await postService?.singlePost(postId);
       if (data.message === "Post fetched successfully") {
         return data.post;
       }

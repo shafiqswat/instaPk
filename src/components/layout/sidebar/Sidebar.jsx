@@ -66,10 +66,7 @@ const Sidebar = ({ handleClick, width }) => {
       style={{
         transition: "width 0.3s ease-in-out",
       }}>
-      {/* Updated Logo Section */}
-      <div
-        className={` ${width ? "p-3" : "p-2"} h-[64px] mt-3`} // Consistent height
-      >
+      <div className={` ${width ? "p-3" : "p-2"} h-[64px] mt-3`}>
         {width ? (
           <InstagramIcon className='w-[40px] h-[40px]' />
         ) : (
