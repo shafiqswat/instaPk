@@ -134,7 +134,7 @@ const AuthForm = ({ signUp }) => {
           )}
         </button>
         {error && <p className='text-red-400 text-sm'>{error.message}</p>}
-        <div className="flex items-center font-light text-xs text-gray-500 before:content-[''] before:w-32 before:h-px before:bg-gray-300 before after:content-[''] before:mr-5 after:w-32 after:h-px after:bg-gray-300 after:ml-5">
+        <div className="flex justify-center items-center font-light text-xs text-gray-500 before:content-[''] before:w-32 before:h-px before:bg-gray-300 before after:content-[''] before:mr-5 after:w-32 after:h-px after:bg-gray-300 after:ml-5">
           OR
         </div>
         <div className='flex items-center justify-center font-semibold mt-4'>

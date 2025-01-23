@@ -12,7 +12,7 @@ import { useFollowStatus } from "@/helpers/checkFollower.helper";
 const FriendSuggestions = () => {
   const [showModal, setShowModal] = useState(false);
   const [allUser, setAllUser] = useState([]);
-  const { user, GetAllUsers } = useAuth();
+  const { user, GetAllUsers, isAuthenticated } = useAuth();
   const { Follow, UnFollow } = useFollow();
   const router = useRouter();
 
@@ -29,7 +29,7 @@ const FriendSuggestions = () => {
 
   useEffect(() => {
     fetchUser();
-  }, []);
+  }, [isAuthenticated]);
 
   const { isFollow, toggleFollow } = useFollowStatus(user);
 

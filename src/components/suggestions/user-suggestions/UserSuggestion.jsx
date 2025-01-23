@@ -131,7 +131,7 @@ const UserSuggestion = () => {
 
             <p
               className={`ms-auto cursor-pointer text-xs font-semibold ${
-                !isFollow[items._id] ? "text-blue-500" : "text-gray-400"
+                !isFollow[items?._id] ? "text-blue-500" : "text-gray-400"
               }`}
               onClick={() => toggleFollow(items._id, Follow, UnFollow)}>
               {!isFollow[items._id] ? "Follow" : "Following"}

@@ -12,7 +12,6 @@ import { PostProvider } from "@/context/PostContext";
 import { PagesProvider } from "@/context/PagesContext";
 import { FollowProvider } from "@/context/FollowContext";
 import { SearchProvider } from "@/context/SearchContext";
-// import { FirebaseProvider } from "@/context/FirebaseContext";
 
 const LayoutContent = ({ children }) => {
   const { isAuthLoading, isAuthenticated } = useAuth();

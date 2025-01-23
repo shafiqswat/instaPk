@@ -39,7 +39,8 @@ export const AuthProvider = ({ children }) => {
       const { data } = await authService.signInRequest(credentials);
       console.log(data);
       setHeaders(data.data.token);
-      setUser(data.data);
+      setUser(data.data.user);
+      console.log(data.data.user);
       setIsAuthenticated(true);
       router.push("/");
     } catch (err) {
@@ -52,10 +53,11 @@ export const AuthProvider = ({ children }) => {
     setLoading(true);
     try {
       const { data } = await authService.signUpRequest(credentials);
+      console.log("successfully signed up");
+      router.push("/edit");
       setHeaders(data.data.token);
       setUser(data.data.user);
       setIsAuthenticated(true);
-      router.push("/edit");
     } catch (err) {
       setError(err);
     } finally {
@@ -165,7 +167,7 @@ export const AuthProvider = ({ children }) => {
     try {
       const { data } = await authService.getAllUsers();
       return data.data.users;
-    } catch {
+    } catch (err) {
       setError(err);
     } finally {
       setLoading(false);

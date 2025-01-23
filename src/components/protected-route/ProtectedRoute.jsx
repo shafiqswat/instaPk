@@ -14,7 +14,7 @@ const ProtectedRoute = ({ children, forAuthPages = false }) => {
   useEffect(() => {
     if (!isAuthLoading) {
       if (forAuthPages && isAuthenticated) {
-        router.push("/");
+        // router.push("/");
       } else if (!forAuthPages && !isAuthenticated) {
         router.push("/login");
       }
