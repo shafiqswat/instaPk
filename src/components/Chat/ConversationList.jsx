@@ -2,8 +2,8 @@
 import { useAuth } from "@/context/AuthContext";
 import { EditIcon } from "lucide-react";
 import React, { useState } from "react";
-import ChatModal from "../modals/chat/ChatModal";
 import { useChat } from "@/context/chatContext";
+import ChatModal from "../modals/chat/chatModal";
 
 const ConversationList = () => {
   const [isChatOpen, setIsChatOpen] = useState(false);
