@@ -9,8 +9,8 @@ const Edit = () => {
   const { user, ProfileSettings, loading, error } = useAuth();
 
   const [showModal, setShowModal] = useState(false);
-  const [websiteUrl, setWebsiteUrl] = useState("");
-  const [bio, setBio] = useState("");
+  const [websiteUrl, setWebsiteUrl] = useState(user?.websiteUrl || "");
+  const [bio, setBio] = useState(user?.bio || "");
   const [gender, setGender] = useState(user?.gender || "");
   const [showSuggestions, setShowSuggestions] = useState(
     user?.isPublic || false
@@ -26,17 +26,12 @@ const Edit = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     ProfileSettings({
-      userName: user?.userName,
-      fullName: user?.fullName,
       websiteUrl: websiteUrl,
-      gender: "Male",
+      gender: gender,
       bio: bio,
-      isPublic: true,
+      isPublic: showSuggestions,
     });
   };
-  console.log("User:", user);
-  console.log("Show Suggestions:", showSuggestions);
-  console.log("Selected Gender:", gender);
 
   return (
     <ProtectedRoute>

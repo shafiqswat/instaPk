@@ -23,7 +23,7 @@ const UpdatePost = ({
   const handleDeletePost = async () => {
     setShowModal(false);
     try {
-      await deletePost(postId);
+      await deletePost(postId, user?._id);
     } catch (err) {
       console.log(err);
     } finally {
@@ -31,13 +31,10 @@ const UpdatePost = ({
     }
   };
   const handleEdit = (postId) => {
-    updatedPost(
-      {
-        caption: captionValue,
-        isPublic: true,
-      },
-      postId
-    );
+    updatedPost(postId, {
+      caption: captionValue,
+      isPublic: true,
+    });
     setEditModal(false);
   };
 

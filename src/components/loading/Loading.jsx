@@ -12,12 +12,15 @@ const Loading = () => {
         width={50}
         height={50}
         alt='loading'
+        priority
+        className='w-auto h-auto'
       />
       <Image
         src='/icons/meta.jpg'
         width={60}
         height={60}
         alt='loading'
+        className='w-auto h-auto'
       />
     </div>
   );

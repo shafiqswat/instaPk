@@ -3,18 +3,13 @@
 import React from "react";
 import Modal from "../modal/Modal";
 import { ReportModalData } from "@/constants";
-import { useFollow } from "@/context/FollowContext";
+import { useAuth } from "@/context/AuthContext";
 
-const Report = ({ showModal, setShowModal, isFollow, setIsFollow, userId }) => {
-  const { Follow, UnFollow } = useFollow();
-  const handleFollow = async () => {
-    if (!isFollow) {
-      await Follow(userId, setIsFollow, isFollow);
-      setShowModal(false);
-    } else {
-      await UnFollow(userId, setIsFollow, isFollow);
-      setShowModal(false);
-    }
+const Report = ({ showModal, setShowModal, userId, selectedUser }) => {
+  const { handleFollow, isFollow, setIsFollow } = useAuth();
+  const handleFollowUnFollow = async () => {
+    await handleFollow(userId, selectedUser._id, isFollow, setIsFollow);
+    setShowModal(false);
   };
   return (
     <div>
@@ -25,8 +20,8 @@ const Report = ({ showModal, setShowModal, isFollow, setIsFollow, userId }) => {
         <ul className='text-center'>
           <li
             className='border-b p-3 text-sm cursor-pointer text-blue-500 font-semibold'
-            onClick={handleFollow}>
-            {!isFollow ? "Follow" : "Unfollow"}
+            onClick={handleFollowUnFollow}>
+            {!isFollow[selectedUser?._id] ? "Follow" : "Unfollow"}
           </li>
           {ReportModalData.map((items, i) => (
             <li

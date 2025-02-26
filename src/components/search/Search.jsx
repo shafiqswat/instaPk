@@ -1,30 +1,49 @@
 /** @format */
-
-import { useSearch } from "@/context/SearchContext";
+import { useAuth } from "@/context/AuthContext";
 import { XCircle } from "lucide-react";
 import { useRouter } from "next/navigation";
-import React, { useState, useCallback } from "react";
+import React, { useState } from "react";
 
 const Search = () => {
-  const { userData, getUser, setUserData } = useSearch();
+  const { allUsers } = useAuth(); // All users from context
   const [searchValue, setSearchValue] = useState("");
+  const [userData, setUserData] = useState([]); // Filtered users
   const router = useRouter();
-  const handleChange = useCallback(
-    (e) => {
-      const value = e.target.value;
-      setSearchValue(value);
-      if (value.trim().length > 0) {
-        getUser(value);
-      }
-    },
-    [getUser]
-  );
+
+  // Filter and set user data
+  const getUser = (searchTerm) => {
+    const filtered = allUsers.filter((user) => {
+      const userNameMatch = user.userName
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase());
+      const fullNameMatch = user.fullName
+        ?.toLowerCase()
+        .includes(searchTerm.toLowerCase());
+      return userNameMatch || fullNameMatch;
+    });
+    setUserData(filtered);
+  };
+
+  // Handle typing in the search box
+  const handleChange = (e) => {
+    const value = e.target.value;
+    setSearchValue(value);
+
+    if (value.trim().length > 0) {
+      getUser(value);
+    } else {
+      // If empty, clear the list
+      setUserData([]);
+    }
+  };
 
   // Clear input value
   const handleSearchClear = () => {
     setSearchValue("");
+    setUserData([]);
   };
 
+  // Handle search form submission
   const handleSearchSubmit = (e) => {
     e.preventDefault();
     if (searchValue.trim().length > 0) {
@@ -33,13 +52,17 @@ const Search = () => {
     }
   };
 
+  // Clear all recent searches (just an example)
   const handleClearAll = () => {
     localStorage.removeItem("searchValues");
     setUserData([]);
   };
+
+  // Navigate to user profile on click
   const handleClick = (item) => {
-    router.push(`${item.userName}`);
+    router.push(`/${item.userName}`);
   };
+
   return (
     <div className='shadow-xl border-r overflow-y-auto h-screen ps-[4.5rem] rounded-r-2xl bg-white'>
       <div className='p-5'>
@@ -64,8 +87,12 @@ const Search = () => {
           </form>
         </div>
       </div>
+
+      {/* Divider */}
       <div className='w-full h-[1px] mt-7 bg-gray-300'></div>
+
       <div className='p-5'>
+        {/* Only show "Recent" if not searching */}
         {!searchValue && (
           <div className='flex justify-between'>
             <h2 className='font-semibold'>Recent</h2>
@@ -77,8 +104,10 @@ const Search = () => {
           </div>
         )}
       </div>
+
+      {/* Results */}
       <ul>
-        {userData?.map((item, index) => (
+        {userData.map((item, index) => (
           <li
             className='ps-4 pe-7 py-2 flex items-center gap-3 hover:bg-gray-100 cursor-pointer mb-2'
             key={index}

@@ -1,96 +1,82 @@
 /** @format */
-import React, { useEffect, useRef, useState } from "react";
+
+import React, { useEffect, useState } from "react";
+import InfiniteScroll from "react-infinite-scroller";
 import PostCard from "../../cards/post-card/PostCard";
 import Link from "next/link";
 import { footerData } from "@/constants";
-import { usePage } from "@/context/PagesContext";
+// import { useFollow } from "@/context/FollowContext";
+import { useAuth } from "@/context/AuthContext";
+import { usePost } from "@/context/PostContext";
 import Comment from "@/components/modals/comment/Comment";
 import LoadingSkeleton from "@/components/elements/loading-skeleton/loadingSkeleton";
-import { useFollow } from "@/context/FollowContext";
 import UserSuggestion from "@/components/suggestions/user-suggestions/UserSuggestion";
 import FriendSuggestions from "@/components/suggestions/friend-suggestions/FriendSuggestions";
 
 const AuthenticatedLanding = () => {
-  const { homePage, homePageData, loading, setHomePageData } = usePage();
-  const { getStories } = useFollow();
+  const { user } = useAuth();
+  const { allFollowingPosts } = usePost();
+  // const { getStories } = useFollow();
   const [showComment, setShowComment] = useState(false);
   const [selectedPost, setSelectedPost] = useState(null);
-  const [limit] = useState(6);
+  const [homePageData, setHomePageData] = useState([]);
   const [page, setPage] = useState(0);
-  const loader = useRef(null);
+  const [hasMore, setHasMore] = useState(true);
+  const limit = 6; // Number of posts per page
 
-  /*<<<<<<<<<<<---------------------   Fetch the Home Page Posts  ------------------------->>>>>>>>>>>>> */
+  // useEffect(() => {
+  //   fetchData();
+  //   getStories();
+  // }, []);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const data = await homePage(limit * (page + 1));
-      setHomePageData((prev) => [...prev, ...data]);
-    };
-    fetchData();
-  }, [page]);
+  const fetchData = async () => {
+    const data = await allFollowingPosts(user?.following);
+    setHomePageData(data.slice(0, limit)); // Load initial posts
+  };
+
+  const loadMore = async () => {
+    const data = await allFollowingPosts(user?.following);
+    const nextPagePosts = data.slice((page + 1) * limit, (page + 2) * limit);
+
+    if (nextPagePosts.length === 0) {
+      setHasMore(false); // No more posts to load
+    } else {
+      setHomePageData((prev) => [...prev, ...nextPagePosts]);
+      setPage((prevPage) => prevPage + 1);
+    }
+  };
 
   const handlePostClick = (post) => {
     setSelectedPost(post);
     setShowComment(true);
   };
 
-  /*<<<<<<<<<<<---------------------   Implement The infinite-scroll  ------------------------->>>>>>>>>>>>> */
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (entries) {
-          if (entries[0].isIntersecting && !loading) {
-            setPage((prev) => prev + 1);
-          }
-        }
-      },
-      { threshold: 1 }
-    );
-    if (loader.current) {
-      observer.observe(loader.current);
-    }
-    return () => {
-      if (loader.current) {
-        observer.unobserve(loader.current);
-      }
-    };
-  }, [loader, loading]);
-
-  /*<<<<<<<<<<<---------------------  Fetch All the Stories  ------------------------->>>>>>>>>>>>> */
-
-  useEffect(() => {
-    getStories();
-  }, []);
-
   return (
     <div className='flex gap-y-20 sm:px-10 lg:gap-x-20 w-full sm:w-[80%] sm:mx-auto'>
-      {/*<<<<<<<<<<<---------------------  Friend Suggestion and Post card  ------------------------->>>>>>>>>>>>> */}
-
       <div className='w-full'>
         <FriendSuggestions />
-        <div className='flex flex-col gap-10'>
-          {homePageData?.map((items, i) => (
-            <PostCard
-              items={items}
-              handlePostClick={handlePostClick}
-              key={i}
-            />
-          ))}
-          {loading && (
+        <InfiniteScroll
+          pageStart={0}
+          loadMore={loadMore}
+          hasMore={hasMore}
+          loader={
             <LoadingSkeleton
               count={3}
               homePage={true}
+              key={0}
             />
-          )}
-          <div
-            ref={loader}
-            style={{ height: "20px", background: "transparent" }}
-          />
-        </div>
+          }>
+          <div className='flex flex-col gap-10'>
+            {homePageData.map((items, i) => (
+              <PostCard
+                key={i}
+                items={items}
+                handlePostClick={handlePostClick}
+              />
+            ))}
+          </div>
+        </InfiniteScroll>
       </div>
-
-      {/*<<<<<<<<<<<---------------------  User Suggestion and Footer  ------------------------->>>>>>>>>>>>> */}
 
       <div className='lg:block hidden w-80 mt-5'>
         <UserSuggestion />
@@ -100,7 +86,7 @@ const AuthenticatedLanding = () => {
               <li
                 className='text-xs text-gray-400 hover:underline'
                 key={i}>
-                <Link href=''>.{items.text}</Link>
+                <Link href=''>{items.text}</Link>
               </li>
             ))}
           </ul>
@@ -109,8 +95,6 @@ const AuthenticatedLanding = () => {
           </p>
         </footer>
       </div>
-
-      {/*<<<<<<<<<<<---------------------   Comments Modal  ------------------------->>>>>>>>>>>>> */}
 
       <Comment
         showModal={showComment}

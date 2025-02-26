@@ -5,8 +5,6 @@ import { CrossIcon } from "@/constants/SvgIcon";
 import { SearchIcon } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
-import { useFollowStatus } from "@/helpers/checkFollower.helper";
-import { useFollow } from "@/context/FollowContext";
 
 const Followers = ({
   showModal,
@@ -17,15 +15,19 @@ const Followers = ({
 }) => {
   const [isFocus, setIsFocus] = useState(false);
   const [value, setValue] = useState("");
-  const { fetchUsers, allUsers, user: currentUser } = useAuth();
+  const {
+    fetchUsers,
+    allFollowing,
+    user: currentUser,
+    isFollow,
+    handleFollow,
+    setIsFollow,
+  } = useAuth();
   const router = useRouter();
-  const filteredUsers = allUsers.filter((user) =>
+  const filteredUsers = allFollowing.filter((user) =>
     user?.userName?.toLowerCase().includes(value.toLowerCase())
   );
-  const { isFollow, toggleFollow } = useFollowStatus(user);
-  const { Follow, UnFollow } = useFollow();
 
-  /*<<<<<<<<<<<---------------------    Fetch Follower and Following of The Current Users and other users  ------------------------->>>>>>>>>>>>> */
   useEffect(() => {
     if (isFollowing) {
       fetchUsers(user?.following);
@@ -33,6 +35,7 @@ const Followers = ({
       fetchUsers(user?.followers);
     }
   }, [user, isFollowing]);
+
   const handleChange = (e) => {
     setValue(e.target.value);
   };
@@ -42,8 +45,7 @@ const Followers = ({
       <Modal
         showModal={showModal}
         setShowModal={setShowModal}>
-        {/*<<<<<<<<<<<---------------------  Modal Header   ------------------------->>>>>>>>>>>>> */}
-
+        {/* Modal Header */}
         <div className='p-2 flex justify-between items-center border-b'>
           <div></div>
           <h2 className='font-semibold'>
@@ -57,8 +59,7 @@ const Followers = ({
           </button>
         </div>
 
-        {/*<<<<<<<<<<<---------------------     Form Input to Search User    ------------------------->>>>>>>>>>>>> */}
-
+        {/* Search User */}
         <form className='w-full flex justify-center p-2'>
           <div className='w-full relative'>
             <input
@@ -67,10 +68,8 @@ const Followers = ({
               className={`rounded outline-none focus:border-none py-1 w-full bg-gray-200 placeholder:text-xs ${
                 isFocus ? "ring-2 pl-2" : "pl-7"
               }`}
-              autoFocus={false}
               onFocus={() => setIsFocus(true)}
               onBlur={() => setIsFocus(false)}
-              aria-label='Search followers'
               onChange={handleChange}
               value={value}
             />
@@ -80,13 +79,12 @@ const Followers = ({
           </div>
         </form>
 
-        {/*<<<<<<<<<<<---------------------    Map on the Filter User    ------------------------->>>>>>>>>>>>> */}
-
+        {/* Map over filtered users */}
         <ul>
           {filteredUsers?.map((item, index) => (
             <li
-              className='ps-4 pe-7 py-2 flex items-center gap-3 hover:bg-gray-100 cursor-pointer mb-2'
-              key={index}>
+              key={index}
+              className='ps-4 pe-7 py-2 flex items-center gap-3 hover:bg-gray-100 cursor-pointer mb-2'>
               <div
                 className='w-11 h-11 rounded-full flex justify-center items-center'
                 onClick={() => router.push(`${item?.userName}`)}>
@@ -99,35 +97,46 @@ const Followers = ({
                 <h2 className='text-sm font-semibold'>{item?.userName}</h2>
                 <p className='text-sm text-gray-400'>{item?.fullName}</p>
               </div>
-              {/*<<<<<<<<<<<---------------------    Buttons Container   ------------------------->>>>>>>>>>>>> */}
+
+              {/* Button Container */}
               <div className='w-full flex justify-end'>
                 {isCurrentUser ? (
-                  /*<<<<<<<<<<<---------------------     Button For the Current User Follow and UnFollow   ------------------------->>>>>>>>>>>>> */
-
                   <button
-                    className={` font-semibold text-sm py-1 px-3 rounded ms-auto ${
+                    className={`font-semibold text-sm py-1 px-3 rounded ms-auto ${
                       !isFollow[item?._id]
                         ? "bg-blue-500 text-white"
                         : "bg-gray-200"
                     }`}
                     onClick={() =>
-                      isFollowing && toggleFollow(item?._id, Follow, UnFollow)
+                      isFollowing &&
+                      handleFollow(
+                        currentUser?._id,
+                        item?._id,
+                        isFollow,
+                        setIsFollow
+                      )
                     }>
                     {isFollowing
                       ? isFollow[item?._id]
-                        ? "Follow"
-                        : "Following"
+                        ? "Following"
+                        : "Follow"
                       : "Remove"}
                   </button>
                 ) : (
-                  /*<<<<<<<<<<<---------------------    Button For the other user Follower and Following   ------------------------->>>>>>>>>>>>> */
                   item._id !== currentUser?._id && (
                     <button
-                      onClick={() => toggleFollow(item?._id, Follow, UnFollow)}
-                      className={`bg-blue-500 font-semibold  text-sm py-1 px-3 rounded ms-auto ${
+                      onClick={() =>
+                        handleFollow(
+                          currentUser?._id,
+                          item?._id,
+                          isFollow,
+                          setIsFollow
+                        )
+                      }
+                      className={`bg-blue-500 font-semibold text-sm py-1 px-3 rounded ms-auto ${
                         isFollow[item._id] ? "bg-gray-200" : "text-white"
                       }`}>
-                      {isFollow[item._id] ? "Following" : "Follow"}
+                      {isFollow[item?._id] ? "Following" : "Follow"}
                     </button>
                   )
                 )}
@@ -139,5 +148,4 @@ const Followers = ({
     </div>
   );
 };
-
 export default Followers;

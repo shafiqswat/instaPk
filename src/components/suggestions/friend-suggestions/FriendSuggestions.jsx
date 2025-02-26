@@ -1,41 +1,20 @@
 /** @format */
-
 "use client";
 import { Plus, UserCheck, UserPlus } from "lucide-react";
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useState, useMemo } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
-import { useFollow } from "@/context/FollowContext";
 import Post from "@/components/cards/post/Post";
-import { useFollowStatus } from "@/helpers/checkFollower.helper";
 
 const FriendSuggestions = () => {
+  const { user, allUsers, handleFollow, setIsFollow, isFollow } = useAuth();
   const [showModal, setShowModal] = useState(false);
-  const [allUser, setAllUser] = useState([]);
-  const { user, GetAllUsers, isAuthenticated } = useAuth();
-  const { Follow, UnFollow } = useFollow();
   const router = useRouter();
 
-  /*<<<<<<<<<<<---------------------   fetch users  ------------------------->>>>>>>>>>>>> */
+  /*<<<<<<<<<<<---------------------   Get First Three Users / other then the current user  ------------------------->>>>>>>>>>>>> */
 
-  const fetchUser = async () => {
-    try {
-      const users = await GetAllUsers();
-      setAllUser(users);
-    } catch (err) {
-      console.error("Error fetching users:", err);
-    }
-  };
-
-  useEffect(() => {
-    fetchUser();
-  }, [isAuthenticated]);
-
-  const { isFollow, toggleFollow } = useFollowStatus(user);
-
-  /*<<<<<<<<<<<---------------------   Get First Three users  ------------------------->>>>>>>>>>>>> */
-
-  const firstUsers = useMemo(() => allUser.slice(0, 3), [allUser]);
+  const filteredUsers = allUsers.filter((u) => u._id !== user?._id);
+  const firstUsers = useMemo(() => filteredUsers.slice(0, 3), [allUsers]);
 
   return (
     <div className='flex overflow-x-auto gap-5 -mt-5 sm:m-0 pb-2 scrollbar-hidden scrollbar-none'>
@@ -55,8 +34,7 @@ const FriendSuggestions = () => {
         />
       </div>
 
-      {/*<<<<<<<<<<<---------------------  Map the first Three Users  ------------------------->>>>>>>>>>>>> */}
-
+      {/*<<<<<<<<<<<---------------------  Map the First Three Users  ------------------------->>>>>>>>>>>>> */}
       {firstUsers.map((items) => (
         <div
           className='relative w-16 h-16 sm:w-20 sm:h-20 text-center flex-shrink-0 mb-7'
@@ -69,18 +47,21 @@ const FriendSuggestions = () => {
           />
           <p className='text-xs mt-2'>{items.userName}</p>
 
-          {/*<<<<<<<<<<<---------------------   Check Follow   ------------------------->>>>>>>>>>>>> */}
-
+          {/*<<<<<<<<<<<---------------------   Check Follow State   ------------------------->>>>>>>>>>>>> */}
           <div className='border-2 bg-white text-black rounded-xl absolute -bottom-2 left-[1rem] sm:left-6 px-2 py-1'>
-            {!isFollow[items._id] ? (
-              <UserPlus
-                className='w-4 h-4 cursor-pointer'
-                onClick={() => toggleFollow(items._id, Follow, UnFollow)}
-              />
-            ) : (
+            {isFollow[items._id] ? (
               <UserCheck
                 className='w-4 h-4 cursor-pointer'
-                onClick={() => toggleFollow(items._id, Follow, UnFollow)}
+                onClick={() =>
+                  handleFollow(user._id, items._id, isFollow, setIsFollow)
+                }
+              />
+            ) : (
+              <UserPlus
+                className='w-4 h-4 cursor-pointer'
+                onClick={() =>
+                  handleFollow(user._id, items._id, isFollow, setIsFollow)
+                }
               />
             )}
           </div>
@@ -88,7 +69,6 @@ const FriendSuggestions = () => {
       ))}
 
       {/*<<<<<<<<<<<---------------------   Post Story Modal  ------------------------->>>>>>>>>>>>> */}
-
       <Post
         showModal={showModal}
         setShowModal={setShowModal}

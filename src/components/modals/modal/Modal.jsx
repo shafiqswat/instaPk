@@ -2,8 +2,9 @@
 
 import React from "react";
 import { Dialog, DialogContent, DialogTitle } from "../../ui/dialog";
+import { Title } from "@radix-ui/react-dialog";
 
-const Modal = ({ showModal, setShowModal, children, className }) => {
+const Modal = ({ showModal, setShowModal, children, className, Title }) => {
   return (
     <div>
       <Dialog
@@ -11,7 +12,7 @@ const Modal = ({ showModal, setShowModal, children, className }) => {
         onOpenChange={setShowModal}
         aria-labelledby='dialog-title'
         aria-describedby='dialog-description'>
-        <DialogTitle></DialogTitle>
+        <DialogTitle>{Title}</DialogTitle>
         <DialogContent className={`outline-none p-0 ${className}`}>
           {children}
         </DialogContent>

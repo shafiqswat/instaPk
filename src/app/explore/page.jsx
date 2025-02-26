@@ -6,71 +6,68 @@ import SocialCard from "@/components/cards/social-card/SocialCard";
 import LoadingSkeleton from "@/components/elements/loading-skeleton/loadingSkeleton";
 import Comment from "@/components/modals/comment/Comment";
 import ProtectedRoute from "@/components/protected-route/ProtectedRoute";
-import { usePage } from "@/context/PagesContext";
+import { usePost } from "@/context/PostContext";
+import { useAuth } from "@/context/AuthContext";
+import InfiniteScroll from "react-infinite-scroller";
 
 const ExplorePage = () => {
-  const { explorePageData, explorePage, loading, setExplorePageData } =
-    usePage();
-  const [limit] = useState(6);
-  const [page, setPage] = useState(0);
+  const { user } = useAuth();
+  const [explorePageData, setExplorePageData] = useState([]);
+  const { getAppPosts, loading } = usePost();
   const [showComment, setShowComment] = useState(false);
-  const [selectedPost, setSelectedPost] = useState(false);
-  const loader = useRef(null);
-
+  const [selectedPost, setSelectedPost] = useState(null);
+  const [page, setPage] = useState(0);
+  const [hasMore, setHasMore] = useState(true);
+  const limit = 6;
+  console.log(selectedPost, "selectedPost");
   useEffect(() => {
-    const fetchData = async () => {
-      const data = await explorePage(limit * (page + 1));
-      setExplorePageData(data);
-    };
     fetchData();
-  }, [page]);
+  }, []);
 
+  const fetchData = async () => {
+    const data = await getAppPosts();
+    setExplorePageData(data);
+  };
+  const loadMore = async () => {
+    const data = await getAppPosts();
+    const nextPagePosts = data.slice((page + 1) * limit, (page + 2) * limit);
+    if (nextPagePosts.length === 0) {
+      setHasMore(false);
+    } else {
+      setExplorePageData((prev) => [...prev, ...nextPagePosts]);
+      setPage((prevPage) => prevPage + 1);
+    }
+  };
   const handlePostClick = (post) => {
     setSelectedPost(post);
     setShowComment(true);
   };
 
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (entries[0].isIntersecting && !loading) {
-          setPage((prevPage) => prevPage + 1);
-        }
-      },
-      { threshold: 1.0 }
-    );
-
-    if (loader.current) {
-      observer.observe(loader.current);
-    }
-
-    return () => {
-      if (loader.current) {
-        observer.unobserve(loader.current);
-      }
-    };
-  }, [loader, loading]);
-
   return (
     <ProtectedRoute>
-      <div className='grid grid-cols-3 gap-3 p-5'>
-        {explorePageData?.slice(0, limit * (page + 1)).map((items, i) => (
-          <div key={i}>
-            <SocialCard
-              handlePostClick={handlePostClick}
-              items={items}
-              index={i}
-            />
+      <InfiniteScroll
+        pageStart={0}
+        loadMore={loadMore}
+        hasMore={hasMore}
+        loader={
+          <div
+            className='grid grid-cols-3 gap-3 p-5 '
+            key={0}>
+            <LoadingSkeleton count={6} />
           </div>
-        ))}
-
-        {loading && <LoadingSkeleton count={6} />}
-
-        <div
-          ref={loader}
-          style={{ height: "20px", background: "transparent" }}
-        />
-      </div>
+        }>
+        <div className='grid grid-cols-3 gap-3 p-5'>
+          {explorePageData.map((items, i) => (
+            <div key={i}>
+              <SocialCard
+                handlePostClick={handlePostClick}
+                items={items}
+                index={i}
+              />
+            </div>
+          ))}
+        </div>
+      </InfiniteScroll>
 
       <Comment
         showModal={showComment}

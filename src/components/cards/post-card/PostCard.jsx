@@ -36,7 +36,6 @@ const PostCard = ({ items, handlePostClick }) => {
     }
   }, [user?.following, items?._id]);
   const formattedTime = useCompactTimeFormat(items.createdAt);
-
   return (
     <div className='sm:w-[468px] w-full sm:mx-auto'>
       {/*<<<<<<<<<<<---------------------  PostCard Header  ------------------------->>>>>>>>>>>>> */}
@@ -100,7 +99,7 @@ const PostCard = ({ items, handlePostClick }) => {
             key={i}
             src={img}
             alt='Post content'
-            className='w-full object-cover cursor-pointer mt-5 '
+            className='min-w-full object-cover cursor-pointer mt-5 '
           />
         ))}
       </CarouselCustom>

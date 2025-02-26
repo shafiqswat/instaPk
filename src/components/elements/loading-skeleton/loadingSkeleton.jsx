@@ -43,10 +43,10 @@ const LoadingSkeleton = ({
               /*<<<<<<<<<<<---------------------   Home page  ------------------------->>>>>>>>>>>>> */
 
               <div
-                className='flex flex-col space-y-3'
+                className='flex flex-col space-y-3 mb-10'
                 key={i}>
                 <Skeleton className='sm:h-[500px] h-[400px] w-full  sm:w-[468px] rounded-xl' />
-                <div className='space-y-2'>
+                <div className='space-y-2 '>
                   <Skeleton className='h-4 sm:w-[468px] w-full' />
                   <Skeleton className='h-4 sm:w-[468px] w-full' />
                 </div>

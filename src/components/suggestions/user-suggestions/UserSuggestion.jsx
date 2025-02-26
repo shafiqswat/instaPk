@@ -3,45 +3,38 @@
 import HoverCardCustom from "@/components/cards/hover-card/HoverCard";
 import LoadingSkeleton from "@/components/elements/loading-skeleton/loadingSkeleton";
 import { useAuth } from "@/context/AuthContext";
-import { useFollow } from "@/context/FollowContext";
-import { useFollowStatus } from "@/helpers/checkFollower.helper";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
 const UserSuggestion = () => {
-  const { GetAllUsers, user, singleUser, singleUserData } = useAuth();
+  const {
+    user,
+    singleUser,
+    singleUserData,
+    handleFollow,
+    setIsFollow,
+    allUsers,
+    isFollow,
+  } = useAuth();
   const [loading, setLoading] = useState(false);
   const [randomUsers, setRandomUsers] = useState([]);
   const router = useRouter();
-  const { Follow, UnFollow } = useFollow();
-  const { isFollow, toggleFollow } = useFollowStatus(user);
-  /*<<<<<<<<<<<---------------------   fetch users  ------------------------->>>>>>>>>>>>> */
-
-  const fetchUsers = async () => {
-    setLoading(true);
-    try {
-      const users = await GetAllUsers();
-      getRandomUsers(users); // Trigger random selection after fetching users
-    } catch (err) {
-      console.log(err);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   /*<<<<<<<<<<<---------------------   get random users from the data  ------------------------->>>>>>>>>>>>> */
 
   const getRandomUsers = (users) => {
     if (users?.length) {
-      const shuffled = [...users].sort(() => 0.5 - Math.random());
+      const filteredUsers = users.filter((u) => u._id !== user?._id); // Exclude current user
+      const shuffled = filteredUsers.sort(() => 0.5 - Math.random());
       const selectedUsers = shuffled.slice(0, 5);
       setRandomUsers(selectedUsers);
     }
   };
-
   useEffect(() => {
-    fetchUsers();
-  }, [router]);
+    if (randomUsers.length === 0) {
+      getRandomUsers(allUsers);
+    }
+  }, []);
 
   /*<<<<<<<<<<<--------------------- fetch User data on Mouse enter ------------------------->>>>>>>>>>>>> */
 
@@ -133,7 +126,9 @@ const UserSuggestion = () => {
               className={`ms-auto cursor-pointer text-xs font-semibold ${
                 !isFollow[items?._id] ? "text-blue-500" : "text-gray-400"
               }`}
-              onClick={() => toggleFollow(items._id, Follow, UnFollow)}>
+              onClick={() =>
+                handleFollow(user?._id, items._id, isFollow, setIsFollow)
+              }>
               {!isFollow[items._id] ? "Follow" : "Following"}
             </p>
           </div>

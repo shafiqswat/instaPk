@@ -1,39 +1,27 @@
 /** @format */
+
 "use client";
 import React, { useRef } from "react";
 import Modal from "../modal/Modal";
 import { useAuth } from "@/context/AuthContext";
+import convertImageToBase64, {
+  uploadToCloudinary,
+} from "@/helpers/cloudinaryUpload.helper";
 
 const PictureModal = ({ showModal, setShowModal }) => {
   const modalData = ["Upload Photo", "Remove Current Photo", "Cancel"];
   const fileInputRef = useRef(null);
   const { ProfilePic } = useAuth();
 
-  const handleRemovePhoto = async () => {
-    const formData = new FormData();
-    formData.append(
-      "image",
-      new File(
-        [
-          await (
-            await fetch(
-              "https://res.cloudinary.com/dulovaduo/image/upload/v1731394549/profile_pics/bgsrd2kzajvtk86gzkbd.jpg"
-            )
-          ).blob(),
-        ],
-        "default-avatar.jpg"
-      )
-    );
-    await ProfilePic(formData);
-    setShowModal(false);
-  };
   const handleAction = (action) => {
     switch (action) {
       case "Upload Photo":
         fileInputRef.current.click();
         break;
       case "Remove Current Photo":
-        handleRemovePhoto();
+        ProfilePic(
+          "https://res.cloudinary.com/dulovaduo/image/upload/v1731394549/profile_pics/bgsrd2kzajvtk86gzkbd.jpg"
+        );
         break;
       case "Cancel":
         setShowModal(false);
@@ -43,14 +31,16 @@ const PictureModal = ({ showModal, setShowModal }) => {
     }
   };
 
-  const handleFileChange = (event) => {
+  const handleFileChange = async (event) => {
     const file = event.target.files[0];
-    console.log(file);
     if (file) {
-      const formData = new FormData();
-      formData.append("image", file);
-      ProfilePic(formData);
-      setShowModal(false);
+      try {
+        const cloudinaryImage = await uploadToCloudinary(file);
+        ProfilePic(cloudinaryImage);
+        setShowModal(false);
+      } catch (error) {
+        console.error("Error converting image to base64", error);
+      }
     }
   };
 

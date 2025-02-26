@@ -5,7 +5,7 @@ import { useState } from "react";
 // Move the initializeFollowStatus function outside of the hook
 const initializeFollowStatus = (user) => {
   if (user && user.following) {
-    return user?.following.reduce((acc, userId) => {
+    return user?.following?.reduce((acc, userId) => {
       acc[userId] = true;
       return acc;
     }, {});

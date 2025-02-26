@@ -2,16 +2,16 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import Modal from "../modal/Modal";
-import { CrossIcon, EmojiPickerIcon } from "@/constants/SvgIcon";
-import { useFollow } from "@/context/FollowContext";
+import { CrossIcon } from "@/constants/SvgIcon";
 import { useAuth } from "@/context/AuthContext";
+import { useNote } from "@/context/NoteContext";
 
 const Notes = ({ isNoteModal, setIsNoteModal }) => {
   const [content, setContent] = useState("");
   const { user } = useAuth();
   const [rows, setRows] = useState(1);
-  const { createNote, loading, getNote, noteData, updateNote, deleteNote } =
-    useFollow();
+  const { createNote, loading, getNote, note, updateNote, deleteNote } =
+    useNote();
   const handleOnChange = (e) => {
     const value = e.target.value;
 
@@ -28,24 +28,24 @@ const Notes = ({ isNoteModal, setIsNoteModal }) => {
     }
   };
   const handleCreateNote = async () => {
-    if (noteData) {
+    if (note) {
       if (content.length > 0) {
-        await updateNote({ content });
+        await updateNote(user?._id, content);
         setIsNoteModal(false);
       }
     } else {
       if (content.length > 0) {
-        await createNote({ content });
+        await createNote(user?._id, content);
         setIsNoteModal(false);
       }
     }
   };
   const handleDelete = async () => {
-    await deleteNote();
+    await deleteNote(user?._id);
     setIsNoteModal(false);
   };
   useEffect(() => {
-    getNote();
+    getNote(user?._id);
   }, []);
   return (
     <Modal
@@ -67,7 +67,7 @@ const Notes = ({ isNoteModal, setIsNoteModal }) => {
             <div className='parent-container'>
               <div className='spinner'></div>
             </div>
-          ) : noteData ? (
+          ) : note ? (
             "Update"
           ) : (
             "share"
@@ -83,7 +83,7 @@ const Notes = ({ isNoteModal, setIsNoteModal }) => {
         <div className='absolute bottom-48 bg-white border py-4 px-2 rounded-xl cursor-pointer'>
           <textarea
             className='text-gray-500 w-48 text-xl resize-none overflow-y-scroll focus:outline-none'
-            placeholder={noteData ? noteData.content : "Share a thought...."}
+            placeholder={note ? note.note : "Share a thought...."}
             value={content}
             onChange={(e) => handleOnChange(e)}
             rows={rows}
@@ -91,13 +91,11 @@ const Notes = ({ isNoteModal, setIsNoteModal }) => {
           <div className='absolute -bottom-3 left-9 transform -translate-x-1/2 w-5 h-5 bg-white rounded-full border-t border-l'></div>
           <div className='absolute -bottom-5 left-12 transform -translate-x-1/2 w-2 h-2 bg-white rounded-full border-t border-l'></div>
         </div>
-        {/* {noteData && ( */}
         <button
           className={`text-gray-600 font-semibold my-2 hover:text-blue-500 `}
-          onClick={noteData ? handleDelete : handleCreateNote}>
-          {noteData ? "Delete Note" : "Share"}
+          onClick={note ? handleDelete : handleCreateNote}>
+          {note ? "Delete Note" : "Share"}
         </button>
-        {/* )} */}
       </div>
     </Modal>
   );

@@ -1,47 +1,70 @@
 /** @format */
 
-import { postService } from "@/services/postService";
+import {
+  addPost,
+  deletePosts,
+  getAllPosts,
+  getFollowingPosts,
+  getUserPosts,
+  likeUserPost,
+  updateUserPost,
+} from "@/services/postServices";
 import React, { createContext, useContext, useState } from "react";
 const PostContext = createContext();
 export const PostProvider = ({ children }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [myPostsData, setMyPostsData] = useState([]);
-  const [comments, setComments] = useState([]);
   const [allPosts, setAllPosts] = useState([]);
-  const handlePostWithCaption = async ({ credentials, caption }) => {
+  const createPost = async ({ uid, caption, imgUrls, user }) => {
     setLoading(true);
     try {
-      const { data: createData } = await postService.createPost(credentials);
-      const postId = createData?.post._id;
-      if (createData.message === "Post created successfully") {
-        const newPost = { ...createData.post };
-        if (caption) {
-          const { data: captionData } = await postService.postCaption(postId, {
-            caption,
-          });
-          if (captionData.message === "Caption updated successfully") {
-            newPost.caption = captionData.post.caption;
-          }
-        }
-        setMyPostsData((prevPosts) => [newPost, ...prevPosts]);
-      }
-      return postId;
+      const data = await addPost(uid, caption, imgUrls, user);
+      setMyPostsData((prev) => [data, ...prev]);
     } catch (err) {
-      setError(err);
-      return null;
+      console.log(err);
     } finally {
       setLoading(false);
     }
   };
 
-  const myPosts = async () => {
+  const myPosts = async (userId) => {
     setLoading(true);
     try {
-      const { data } = await postService.myPosts();
-      setMyPostsData(data.data);
+      const userPosts = await getUserPosts(userId);
+      setMyPostsData(userPosts);
     } catch (err) {
       setError(err);
+      console.log(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const updatedPost = async (postId, credentials) => {
+    setLoading(true);
+    try {
+      const data = await updateUserPost(postId, credentials);
+      setMyPostsData((prevData) =>
+        prevData.map((post) =>
+          post.id === postId ? { ...post, ...data } : post
+        )
+      );
+    } catch (err) {
+      setError(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const deletePost = async (postId, userId) => {
+    setLoading(true);
+    try {
+      await deletePosts(postId, userId);
+      setMyPostsData((prevData) =>
+        prevData.filter((post) => post.id !== postId)
+      );
+    } catch (err) {
       console.log(err);
     } finally {
       setLoading(false);
@@ -79,117 +102,47 @@ export const PostProvider = ({ children }) => {
       setLoading(false);
     }
   };
-
-  const commentsOnPost = async (postId, credentials) => {
+  const getAppPosts = async () => {
     setLoading(true);
     try {
-      const { data } = await postService.commentOnPost(postId, credentials);
-      if (data.status === "success") {
-        allComments(postId);
-      }
-    } catch {
-      setError(err);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const allComments = async (postId) => {
-    setLoading(true);
-    try {
-      const { data } = await postService.allComments(postId);
-      setComments([data.data]);
-    } catch (err) {
-      console.log(err);
-      setError(err);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const deletePost = async (postId) => {
-    setLoading(false);
-    try {
-      const { data } = await postService.deletePost(postId);
-      console.log(data);
-      if (data.status === "success") {
-        myPosts();
-      }
+      const posts = await getAllPosts();
+      return posts;
     } catch (err) {
       console.log(err);
     } finally {
       setLoading(false);
     }
   };
-
-  const updatedPost = async (postId, credentials) => {
+  const allFollowingPosts = async (followingUserIds) => {
     setLoading(true);
     try {
-      const { data } = await postService.updatePost(credentials, postId);
-      console.log(data);
-      if (data.status === "success") {
-        myPostsData((prevData) => [data.data, ...prevData]);
-        console.log(
-          "====================data",
-          myPostsData((prevData) => [...prevData])
-        );
-      }
+      const posts = getFollowingPosts(followingUserIds);
+      return posts;
     } catch (err) {
-      setError(err);
+      console.log(err);
     } finally {
       setLoading(false);
     }
   };
-
-  const deleteComments = async (commentsId) => {
-    setLoading(true);
+  const likePost = async (postId, userId, setPostData, isLike, setIsLike) => {
+    setIsLike(!isLike);
     try {
-      const { data } = await postService.deleteComments(commentsId);
-      console.log(data);
-    } catch (err) {
-      setError(err);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const likePost = async (postId, postData, userId, setIsLike) => {
-    setLoading(true);
-    setIsLike(true);
-    try {
-      const { data } = await postService.likePost(postId);
-      console.log(data);
-      if (data.message == "Post liked successfully.") {
-        postData((prev) => ({
+      await likeUserPost(postId, userId);
+      if (!isLike) {
+        setPostData((prev) => ({
           ...prev,
           likeCount: prev.likeCount + 1,
           likes: [...prev.likes, userId],
         }));
+      } else {
+        setPostData((prev) => ({
+          ...prev,
+          likeCount: prev.likeCount - 1,
+          likes: prev.likes.filter((id) => id !== userId),
+        }));
       }
     } catch (err) {
-      setError(err);
-    } finally {
-      setLoading(false);
-    }
-  };
-  // console.log(singlePostData);
-
-  const dislikePost = async (postId, postData, userId, setIsLike) => {
-    setLoading(true);
-    setIsLike(false);
-    try {
-      const { data } = await postService.dislikePost(postId);
-      console.log(data);
-      postData((prev) => ({
-        ...prev,
-        likeCount: prev.likeCount - 1,
-        likes: prev.likes.filter((id) => id !== userId),
-      }));
-      console.log(data);
-    } catch (err) {
-      setError(err);
-    } finally {
-      setLoading(false);
+      console.log(err);
     }
   };
 
@@ -198,20 +151,17 @@ export const PostProvider = ({ children }) => {
       value={{
         loading,
         error,
-        handlePostWithCaption,
+        createPost,
         myPosts,
         singlePost,
         myPostsData,
         fetchPosts,
         allPosts,
-        commentsOnPost,
-        allComments,
-        comments,
         deletePost,
         updatedPost,
-        deleteComments,
         likePost,
-        dislikePost,
+        getAppPosts,
+        allFollowingPosts,
       }}>
       {children}
     </PostContext.Provider>

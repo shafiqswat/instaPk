@@ -10,14 +10,14 @@ import {
   ThreeDotsIcon,
   VerifyIcon,
 } from "@/constants/SvgIcon";
-import { usePost } from "@/context/PostContext";
 import { useAuth } from "@/context/AuthContext";
 import UpdatePost from "../update-post/UpdatePost";
 import LoadingSkeleton from "@/components/elements/loading-skeleton/loadingSkeleton";
 import Report from "../report/Report";
-import { useFollow } from "@/context/FollowContext";
 import CommentsForm from "@/components/form-items/comments-form/CommentsForm";
 import { useRouter } from "next/navigation";
+import { useComments } from "@/context/commentsContext";
+import DeleteComments from "../delete-comments/deleteComments";
 
 const Comment = ({
   showModal,
@@ -25,56 +25,57 @@ const Comment = ({
   postData,
   selectedUser,
   isCurrentUser,
-  profile,
 }) => {
-  const { allComments, comments, loading: commentsLoading } = usePost();
+  const { loading: commentsLoading, fetchComments, comments } = useComments();
   const [showUpdateModal, setShowUpdateModal] = useState(false);
+  const [commentToDelete, setCommentToDelete] = useState(null);
+  const [showReportModal, setShowReportModal] = useState(false);
+  const [deleteModal, setDeleteModal] = useState(false);
   const router = useRouter();
   const {
     user,
     singleUser,
-    setSingleUserData,
     singleUserData,
     loading: userLoading,
+    handleFollow,
+    setIsFollow,
+    isFollow,
   } = useAuth();
-  const [showReportModal, setShowReportModal] = useState(false);
-  const { Follow } = useFollow();
-  const [isFollow, setIsFollow] = useState(
-    singleUserData?.followers?.includes(user?._id)
-  );
-  useEffect(() => {
-    setIsFollow(singleUserData?.followers?.includes(user?._id));
-  }, [singleUserData]);
 
   useEffect(() => {
     if (postData) {
       {
-        profile
-          ? setSingleUserData(selectedUser)
-          : singleUser(postData?.user?._id);
+        singleUser(postData?.postBy);
       }
-      allComments(postData?._id);
     }
   }, [postData]);
-  const handleFollow = () => {
-    Follow(singleUserData?._id, setIsFollow, isFollow);
-  };
 
+  useEffect(() => {
+    fetchComments(postData?.id);
+  }, [showModal]);
+
+  const handleDeleteClick = (commentId, commentedUser) => {
+    console.log(commentedUser.user, "comments User");
+    if (commentedUser.user._id === user._id) {
+      setCommentToDelete(commentId);
+      setDeleteModal(true);
+    }
+  };
   return (
     <div>
       <Modal
         showModal={showModal}
         setShowModal={setShowModal}
-        className='grid grid-cols-2 gap-0 min-w-[80%]  border-0 '>
-        <div className=''>
+        className='grid grid-cols-2 gap-0 min-w-[80%]  border-0'>
+        <div className='min-w-full min-h-full  bg-black p-2'>
           <CarouselCustom postData={postData}>
             {postData?.imageUrls?.map((img, i) => (
               <img
                 key={i}
                 src={img}
                 alt={`slider ${i + 1}`}
-                className='w-full h-full object-cover'
-                onClick={() => router.push(`/${postData?.userName}`)}
+                className='min-w-full min-h-full object-cover'
+                onClick={() => router.push(`/${postData?.user.userName}`)}
               />
             ))}
           </CarouselCustom>
@@ -84,18 +85,17 @@ const Comment = ({
             <LoadingSkeleton comments={true} />
           ) : (
             <div className='flex items-center gap-3 border-b p-4  w-full'>
-              <HoverCardCustom userData={isCurrentUser ? user : singleUserData}>
+              <HoverCardCustom userData={postData?.user}>
                 <img
-                  src={selectedUser?.profilePic}
+                  src={postData?.user?.profilePic}
                   alt='pcb'
                   className='w-8 h-8 rounded-full cursor-pointer'
                 />
               </HoverCardCustom>
               <div className='flex items-center gap-1'>
-                <HoverCardCustom
-                  userData={isCurrentUser ? user : singleUserData}>
+                <HoverCardCustom userData={postData?.user}>
                   <h2 className='font-semibold text-sm text-[#262626] hover:text-gray-600 cursor-pointer'>
-                    {selectedUser?.userName}
+                    {postData?.user?.userName}
                   </h2>
                 </HoverCardCustom>
                 <VerifyIcon />
@@ -138,49 +138,48 @@ const Comment = ({
               </>
             ) : (
               <>
-                {comments?.map(({ comments }, i) => (
-                  <div
-                    key={i}
-                    className=''>
-                    {comments.map((items, j) => (
-                      <div
-                        className='p-4 flex gap-4 group'
-                        key={j}>
-                        <HoverCardCustom userData={items.user}>
-                          <img
-                            src={items.user.profilePic}
-                            alt='comments'
-                            className='w-8 h-8 rounded-full cursor-pointer'
-                          />
-                        </HoverCardCustom>
-                        <div>
-                          <div className='text-sm'>
-                            <HoverCardCustom userData={items.user}>
-                              <span className='font-semibold text-sm mr-2 text-[#262626] cursor-pointer'>
-                                {items?.user?.userName}
-                              </span>
-                            </HoverCardCustom>
-                            {items?.comment}
-                          </div>
-                          <div className='text-xs text-gray-500 font-semibold flex items-center gap-2 group'>
-                            <span className='cursor-pointer'>1d</span>
-                            <span className='cursor-pointer'>25 likes</span>
-                            <span className='cursor-pointer'>Reply</span>
-                            <span className='opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-opacity'>
-                              <ThreeDotsIcon />
+                {comments &&
+                  comments?.map((items, i) => (
+                    <div
+                      className='p-4 flex gap-4 group'
+                      key={i}>
+                      <HoverCardCustom userData={items.user}>
+                        <img
+                          src={items?.user?.profilePic}
+                          alt='comments'
+                          className='w-8 h-8 rounded-full cursor-pointer'
+                        />
+                      </HoverCardCustom>
+                      <div>
+                        <div className='text-sm'>
+                          <HoverCardCustom userData={items?.user}>
+                            <span className='font-semibold text-sm mr-2 text-[#262626] cursor-pointer'>
+                              {items?.user?.userName}
                             </span>
-                          </div>
+                          </HoverCardCustom>
+                          {items?.comment}
                         </div>
-                        <HurtIcon />
+                        <div className='text-xs text-gray-500 font-semibold flex items-center gap-2 group'>
+                          <span className='cursor-pointer'>1d</span>
+                          <span className='cursor-pointer'>25 likes</span>
+                          <span className='cursor-pointer'>Reply</span>
+                          <span
+                            className='opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-opacity'
+                            onClick={() =>
+                              handleDeleteClick(items?._id, items)
+                            }>
+                            <ThreeDotsIcon />
+                          </span>
+                        </div>
                       </div>
-                    ))}
-                  </div>
-                ))}
+                      <HurtIcon />
+                    </div>
+                  ))}
               </>
             )}
           </div>
           <CommentsForm
-            user={user}
+            user={isCurrentUser ? user : postData?.user}
             items={postData}
             textareaStyle='px-10 relative'
             IconStyle='w-5 h-5'
@@ -193,7 +192,7 @@ const Comment = ({
         setCommentModal={setShowModal}
         showModal={showUpdateModal}
         setShowModal={setShowUpdateModal}
-        postId={postData?._id}
+        postId={postData?.id}
         preview={postData?.imageUrls}
         user={user}
         caption={postData?.caption}
@@ -202,9 +201,15 @@ const Comment = ({
       <Report
         showModal={showReportModal}
         setShowModal={setShowReportModal}
-        isFollow={isFollow}
         setIsFollow={setIsFollow}
         userId={singleUserData._id}
+        selectedUser={selectedUser}
+      />
+      <DeleteComments
+        deleteModal={deleteModal}
+        setDeleteModal={setDeleteModal}
+        postId={postData?.id}
+        commentId={commentToDelete}
       />
     </div>
   );

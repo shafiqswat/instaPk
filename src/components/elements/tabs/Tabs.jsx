@@ -11,27 +11,22 @@ import { useEffect, useState } from "react";
 import LoadingSkeleton from "../loading-skeleton/loadingSkeleton";
 import Save from "@/app/save/page";
 
-const TabsCustom = ({ searchUserPosts, isCurrentUser, searchUser }) => {
-  const { myPosts, myPostsData, loading, fetchPosts, allPosts } = usePost();
+const TabsCustom = ({ isCurrentUser, searchUser }) => {
+  const { myPosts, myPostsData, loading } = usePost();
   const [showComment, setShowComment] = useState(false);
   const [selectedPost, setSelectedPost] = useState(null);
   const { user } = useAuth();
   useEffect(() => {
-    myPosts();
+    myPosts(searchUser?._id);
   }, []);
-  useEffect(() => {
-    if (searchUserPosts) {
-      fetchPosts(searchUserPosts);
-    }
-  }, [searchUserPosts]);
 
   const handlePostClick = (post) => {
     setSelectedPost(post);
     setShowComment(true);
   };
-  const sortedPosts = isCurrentUser
-    ? myPostsData?.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
-    : allPosts?.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+  const sortedPosts = myPostsData?.sort(
+    (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+  );
 
   return (
     <Tabs
@@ -94,7 +89,6 @@ const TabsCustom = ({ searchUserPosts, isCurrentUser, searchUser }) => {
         setSelectedPost={setSelectedPost}
         selectedUser={isCurrentUser ? user : searchUser}
         isCurrentUser={isCurrentUser}
-        profile
       />
     </Tabs>
   );

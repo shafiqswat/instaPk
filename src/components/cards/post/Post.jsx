@@ -3,14 +3,14 @@
 "use client";
 import React, { useState, useRef } from "react";
 import Modal from "../../modals/modal/Modal";
-import { MediaIcon, OpenGalleryIcon } from "@/constants/SvgIcon";
-import { ArrowLeft, PlusIcon, XIcon } from "lucide-react";
+import { MediaIcon } from "@/constants/SvgIcon";
+import { ArrowLeft } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { usePost } from "@/context/PostContext";
 import FilePreview from "@/components/modals/file-preview/FilePreview";
 import DiscardConfirmationModal from "@/components/modals/discard-confirmation/DiscardConfirmation";
 import Loading from "@/components/loading/Loading";
-import { useFollow } from "@/context/FollowContext";
+import { uploadToCloudinary } from "../../../helpers/cloudinaryUpload.helper";
 
 const Post = ({ showModal, setShowModal, story }) => {
   const [image, setImage] = useState([]);
@@ -19,34 +19,38 @@ const Post = ({ showModal, setShowModal, story }) => {
   const [caption, setCaption] = useState(false);
   const [captionValue, setCaptionValue] = useState("");
   const [popover, setPopover] = useState(false);
-  const { uploadStory } = useFollow();
+  // const { uploadStory } = useFollow();
   const { user } = useAuth();
-  const { handlePostWithCaption, loading } = usePost();
+  const { createPost, loading } = usePost();
   const inputRef = useRef();
 
-  // Handle file input change
-  const handleImageChange = (e) => {
+  const handleImageChange = async (e) => {
     const files = Array.from(e.target.files);
     if (files.length > 0) {
-      setImage((prev) => [...prev, ...files]);
-      setPreview((prev) => [
-        ...prev,
-        ...files.map((file) => URL.createObjectURL(file)),
-      ]);
+      try {
+        const cloudinaryImages = await uploadToCloudinary(files);
+        setImage((prev) => [...prev, cloudinaryImages]);
+        setPreview((prev) => [
+          ...prev,
+          ...files.map((file) => URL.createObjectURL(file)),
+        ]);
+      } catch (error) {
+        console.error("Error uploading images:", error);
+      }
     }
   };
-
   // Handle post share
   const handleSharePost = async () => {
-    const formData = new FormData();
     if (story) {
-      image.forEach((img) => formData.append("image", img));
-      uploadStory({ data: formData });
+      // uploadStory({ data: image });
     } else {
-      image.forEach((img) => formData.append("images", img));
-      handlePostWithCaption({ credentials: formData, caption: captionValue });
+      createPost({
+        uid: user._id,
+        caption: captionValue,
+        imgUrls: image,
+        user,
+      });
     }
-
     resetPost();
     setShowModal(false);
   };

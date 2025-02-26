@@ -8,14 +8,13 @@ import { CopyIcon, OptionIcon, ThreeDotsIcon } from "@/constants/SvgIcon";
 import { useAuth } from "@/context/AuthContext";
 import { Plus, UserPlus } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
-import React, { useEffect, useState } from "react";
-import { useFollow } from "@/context/FollowContext";
+import React, { use, useEffect, useState } from "react";
 import ProtectedRoute from "@/components/protected-route/ProtectedRoute";
-import { useSearch } from "@/context/SearchContext";
 import Loading from "@/components/loading/Loading";
 import Followers from "@/components/modals/followers/Followers";
 import Highlights from "@/components/modals/highlights/Highlights";
-import { useFollowStatus } from "@/helpers/checkFollower.helper";
+import { useNote } from "@/context/NoteContext";
+import { useChat } from "@/context/chatContext";
 
 const Profile = () => {
   const [isNoteModal, setIsNoteModal] = useState(false);
@@ -23,34 +22,43 @@ const Profile = () => {
   const [profilePic, setProfilePic] = useState(false);
   const [showFollowers, setShowFollowers] = useState(false);
   const [isFollowing, setIsFollowing] = useState(false);
-  const [searchUser, setSearchUser] = useState([]);
+  const [loading, setLoading] = useState(true);
   const router = useRouter();
-  const { user } = useAuth();
-  const { noteData } = useFollow();
-  const { getUser, userData, loading } = useSearch();
+  const { setActiveThread } = useChat();
+  const {
+    user,
+    fetchUserByUserName,
+    searchUser,
+    setSearchUser,
+    isFollow,
+    setIsFollow,
+    handleFollow,
+  } = useAuth();
+  const { note } = useNote();
+
   const params = useParams();
   const slug = params.slug;
   const isCurrentUser = user?.userName === slug;
-  const { isFollow, toggleFollow } = useFollowStatus(user);
-  const { Follow, UnFollow } = useFollow();
 
   /*<<<<<<<<<<<---------------------   Get User from the Slug or from params   ------------------------->>>>>>>>>>>>> */
 
   const fetchUser = async () => {
-    await getUser(slug);
+    setLoading(true);
+    try {
+      const userData = await fetchUserByUserName(slug); // Get user by username
+      setSearchUser(userData);
+    } catch (err) {
+      console.error("Error fetching user data:", err);
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
-    fetchUser();
-  }, [user?._id]);
-
-  useEffect(() => {
-    if (userData && userData.length > 0) {
-      setSearchUser(userData[0]);
-    } else {
-      setSearchUser(null);
+    if (slug) {
+      fetchUser();
     }
-  }, [userData]);
+  }, [slug]);
 
   /*<<<<<<<<<<<---------------------  Show this when the user is not in the database or not found  ------------------------->>>>>>>>>>>>> */
 
@@ -63,6 +71,20 @@ const Profile = () => {
       </ProtectedRoute>
     );
   }
+  /*<<<<<<<<<<<---------------------   HandleMessage   ------------------------->>>>>>>>>>>>> */
+
+  const handleMessage = (user) => {
+    console.log("selected user for the text", user);
+    if (!isCurrentUser) {
+      router.push("/message");
+      setActiveThread({
+        otherUser: user,
+        participants: [user?._id],
+      });
+    } else {
+      console.log("");
+    }
+  };
   /*<<<<<<<<<<<---------------------   Loading   ------------------------->>>>>>>>>>>>> */
 
   if (loading) {
@@ -71,7 +93,7 @@ const Profile = () => {
 
   return (
     <ProtectedRoute>
-      <div className='grid grid-cols-3  gap-20 items-center'>
+      <div className='grid grid-cols-3 gap-20 items-center'>
         {/*<<<<<<<<<<<---------------------   Note and user Profile Picture    ------------------------->>>>>>>>>>>>> */}
 
         <div className='col-span-1 flex justify-center items-center relative'>
@@ -86,11 +108,11 @@ const Profile = () => {
               className='absolute -top-8 bg-white border p-2 rounded-xl cursor-pointer'
               onClick={() => setIsNoteModal(true)}>
               {
-                <p className='text-gray-500 text-[10px]  overflow-y-scroll p-1'>
-                  {noteData ? noteData?.content : " Note..."}
+                <p className='text-gray-500 text-[10px] overflow-y-scroll p-1'>
+                  {note ? note?.note : " Note..."}
                 </p>
               }
-              <div className='absolute top-8 w-3 h-3  bg-white rounded-full'></div>
+              <div className='absolute top-8 w-3 h-3 bg-white rounded-full'></div>
               <div className='w-1 h-1 rounded-full bg-white absolute top-11 left-4'></div>
             </div>
           )}
@@ -99,7 +121,7 @@ const Profile = () => {
         {/*<<<<<<<<<<<---------------------   User Profile data such as username , edit Profile, view archive etc   ------------------------->>>>>>>>>>>>> */}
 
         <div className='col-span-2 mt-5'>
-          <div className='flex items-center  gap-5'>
+          <div className='flex items-center gap-5'>
             <p className='text-lg font-medium cursor-pointer'>
               {isCurrentUser ? user?.userName : searchUser?.userName}
             </p>
@@ -115,7 +137,12 @@ const Profile = () => {
               onClick={() => {
                 isCurrentUser
                   ? router.push("/edit")
-                  : toggleFollow(searchUser?._id, Follow, UnFollow);
+                  : handleFollow(
+                      user._id,
+                      searchUser._id,
+                      isFollow,
+                      setIsFollow
+                    );
               }}>
               {isCurrentUser
                 ? "Edit profile"
@@ -124,7 +151,9 @@ const Profile = () => {
 
             {/*<<<<<<<<<<<--------------------- archive or message btn  , userPlus icon , option and three dots icon        ------------------------->>>>>>>>>>>>> */}
 
-            <button className='text-sm px-3 rounded-lg bg-gray-200 font-semibold p-2'>
+            <button
+              className='text-sm px-3 rounded-lg bg-gray-200 font-semibold p-2'
+              onClick={() => handleMessage(searchUser)}>
               {isCurrentUser ? "View archive" : "Message"}
             </button>
             {!isCurrentUser && (
@@ -238,7 +267,6 @@ const Profile = () => {
 
       <div className='px-16'>
         <TabsCustom
-          searchUserPosts={searchUser?.posts}
           searchUser={searchUser}
           isCurrentUser={isCurrentUser}
         />
@@ -258,11 +286,9 @@ const Profile = () => {
       <Followers
         showModal={showFollowers}
         setShowModal={setShowFollowers}
-        user={isCurrentUser ? user : userData[0]}
-        isFollowing={isFollowing}
+        user={isCurrentUser ? user : searchUser}
         isCurrentUser={isCurrentUser}
-        isFollow={isFollow}
-        toggleFollow={toggleFollow}
+        isFollowing={isFollowing}
       />
     </ProtectedRoute>
   );

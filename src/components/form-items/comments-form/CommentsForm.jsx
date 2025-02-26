@@ -10,8 +10,9 @@ import {
 import { usePost } from "@/context/PostContext";
 import React, { useEffect, useState } from "react";
 import TextArea from "../textarea/TextArea";
-import { useFollow } from "@/context/FollowContext";
 import useCompactTimeFormat from "@/components/hooks/useCompactTimeFormat";
+import { useComments } from "@/context/commentsContext";
+import { useAuth } from "@/context/AuthContext";
 
 const CommentsForm = ({
   user,
@@ -26,15 +27,15 @@ const CommentsForm = ({
 }) => {
   const [postData, setPostData] = useState(items);
   const [showShareModal, setShowShareModal] = useState(false);
-  const [isLike, setIsLike] = useState(postData?.likes?.includes(user?._id));
+  const [isLike, setIsLike] = useState(items?.likes?.includes(user?._id));
   const [commentValue, setCommentValue] = useState("");
-  const { commentsOnPost, likePost, dislikePost } = usePost();
-  const { UnSavePost, SavePost } = useFollow();
+  const { addComment, loading, error } = useComments();
+  const { savePost } = useAuth();
+  const { likePost } = usePost();
   const [isSavePost, setIsSavePost] = useState(
-    user?.savedPosts?.includes(postData?._id)
+    user?.favorites?.includes(postData?._id)
   );
   const [isExpanded, setIsExpanded] = useState(false);
-
   /*<<<<<<<<<<<---------------------  Check the post is  Like  by the current user or not  ------------------------->>>>>>>>>>>>> */
 
   useEffect(() => {
@@ -44,41 +45,30 @@ const CommentsForm = ({
   /*<<<<<<<<<<<---------------------  Check the post is  save  by the current user or not  ------------------------->>>>>>>>>>>>> */
 
   useEffect(() => {
-    setIsSavePost(user?.savedPosts?.includes(postData?._id));
+    setIsSavePost(user?.favorites?.includes(postData?.id));
   }, [postData]);
 
   /*<<<<<<<<<<<---------------------  Function to handle Like and Dislike  ------------------------->>>>>>>>>>>>> */
 
   const handleLike = () => {
-    if (isLike) {
-      dislikePost(postData._id, setPostData, user._id, setIsLike);
-    } else {
-      likePost(postData._id, setPostData, user._id, setIsLike);
-    }
+    likePost(postData.id, user._id, setPostData, isLike, setIsLike, postData);
   };
 
   /*<<<<<<<<<<<---------------------  Function To Post Comments  ------------------------->>>>>>>>>>>>> */
 
   const handleCommentPost = (e) => {
     e.preventDefault();
-    commentsOnPost(postData._id, {
-      comment: commentValue,
-    });
+    addComment(postData.id, user, commentValue);
+
     setCommentValue("");
   };
 
   /*<<<<<<<<<<<--------------------- Function to handle Save and UnSave Posts  ------------------------->>>>>>>>>>>>> */
 
   const handleSavePost = () => {
-    if (isSavePost) {
-      setIsSavePost(false);
-      UnSavePost(postData._id);
-    } else {
-      setIsSavePost(true);
-      SavePost(postData._id);
-    }
+    savePost(postData.id, user._id, isSavePost, setIsSavePost);
   };
-  const formattedTime = useCompactTimeFormat(postData.createdAt);
+  const formattedTime = useCompactTimeFormat(postData?.createdAt);
 
   return (
     <div className='w-full'>
@@ -125,8 +115,8 @@ const CommentsForm = ({
         )}
         {homePage && (
           <>
-            {postData.likeCount > 0 && (
-              <>
+            <>
+              {postData.likeCount > 0 && (
                 <p className='text-sm mt-2 font-semibold'>
                   Liked by{" "}
                   <strong className='font-semibold cursor-pointer'>
@@ -134,39 +124,39 @@ const CommentsForm = ({
                   </strong>{" "}
                   person
                 </p>
+              )}
 
-                {/*<<<<<<<<<<<---------------------   Ellipsis  For Caption mean add see more and see less   ------------------------->>>>>>>>>>>>> */}
+              {/*<<<<<<<<<<<---------------------   Ellipsis  For Caption mean add see more and see less   ------------------------->>>>>>>>>>>>> */}
 
-                <p className='text-sm font-sans font-semibold mt-2'>
-                  <strong className='font-sans text-sm font-semibold'>
-                    {postData.user.userName}
-                  </strong>{" "}
-                  {isExpanded ? (
-                    <>
-                      {postData.caption}
-                      <span
-                        className='cursor-pointer font-semibold text-gray-600'
-                        onClick={() => setIsExpanded(false)}>
-                        {""} ...less
-                      </span>
-                    </>
-                  ) : (
-                    <>
-                      {postData?.caption?.slice(0, 100)}
-                      {postData?.caption?.length > 100 && (
-                        <>
-                          <span
-                            className='cursor-pointer text-gray-600 font-semibold'
-                            onClick={() => setIsExpanded(true)}>
-                            {""} ...more
-                          </span>
-                        </>
-                      )}
-                    </>
-                  )}
-                </p>
-              </>
-            )}
+              <p className='text-sm font-sans mt-2'>
+                <strong className='font-sans text-sm font-semibold'>
+                  {postData.user.userName}
+                </strong>{" "}
+                {isExpanded ? (
+                  <>
+                    {postData.caption}
+                    <span
+                      className='cursor-pointer font-semibold text-gray-600'
+                      onClick={() => setIsExpanded(false)}>
+                      {""} ...less
+                    </span>
+                  </>
+                ) : (
+                  <>
+                    {postData?.caption?.slice(0, 100)}
+                    {postData?.caption?.length > 100 && (
+                      <>
+                        <span
+                          className='cursor-pointer text-gray-600 font-semibold'
+                          onClick={() => setIsExpanded(true)}>
+                          {""} ...more
+                        </span>
+                      </>
+                    )}
+                  </>
+                )}
+              </p>
+            </>
             {postData.commentsCount > 0 && (
               <p
                 className='text-sm cursor-pointer text-gray-500 mt-2'

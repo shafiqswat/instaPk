@@ -13,7 +13,7 @@ import LoadingSkeleton from "@/components/elements/loading-skeleton/loadingSkele
 import { usePost } from "@/context/PostContext";
 const HoverCardCustom = ({ children, userData }) => {
   const { user, loading: userLoading } = useAuth();
-  const { fetchPosts, allPosts, loading } = usePost();
+  const { allPosts, loading } = usePost();
   const router = useRouter();
 
   /*<<<<<<<<<<<---------------------   reuse the dummy data , text  ------------------------->>>>>>>>>>>>> */
@@ -27,14 +27,6 @@ const HoverCardCustom = ({ children, userData }) => {
   /*<<<<<<<<<<<---------------------    check the user     ------------------------->>>>>>>>>>>>> */
 
   const isCurrentUser = user?._id === userData?._id;
-
-  /*<<<<<<<<<<<---------------------    Fetch Posts of the user through promise.all  from the posts arr []   ------------------------->>>>>>>>>>>>> */
-
-  useEffect(() => {
-    if (userData && Array.isArray(userData?.posts)) {
-      fetchPosts(userData?.posts);
-    }
-  }, [userData]);
 
   return (
     <HoverCard>
