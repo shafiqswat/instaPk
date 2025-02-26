@@ -11,28 +11,53 @@ import {
   MoreInfoIcon,
   VoiceIcon,
 } from "@/constants/SvgIcon";
-import React, { useState, useEffect, useRef, act } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useChat } from "@/context/chatContext";
 import { useRouter } from "next/navigation";
 import { Video } from "lucide-react";
+import EmojiPicker from "emoji-picker-react";
 
 const ChatWindow = () => {
   const [newMessage, setNewMessage] = useState("");
+  const [emojiPickerVisible, setEmojiPickerVisible] = useState(false);
   const { activeThread, messages, sendMessageToUser } = useChat();
   const { user } = useAuth();
   const messagesEndRef = useRef(null);
+  const emojiRef = useRef(null);
   const router = useRouter();
+
   // Scroll to bottom when new messages arrive
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
+  // Handle sending a message
   const handleSend = async (e) => {
     e.preventDefault();
     if (!newMessage.trim()) return;
     await sendMessageToUser(newMessage);
     setNewMessage("");
   };
+
+  // Handle emoji selection
+  const handleEmojiClick = (emojiObject) => {
+    setNewMessage((prev) => prev + emojiObject.emoji);
+  };
+
+  // Handle outside click to close emoji picker
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        emojiRef.current &&
+        !emojiRef.current.contains(event.target) &&
+        !event.target.closest("#emoji-button")
+      ) {
+        setEmojiPickerVisible(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   if (!activeThread)
     return (
@@ -42,8 +67,9 @@ const ChatWindow = () => {
         <p className='text-sm text-gray-500'>Send a message to start a chat.</p>
       </div>
     );
+
   return (
-    <div className='flex-1 p-4 w-full h-screen flex flex-col'>
+    <div className='flex-1 p-4 w-full h-screen flex flex-col relative'>
       {/* Chat Header */}
       <div className='flex items-center gap-2 border-b pb-4'>
         <img
@@ -66,27 +92,8 @@ const ChatWindow = () => {
 
       {/* Messages List */}
       <div className='flex-1 overflow-y-auto p-2 flex flex-col'>
-        {/* user profile  */}
-        <div className='mx-auto flex flex-col items-center my-4'>
-          <img
-            src={activeThread.otherUser.profilePic}
-            alt='userPic'
-            className='rounded-full w-full h-full max-w-[100px] max-h-[100px]'
-          />
-          <h2 className='font-semibold mt-5'>
-            {activeThread.otherUser.fullName}
-          </h2>
-          <p className='text-gray-600'>{activeThread.otherUser.userName}</p>
-          <button
-            className='font-semibold text-sm bg-gray-100 px-2 py-1 rounded mt-5'
-            onClick={() => router.push(`/${activeThread.otherUser.userName}`)}>
-            View profile
-          </button>
-        </div>
-        {/* Messages */}
         {messages.map((msg, index) => (
           <React.Fragment key={msg._id}>
-            {/* Centered timestamp */}
             {index === 0 ||
             new Date(messages[index - 1]?.timestamp).toDateString() !==
               new Date(msg.timestamp).toDateString() ? (
@@ -95,7 +102,6 @@ const ChatWindow = () => {
               </div>
             ) : null}
 
-            {/* Message Bubble */}
             <div
               className={`flex items-end ${
                 msg.sender === user._id ? "justify-end" : "justify-start"
@@ -127,11 +133,17 @@ const ChatWindow = () => {
       {/* Message Input */}
       <form
         onSubmit={handleSend}
-        className='mt-4 flex gap-2 w-full'>
+        className='mt-4 flex gap-2 w-full relative'>
         <div className='relative flex items-center w-full'>
           {/* Left-side icons */}
           <div className='absolute left-3 flex items-center gap-2'>
-            <EmojiPickerIcon className='w-5 h-5 cursor-pointer' />
+            <button
+              id='emoji-button'
+              type='button'
+              className='cursor-pointer'
+              onClick={() => setEmojiPickerVisible((prev) => !prev)}>
+              <EmojiPickerIcon className='w-5 h-5' />
+            </button>
           </div>
 
           {/* Input Field */}
@@ -162,6 +174,15 @@ const ChatWindow = () => {
           </div>
         </div>
       </form>
+
+      {/* Emoji Picker  */}
+      {emojiPickerVisible && (
+        <div
+          ref={emojiRef}
+          className='absolute bottom-20 left-10 z-50 bg-white border shadow-lg rounded-lg'>
+          <EmojiPicker onEmojiClick={handleEmojiClick} />
+        </div>
+      )}
     </div>
   );
 };
