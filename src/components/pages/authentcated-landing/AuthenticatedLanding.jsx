@@ -1,11 +1,9 @@
 /** @format */
-
 import React, { useEffect, useState } from "react";
-import InfiniteScroll from "react-infinite-scroller";
+import InfiniteScroll from "react-infinite-scroll-component";
 import PostCard from "../../cards/post-card/PostCard";
 import Link from "next/link";
 import { footerData } from "@/constants";
-// import { useFollow } from "@/context/FollowContext";
 import { useAuth } from "@/context/AuthContext";
 import { usePost } from "@/context/PostContext";
 import Comment from "@/components/modals/comment/Comment";
@@ -16,7 +14,6 @@ import FriendSuggestions from "@/components/suggestions/friend-suggestions/Frien
 const AuthenticatedLanding = () => {
   const { user } = useAuth();
   const { allFollowingPosts } = usePost();
-  // const { getStories } = useFollow();
   const [showComment, setShowComment] = useState(false);
   const [selectedPost, setSelectedPost] = useState(null);
   const [homePageData, setHomePageData] = useState([]);
@@ -24,14 +21,13 @@ const AuthenticatedLanding = () => {
   const [hasMore, setHasMore] = useState(true);
   const limit = 6; // Number of posts per page
 
-  // useEffect(() => {
-  //   fetchData();
-  //   getStories();
-  // }, []);
+  useEffect(() => {
+    fetchData();
+  }, []);
 
   const fetchData = async () => {
     const data = await allFollowingPosts(user?.following);
-    setHomePageData(data.slice(0, limit)); // Load initial posts
+    setHomePageData(data.slice(0, limit));
   };
 
   const loadMore = async () => {
@@ -39,7 +35,7 @@ const AuthenticatedLanding = () => {
     const nextPagePosts = data.slice((page + 1) * limit, (page + 2) * limit);
 
     if (nextPagePosts.length === 0) {
-      setHasMore(false); // No more posts to load
+      setHasMore(false);
     } else {
       setHomePageData((prev) => [...prev, ...nextPagePosts]);
       setPage((prevPage) => prevPage + 1);
@@ -56,14 +52,13 @@ const AuthenticatedLanding = () => {
       <div className='w-full'>
         <FriendSuggestions />
         <InfiniteScroll
-          pageStart={0}
-          loadMore={loadMore}
+          dataLength={homePageData.length}
+          next={loadMore}
           hasMore={hasMore}
           loader={
             <LoadingSkeleton
               count={3}
               homePage={true}
-              key={0}
             />
           }>
           <div className='flex flex-col gap-10'>
