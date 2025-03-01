@@ -87,7 +87,9 @@ const PostCard = ({ items, handlePostClick }) => {
           <ThreeDotsIcon
             className='md:hidden block'
             direction='vertical'
-            onClick={() => {}}
+            onClick={() => {
+              setShowModal(true);
+            }}
           />
         </div>
       </div>

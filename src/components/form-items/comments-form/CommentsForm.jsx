@@ -24,6 +24,7 @@ const CommentsForm = ({
   pickerStyle,
   IconParentStyle,
   btnStyle,
+  iconsContainerStyle,
 }) => {
   const [postData, setPostData] = useState(items);
   const [showShareModal, setShowShareModal] = useState(false);
@@ -72,10 +73,10 @@ const CommentsForm = ({
 
   return (
     <div className='w-full'>
-      <div className='py-2'>
+      <div className={`py-2 ${iconsContainerStyle}`}>
         {/*<<<<<<<<<<<---------------------  Icons Container  ------------------------->>>>>>>>>>>>> */}
 
-        <div className='flex gap-3 mt-3 '>
+        <div className='flex gap-3 mt-3'>
           <HurtIcon
             onClick={handleLike}
             fill={isLike}

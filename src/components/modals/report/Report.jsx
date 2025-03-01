@@ -16,7 +16,7 @@ const Report = ({ showModal, setShowModal, userId, selectedUser }) => {
       <Modal
         showModal={showModal}
         setShowModal={setShowModal}
-        className='w-96'>
+        className='md:w-96 w-[80%]'>
         <ul className='text-center'>
           <li
             className='border-b p-3 text-sm cursor-pointer text-blue-500 font-semibold'

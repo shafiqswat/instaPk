@@ -48,7 +48,7 @@ const AuthenticatedLanding = () => {
   };
 
   return (
-    <div className='flex gap-y-20 sm:px-10 lg:gap-x-20 w-full sm:w-[80%] sm:mx-auto'>
+    <div className='flex gap-y-20 sm:px-10 lg:gap-x-20 w-full md:w-[cal(vw-22%)] sm:mx-auto'>
       <div className='w-full'>
         <FriendSuggestions />
         <InfiniteScroll
@@ -73,7 +73,7 @@ const AuthenticatedLanding = () => {
         </InfiniteScroll>
       </div>
 
-      <div className='lg:block hidden w-80 mt-5'>
+      <div className='xl:block hidden w-80 mt-5'>
         <UserSuggestion />
         <footer>
           <ul className='flex flex-wrap my-10 w-60 gap-2'>

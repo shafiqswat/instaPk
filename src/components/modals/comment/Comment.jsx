@@ -66,15 +66,15 @@ const Comment = ({
       <Modal
         showModal={showModal}
         setShowModal={setShowModal}
-        className='grid grid-cols-2 gap-0 min-w-[80%]  border-0'>
-        <div className='min-w-full min-h-full  bg-black p-2'>
+        className='md:grid md:grid-cols-2 gap-0 w-[80%] md:min-w-[80%]  border-0'>
+        <div className='min-w-full min-h-full md:block hidden bg-black p-2'>
           <CarouselCustom postData={postData}>
             {postData?.imageUrls?.map((img, i) => (
               <img
                 key={i}
                 src={img}
                 alt={`slider ${i + 1}`}
-                className='min-w-full min-h-full object-cover'
+                className='min-w-full h-[600px] object-cover'
                 onClick={() => router.push(`/${postData?.user.userName}`)}
               />
             ))}
@@ -185,6 +185,7 @@ const Comment = ({
             IconStyle='w-5 h-5'
             pickerStyle='bottom-20'
             IconParentStyle='left-2 top-1 absolute'
+            iconsContainerStyle='p-2'
           />
         </div>
       </Modal>

@@ -48,7 +48,7 @@ const SidebarWrapper = () => {
   return (
     <div
       className={`${
-        pathName === "/message" ? "w-[6%]" : "w-[22%]"
+        pathName === "/message" ? "w-[6%]" : "min-w-[22%]"
       } md:block hidden`}
       ref={wrapperRef}>
       <Sidebar

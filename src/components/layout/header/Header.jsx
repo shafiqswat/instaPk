@@ -4,9 +4,11 @@ import { HurtIcon, MessengerIcon } from "@/constants/SvgIcon";
 import React, { useState } from "react";
 import DropdownMenuCustom from "../../form-items/dropdown/Dropdown";
 import { ChevronDown, Star, UserRound } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 const Header = () => {
   const [showDropdown, setShowDropdown] = useState(false);
+  const router = useRouter();
   return (
     <div className='flex justify-between items-center px-5 md:hidden overflow-hidden'>
       <div
@@ -36,7 +38,7 @@ const Header = () => {
       </DropdownMenuCustom>
       <div className='flex gap-4'>
         <HurtIcon />
-        <MessengerIcon />
+        <MessengerIcon onClick={() => router.push("/message")} />
       </div>
     </div>
   );

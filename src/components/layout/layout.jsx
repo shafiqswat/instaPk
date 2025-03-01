@@ -22,9 +22,9 @@ const LayoutContent = ({ children }) => {
   return (
     <ChatProvider user={user || null}>
       <Header />
-      <div className='flex'>
+      <div className='flex overflow-x-hidden'>
         {isAuthenticated && <SidebarWrapper />}
-        <div className='w-full'>{children}</div>
+        <div className='flex-1'>{children}</div>
       </div>
     </ChatProvider>
   );

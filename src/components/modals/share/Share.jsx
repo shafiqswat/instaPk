@@ -51,7 +51,8 @@ const Share = ({ showModal, setShowModal }) => {
     <div>
       <Modal
         showModal={showModal}
-        setShowModal={setShowModal}>
+        setShowModal={setShowModal}
+        className='w-[90%] max-w-[500px] max-h-[97vh] overflow-hidden'>
         <div className='p-2 border-b text-center'>
           <h2 className='font-semibold text-lg'>Share</h2>
         </div>
@@ -81,15 +82,15 @@ const Share = ({ showModal, setShowModal }) => {
           <div className='h-80 my-2 scroll-auto overflow-y-scroll p-5 border-b'>
             <p className='text-sm text-gray-700'>No account found.</p>
           </div>
-          <div className='p-5 flex gap-4'>
+          <div className='p-5 grid grid-cols-4 gap-4'>
             {iconsData.map((items, i) => (
               <div
                 key={i}
                 className='cursor-pointer text-center'>
-                <div className='bg-gray-200 w-12 h-12 flex items-center justify-center rounded-full'>
+                <div className='bg-gray-200 w-12 h-12 flex items-center justify-center rounded-full mx-auto'>
                   {items.icon}
                 </div>
-                <p className='text-xs'>{items.text}</p>
+                <p className='text-xs mt-1'>{items.text}</p>
               </div>
             ))}
           </div>
