@@ -7,14 +7,12 @@ import { LinksData } from "@/constants";
 import Link from "next/link";
 import { useState, useEffect } from "react";
 
-import React from "react";
-
 const GuestLanding = () => {
   const onboardingImages = [
-    "onboarding/onboarding1.png",
-    "onboarding/onboarding2.png",
-    "onboarding/onboarding3.png",
-    "onboarding/onboarding4.png",
+    "/onboarding/onboarding1.png",
+    "/onboarding/onboarding2.png",
+    "/onboarding/onboarding3.png",
+    "/onboarding/onboarding4.png",
   ];
 
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
@@ -24,8 +22,8 @@ const GuestLanding = () => {
     const interval = setInterval(() => {
       setIsFading(true);
       setTimeout(() => {
-        setCurrentImageIndex((prevIndex) =>
-          prevIndex === onboardingImages.length - 1 ? 0 : prevIndex + 1
+        setCurrentImageIndex(
+          (prevIndex) => (prevIndex + 1) % onboardingImages.length
         );
         setIsFading(false);
       }, 1000);
@@ -35,39 +33,42 @@ const GuestLanding = () => {
   }, []);
 
   return (
-    <>
-      <div className='flex justify-center p-10'>
-        <div className='grid xl:w-[60%] justify-center items-center w-full xl:grid-cols-2 gap-10'>
-          <div className='xl:col-span-1  relative onboarding mx-auto'>
-            <img
-              src={onboardingImages[currentImageIndex]}
-              alt={`Onboarding Image ${currentImageIndex + 1}`}
-              className={`absolute top-5 right-6 w-[240px] h-[500px] transition-opacity duration-1000 ${
-                isFading ? "opacity-0" : "opacity-100"
-              }`}
-            />
-          </div>
-          <div className='xl:col-span-1'>
-            <AuthForm />
-          </div>
-          <div className='flex gap-3 xl:flex-nowrap flex-wrap'>
-            {LinksData.map((items, i) => {
-              return (
-                <Link
-                  href={items.href}
-                  key={i}
-                  className='text-xs text-gray-600 text-nowrap'>
-                  {items.text}
-                </Link>
-              );
-            })}
-          </div>
+    <main>
+      <section className='flex flex-col xl:flex-row items-center justify-center xl:items-start gap-6'>
+        <div className='relative w-[300px] xs:w-[380px] h-[580px] '>
+          <img
+            src='/onboarding/emulator.png'
+            alt='Onboarding Emulator'
+            className='max-w-full h-full'
+          />
+          <img
+            src={onboardingImages[currentImageIndex]}
+            alt={`Onboarding Step ${currentImageIndex + 1}`}
+            className={`absolute top-5 right-[2rem] xs:right-[3rem] xs:w-[210px] w-[170px] h-[500px] transition-opacity duration-1000 ${
+              isFading ? "opacity-0" : "opacity-100"
+            }`}
+          />
         </div>
-      </div>
-      <div className='mb-12 text-xs text-gray-600 text-center'>
-        © 2024 Instagram from Meta
-      </div>
-    </>
+        <div className='w-full md:w-2/5 '>
+          <AuthForm />
+        </div>
+      </section>
+
+      <nav className='flex flex-wrap justify-center gap-4 my-5 text-xs text-gray-600'>
+        {LinksData.map((item, i) => (
+          <Link
+            href={item.href}
+            key={i}
+            className='whitespace-nowrap'>
+            {item.text}
+          </Link>
+        ))}
+      </nav>
+
+      <footer className='text-xs text-gray-600 text-center mb-12'>
+        &copy; 2024 Instagram from Meta
+      </footer>
+    </main>
   );
 };
 
