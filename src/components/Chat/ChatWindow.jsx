@@ -69,7 +69,7 @@ const ChatWindow = () => {
     );
 
   return (
-    <div className='flex-1 p-4 w-full h-screen flex flex-col relative'>
+    <div className='flex-1 p-4 w-full h-[calc(100vh-3rem)] flex flex-col relative'>
       {/* Chat Header */}
       <div className='flex items-center gap-2 border-b pb-4'>
         <img

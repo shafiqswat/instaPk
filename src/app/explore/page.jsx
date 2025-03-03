@@ -53,7 +53,10 @@ const ExplorePage = () => {
         hasMore={hasMore}
         loader={
           <div className='grid grid-cols-3 gap-3 p-5'>
-            <LoadingSkeleton count={6} />
+            <LoadingSkeleton
+              count={6}
+              className='w-full h-[150px] sm:h-[300px] md:h-[350px]'
+            />
           </div>
         }>
         <div className='grid grid-cols-3 gap-3 p-5'>

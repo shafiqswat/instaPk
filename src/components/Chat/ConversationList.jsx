@@ -10,11 +10,13 @@ const ConversationList = () => {
   const { conversations, setActiveThread } = useChat();
 
   const { user } = useAuth();
-  const tabs = ["Primary", "General", "Requests"];
+  const tabs = ["Primary"];
   return (
-    <div className='w-[30%] border-r h-screen'>
-      <div className='flex items-center justify-between p-5 mt-5'>
-        <h2 className='text-xl font-bold'>{user?.userName}</h2>
+    <div className='lg:w-[395px] md:w-[250px] sm:[200px] border-r sm:block hidden h-screen'>
+      <div className='flex items-center justify-between gap-2 p-5 mt-5'>
+        <h2 className='md:text-xl md:font-bold  font-semibold text-lg'>
+          {user?.userName}
+        </h2>
         <EditIcon
           className='cursor-pointer'
           onClick={() => setIsChatOpen(true)}

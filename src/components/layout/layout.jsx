@@ -11,9 +11,12 @@ import { SearchProvider } from "@/context/SearchContext";
 import { NoteProvider } from "@/context/NoteContext";
 import { CommentsProvider } from "@/context/commentsContext";
 import { ChatProvider } from "@/context/chatContext";
+import { usePathname } from "next/navigation";
+import Footer from "./footer/footer";
 
 const LayoutContent = ({ children }) => {
   const { isAuthLoading, isAuthenticated, user } = useAuth();
+  const pathName = usePathname();
 
   if (isAuthLoading) {
     return <Loading />;
@@ -21,10 +24,11 @@ const LayoutContent = ({ children }) => {
 
   return (
     <ChatProvider user={user || null}>
-      <Header />
+      {!pathName.includes("/message") && <Header />}
       <div className='flex overflow-x-hidden'>
         {isAuthenticated && <SidebarWrapper />}
         <div className='flex-1'>{children}</div>
+        <Footer />
       </div>
     </ChatProvider>
   );

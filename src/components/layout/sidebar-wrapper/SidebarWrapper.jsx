@@ -8,11 +8,27 @@ import { usePathname } from "next/navigation";
 const SidebarWrapper = () => {
   const [width, setWidth] = useState(false);
   const [search, setSearch] = useState(false);
+  const [isMediumScreen, setIsMediumScreen] = useState(false);
   const wrapperRef = useRef(null);
   const pathName = usePathname();
 
+  useEffect(() => {
+    const handleResize = () => {
+      const screenWidth = window.innerWidth;
+      setIsMediumScreen(screenWidth >= 768 && screenWidth <= 1024);
+    };
+
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   const handleClick = () => {
-    if (pathName !== "/message") {
+    if (isMediumScreen || pathName === "/message") {
+      // Only toggle search for medium screens and the message page
+      setSearch((prev) => !prev);
+    } else {
+      // Toggle both sidebar and search for other pages
       setWidth((prev) => !prev);
       setSearch((prev) => !prev);
     }
@@ -20,22 +36,23 @@ const SidebarWrapper = () => {
 
   useEffect(() => {
     if (pathName === "/message") {
-      setWidth(true); // Always true on "/message"
-      setSearch(false); // Ensure search remains closed
+      setWidth(true); // Always true on the message page
+      setSearch(false);
     } else {
-      setWidth(false); // Reset width when not on "/message"
+      setWidth(isMediumScreen ? true : false);
+      setSearch(false);
     }
-  }, [pathName]);
+  }, [pathName, isMediumScreen]);
 
-  // Detect clicks outside the wrapper
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (
-        pathName !== "/message" &&
-        wrapperRef.current &&
-        !wrapperRef.current.contains(event.target)
-      ) {
-        setWidth(false);
+      if (wrapperRef.current && !wrapperRef.current.contains(event.target)) {
+        if (isMediumScreen || pathName === "/message") {
+          setSearch(false); // Close search only
+        } else {
+          setWidth(false);
+          setSearch(false);
+        }
       }
     };
 
@@ -43,12 +60,12 @@ const SidebarWrapper = () => {
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [pathName]);
+  }, [pathName, isMediumScreen]);
 
   return (
     <div
       className={`${
-        pathName === "/message" ? "w-[6%]" : "min-w-[22%]"
+        pathName === "/message" ? "w-[73px]" : "min-w-[18%]"
       } md:block hidden`}
       ref={wrapperRef}>
       <Sidebar
@@ -57,7 +74,7 @@ const SidebarWrapper = () => {
       />
       <div
         className={`transition-all absolute z-20 duration-500 ease-in-out ${
-          search && width && pathName !== "/message" ? "w-[43%]" : "w-0"
+          search ? "w-[43%]" : "w-0"
         } overflow-hidden`}>
         <Search />
       </div>

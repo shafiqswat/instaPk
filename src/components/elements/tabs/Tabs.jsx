@@ -41,7 +41,7 @@ const TabsCustom = ({ isCurrentUser, searchUser }) => {
           </span>
           POSTS
         </TabsTrigger>
-        <TabsTrigger value='reels'>
+        {/* <TabsTrigger value='reels'>
           <span>
             <ReelsIcon className='w-4 h-4 mr-1' />
           </span>
@@ -55,7 +55,7 @@ const TabsCustom = ({ isCurrentUser, searchUser }) => {
         </TabsTrigger>
         <TabsTrigger value='tagged'>
           <Contact className='w-4 h-4 mr-1' /> TAGGED
-        </TabsTrigger>
+        </TabsTrigger> */}
       </TabsList>
       <TabsContent value='posts'>
         <div className='grid grid-cols-3 gap-3'>

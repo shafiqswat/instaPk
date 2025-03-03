@@ -14,7 +14,7 @@ const Home = () => {
   }
 
   return (
-    <div className='p-5'>
+    <div className=''>
       {isAuthenticated ? <AuthenticatedLanding /> : <GuestLanding />}
     </div>
   );

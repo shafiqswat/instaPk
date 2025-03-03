@@ -60,7 +60,7 @@ const Sidebar = ({ handleClick, width }) => {
 
   return (
     <div
-      className={`border-r fixed z-30 p-3 h-screen ${
+      className={`border-r fixed z-30 p-3 h-screen  ${
         width ? "w-[73px]" : "w-[18%]"
       }`}
       style={{

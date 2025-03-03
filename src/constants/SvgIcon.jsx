@@ -141,11 +141,11 @@ export const ReelsIcon = ({ className }) => {
   );
 };
 
-export const MessengerIcon = ({ onClick }) => {
+export const MessengerIcon = ({ onClick, className }) => {
   return (
     <svg
       aria-label='Messenger'
-      className='w-6 h-6'
+      className={`w-6 h-6 ${className}`}
       fill='currentColor'
       role='img'
       viewBox='0 0 24 24'

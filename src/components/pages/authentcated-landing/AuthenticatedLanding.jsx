@@ -48,7 +48,7 @@ const AuthenticatedLanding = () => {
   };
 
   return (
-    <div className='flex gap-y-20 sm:px-10 lg:gap-x-20 w-full md:w-[cal(vw-22%)] sm:mx-auto'>
+    <div className='flex gap-y-20 sm:px-10 lg:gap-x-20 w-full md:w-[calc(100vw-18%)] p-5'>
       <div className='w-full'>
         <FriendSuggestions />
         <InfiniteScroll

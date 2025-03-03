@@ -14,7 +14,7 @@ const SocialCard = ({ items, index, handlePostClick, isBoost }) => {
           key={j}
           src={img}
           alt='post1'
-          className='w-full h-[250px] sm:h-[300px] md:h-[350px] object-cover'
+          className='w-full h-[150px] sm:h-[300px] md:h-[350px] object-cover'
         />
       ))}
       <div

@@ -93,10 +93,10 @@ const Profile = () => {
 
   return (
     <ProtectedRoute>
-      <div className='grid grid-cols-3 gap-20 items-center'>
+      <div className=' w-full md:w-[calc(vw-18%)] p-2 flex  flex-col  sm:grid  sm:grid-cols-3 gap-20 items-center'>
         {/*<<<<<<<<<<<---------------------   Note and user Profile Picture    ------------------------->>>>>>>>>>>>> */}
 
-        <div className='col-span-1 flex justify-center items-center relative'>
+        <div className='col-span-1 flex justify-center mt-5 items-center relative'>
           <img
             src={isCurrentUser ? user?.profilePic : searchUser?.profilePic}
             alt='user'
@@ -108,7 +108,7 @@ const Profile = () => {
               className='absolute -top-8 bg-white border p-2 rounded-xl cursor-pointer'
               onClick={() => setIsNoteModal(true)}>
               {
-                <p className='text-gray-500 text-[10px] overflow-y-scroll p-1'>
+                <p className='text-gray-500  sm:text-[10px] overflow-y-scroll p-1'>
                   {note ? note?.note : " Note..."}
                 </p>
               }
@@ -238,7 +238,7 @@ const Profile = () => {
 
       {isCurrentUser && (
         <div
-          className='text-center w-fit ps-20 cursor-pointer'
+          className='text-center w-fit px-5 sm:ps-20 cursor-pointer'
           onClick={() => setHighlightModal(true)}>
           <div className='w-20 h-20 outline outline-1 outline-gray-300 outline-offset-4 rounded-full flex items-center justify-center bg-gray-200'>
             <Plus className='w-11 h-11 text-gray-400' />

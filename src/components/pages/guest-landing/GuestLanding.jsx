@@ -34,7 +34,7 @@ const GuestLanding = () => {
 
   return (
     <main>
-      <section className='flex flex-col xl:flex-row items-center justify-center xl:items-start gap-6'>
+      <section className='flex flex-col xl:flex-row items-center justify-center xl:items-start gap-6 p-5'>
         <div className='relative w-[300px] xs:w-[380px] h-[580px] '>
           <img
             src='/onboarding/emulator.png'
