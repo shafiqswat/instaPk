@@ -168,7 +168,7 @@ const Profile = () => {
 
           {/*<<<<<<<<<<<---------------------   Post,follower and following   ------------------------->>>>>>>>>>>>> */}
 
-          <div className='flex my-5 gap-5'>
+          <div className='flex my-5 gap-3 sm:gap-5'>
             <p>
               <span className='font-semibold'>
                 {isCurrentUser ? user?.postCount : searchUser?.postCount}
