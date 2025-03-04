@@ -66,7 +66,7 @@ const Comment = ({
       <Modal
         showModal={showModal}
         setShowModal={setShowModal}
-        className='md:grid md:grid-cols-2 gap-0 w-[80%] md:min-w-[80%]  border-0'>
+        className='md:grid md:grid-cols-2 gap-0 md:min-w-[80%]  border-0'>
         <div className='min-w-full min-h-full md:block hidden bg-black p-2'>
           <CarouselCustom postData={postData}>
             {postData?.imageUrls?.map((img, i) => (

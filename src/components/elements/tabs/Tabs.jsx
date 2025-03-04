@@ -60,7 +60,10 @@ const TabsCustom = ({ isCurrentUser, searchUser }) => {
       <TabsContent value='posts'>
         <div className='grid grid-cols-3 gap-3'>
           {loading ? (
-            <LoadingSkeleton count={9} />
+            <LoadingSkeleton
+              count={9}
+              className='w-full h-[150px] sm:h-[300px] md:h-[350px]'
+            />
           ) : (
             sortedPosts.map((items, i) => (
               <div key={i}>

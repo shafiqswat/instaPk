@@ -121,7 +121,7 @@ const Profile = () => {
         {/*<<<<<<<<<<<---------------------   User Profile data such as username , edit Profile, view archive etc   ------------------------->>>>>>>>>>>>> */}
 
         <div className='col-span-2 mt-5'>
-          <div className='flex items-center gap-5'>
+          <div className='flex flex-wrap items-center xs:gap-5 gap-2'>
             <p className='text-lg font-medium cursor-pointer'>
               {isCurrentUser ? user?.userName : searchUser?.userName}
             </p>
@@ -265,7 +265,7 @@ const Profile = () => {
 
       {/*<<<<<<<<<<<---------------------   Tabs   ------------------------->>>>>>>>>>>>> */}
 
-      <div className='px-16'>
+      <div className='sm:px-16 px-2'>
         <TabsCustom
           searchUser={searchUser}
           isCurrentUser={isCurrentUser}

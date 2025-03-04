@@ -48,7 +48,7 @@ const AuthForm = ({ signUp }) => {
           <button className='bg-[#4CB5F9] text-white w-full p-1 font-semibold text-sm rounded-lg'>
             Log in with Facebook
           </button>
-          <div className="flex items-center justify-center my-5 font-light text-xs text-gray-500 before:content-[''] before:w-32 before:h-px before:bg-gray-300 before after:content-[''] before:mr-5 after:w-32 after:h-px after:bg-gray-300 after:ml-5">
+          <div className="flex items-center justify-center my-5 font-light text-xs text-gray-500 before:content-[''] before:w-full before:h-px before:bg-gray-300 before after:content-[''] before:mr-5 after:w-full after:h-px after:bg-gray-300 after:ml-5">
             OR
           </div>
           {inputData.map((items, i) => {
@@ -133,7 +133,7 @@ const AuthForm = ({ signUp }) => {
         )}
       </button>
       {error && <p className='text-red-400 text-sm'>{error.message}</p>}
-      <div className="flex justify-center items-center font-light text-xs text-gray-500 before:content-[''] before:w-32 before:h-px before:bg-gray-300 before after:content-[''] before:mr-5 after:w-32 after:h-px after:bg-gray-300 after:ml-5">
+      <div className="flex justify-center items-center font-light text-xs text-gray-500 before:content-[''] before:w-full before:h-px before:bg-gray-300 before after:content-[''] before:mr-5 after:w-full after:h-px after:bg-gray-300 after:ml-5">
         OR
       </div>
       <div className='flex items-center justify-center font-semibold mt-4'>
