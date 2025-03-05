@@ -59,11 +59,11 @@ export const SearchIcon = ({ className }) => {
     </svg>
   );
 };
-export const ExploreIcon = () => {
+export const ExploreIcon = ({ className }) => {
   return (
     <svg
       aria-label='Explore'
-      className='w-6 h-6'
+      className={`${className} w-6 h-6`}
       fill='currentColor'
       role='img'
       viewBox='0 0 24 24'>
@@ -183,11 +183,11 @@ export const HurtIcon = ({ fill, onClick }) => {
   );
 };
 
-export const CreateIcon = () => {
+export const CreateIcon = ({ className }) => {
   return (
     <svg
       aria-label='New post'
-      className='w-6 h-6'
+      className={`w-6 h-6 ${className}`}
       fill='currentColor'
       role='img'
       viewBox='0 0 24 24'>

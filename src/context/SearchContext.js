@@ -1,26 +1,20 @@
 /** @format */
 
-import { searchService } from "@/services/searchService";
 import React, { createContext, useContext, useState } from "react";
 const SearchContext = createContext();
 export const SearchProvider = ({ children }) => {
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(false);
   const [userData, setUserData] = useState([]);
-  const getUser = async (userName) => {
-    setLoading(true);
-    try {
-      const { data } = await searchService.getUser(userName);
-      setUserData(data.data);
-    } catch (err) {
-      setError(err);
-    } finally {
-      setLoading(false);
-    }
+  const getUser = (searchTerm, allUsers) => {
+    const filtered = allUsers.filter((user) => {
+      return (
+        user.userName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        user.fullName?.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+    });
+    setUserData(filtered);
   };
   return (
-    <SearchContext.Provider
-      value={{ getUser, loading, userData, setUserData, error }}>
+    <SearchContext.Provider value={{ userData, setUserData, getUser }}>
       {children}
     </SearchContext.Provider>
   );

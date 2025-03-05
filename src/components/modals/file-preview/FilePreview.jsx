@@ -18,11 +18,11 @@ const FilePreview = ({
 }) => {
   return (
     <div className={`${caption ? "grid grid-cols-7" : ""}`}>
-      <div className='col-span-4 border-r'>
+      <div className={`col-span-4 border-r ${caption && "md:block hidden"}`}>
         <img
           src={preview[0]}
           alt='upload'
-          className='w-full h-auto'
+          className='w-full h-auto '
         />
         {!caption && (
           <>

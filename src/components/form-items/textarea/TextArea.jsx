@@ -15,6 +15,7 @@ const TextArea = ({
   showEmojiPicker = true,
   value,
   onChange,
+  textareaContainer,
 }) => {
   const [comment, setComment] = useState(value || "");
   const [emojiPicker, setEmojiPicker] = useState(false);
@@ -58,7 +59,7 @@ const TextArea = ({
   };
 
   return (
-    <div className='mt-3 relative hidden md:block'>
+    <div className={`mt-3 relative ${textareaContainer}`}>
       {/* <form> */}
       <textarea
         placeholder={placeholder}

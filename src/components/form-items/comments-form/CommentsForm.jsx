@@ -25,6 +25,7 @@ const CommentsForm = ({
   IconParentStyle,
   btnStyle,
   iconsContainerStyle,
+  textareaContainer,
 }) => {
   const [postData, setPostData] = useState(items);
   const [showShareModal, setShowShareModal] = useState(false);
@@ -183,6 +184,7 @@ const CommentsForm = ({
           IconStyle={IconStyle}
           pickerStyle={pickerStyle}
           IconParentStyle={IconParentStyle}
+          textareaContainer={textareaContainer}
         />
         {commentValue.trim() !== "" && (
           <button

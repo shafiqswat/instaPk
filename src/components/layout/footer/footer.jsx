@@ -1,5 +1,8 @@
 /** @format */
+import Post from "@/components/cards/post/Post";
 import {
+  CreateIcon,
+  ExploreIcon,
   HomeIcon,
   MessengerIcon,
   ReelsIcon,
@@ -7,33 +10,39 @@ import {
 } from "@/constants/SvgIcon";
 import { useAuth } from "@/context/AuthContext";
 import Link from "next/link";
-import React from "react";
+import React, { useState } from "react";
 
 const Footer = () => {
+  const [showModal, setShowModal] = useState(false);
   const { user } = useAuth();
   const icons = [
     {
-      icon: <HomeIcon className='w-8 h-8' />,
+      icon: <HomeIcon className='xs:w-8 xs:h-8 w-6 h-6' />,
       href: "/",
     },
     {
-      icon: <SearchIcon className='w-8 h-8' />,
-      href: "/search",
+      icon: <ExploreIcon className='xs:w-8 xs:h-8 w-6 h-6' />,
+      href: "/explore",
     },
     {
-      icon: <ReelsIcon className='w-8 h-8' />,
+      icon: <CreateIcon className='xs:w-8 xs:h-8 w-6 h-6' />,
+      href: "#",
+      click: () => setShowModal(true),
+    },
+    {
+      icon: <ReelsIcon className='xs:w-8 xs:h-8 w-6 h-6' />,
       href: "/reels",
     },
     {
-      icon: <MessengerIcon className='w-8 h-8' />,
+      icon: <MessengerIcon className='xs:w-8 xs:h-8 w-6 h-6' />,
       href: "/message",
     },
     {
       icon: (
         <img
           src={user?.profilePic}
-          alt='profile-pic'
-          className='w-8 h-8 rounded-full'
+          alt='User Profile'
+          className='xs:w-8 xs:h-8 w-6 h-6 rounded-full'
         />
       ),
       href: `/${user?.userName}`,
@@ -46,11 +55,16 @@ const Footer = () => {
         {icons.map((item, i) => (
           <Link
             href={item.href}
-            key={i}>
+            key={i}
+            onClick={item.click}>
             {item.icon}
           </Link>
         ))}
       </nav>
+      <Post
+        showModal={showModal}
+        setShowModal={setShowModal}
+      />
     </div>
   );
 };

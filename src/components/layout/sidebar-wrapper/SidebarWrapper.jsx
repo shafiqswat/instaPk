@@ -76,7 +76,7 @@ const SidebarWrapper = () => {
         className={`transition-all absolute z-20 duration-500 ease-in-out ${
           search ? "w-[43%]" : "w-0"
         } overflow-hidden`}>
-        <Search />
+        <Search className='h-screen ps-[4.5rem]' />
       </div>
     </div>
   );

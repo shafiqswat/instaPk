@@ -46,14 +46,14 @@ const TabsCustom = ({ isCurrentUser, searchUser }) => {
             <ReelsIcon className='w-4 h-4 mr-1' />
           </span>
           REELS
-        </TabsTrigger>
+        </TabsTrigger> */}
         <TabsTrigger value='saved'>
           <span>
             <FavoriteIcon className='w-4 h-4 mr-1' />
           </span>
           SAVED
         </TabsTrigger>
-        <TabsTrigger value='tagged'>
+        {/* <TabsTrigger value='tagged'>
           <Contact className='w-4 h-4 mr-1' /> TAGGED
         </TabsTrigger> */}
       </TabsList>

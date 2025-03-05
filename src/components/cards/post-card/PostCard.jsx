@@ -116,6 +116,7 @@ const PostCard = ({ items, handlePostClick }) => {
         IconStyle='top-0'
         user={user}
         items={items}
+        textareaContainer='md:block hidden'
       />
 
       {/*<<<<<<<<<<<---------------------  Report Modal   ------------------------->>>>>>>>>>>>> */}

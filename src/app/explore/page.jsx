@@ -6,17 +6,24 @@ import LoadingSkeleton from "@/components/elements/loading-skeleton/loadingSkele
 import Comment from "@/components/modals/comment/Comment";
 import ProtectedRoute from "@/components/protected-route/ProtectedRoute";
 import { usePost } from "@/context/PostContext";
-import { useAuth } from "@/context/AuthContext";
 import InfiniteScroll from "react-infinite-scroll-component";
+import { useSearch } from "@/context/SearchContext";
+import UserSuggestion from "@/components/cards/user-suggestion/userSuggestion";
+import { useRouter } from "next/navigation";
+import { useAuth } from "@/context/AuthContext";
 
 const ExplorePage = () => {
-  const { user } = useAuth();
   const { getAppPosts } = usePost();
   const [explorePageData, setExplorePageData] = useState([]);
   const [showComment, setShowComment] = useState(false);
   const [selectedPost, setSelectedPost] = useState(null);
   const [page, setPage] = useState(0);
   const [hasMore, setHasMore] = useState(true);
+  const [searchValue, setSearchValue] = useState("");
+  const [isFocused, setIsFocused] = useState(false);
+  const { userData, setUserData, getUser } = useSearch();
+  const { allUsers } = useAuth();
+  const router = useRouter();
   const limit = 6;
 
   useEffect(() => {
@@ -45,8 +52,48 @@ const ExplorePage = () => {
     setShowComment(true);
   };
 
+  const handleChange = (e) => {
+    const value = e.target.value;
+    setSearchValue(value);
+
+    if (value.trim().length > 0) {
+      getUser(value, allUsers);
+      setIsFocused(true);
+    } else {
+      setUserData([]);
+      setIsFocused(false);
+    }
+  };
+
+  const handleClick = (item) => {
+    router.push(`/${item.userName}`);
+    setIsFocused(false);
+  };
+
   return (
     <ProtectedRoute>
+      <div className='relative w-full p-3 md:hidden block'>
+        <input
+          type='text'
+          id='text'
+          placeholder='Search for users...'
+          value={searchValue}
+          onChange={handleChange}
+          onFocus={() => setIsFocused(true)}
+          onBlur={() => setTimeout(() => setIsFocused(false), 200)}
+          className='w-full border p-2 rounded-md focus:outline-none'
+        />
+
+        {isFocused && userData.length > 0 && (
+          <div className='absolute w-full bg-white shadow-lg rounded-md mt-2 z-50 max-h-60 overflow-y-auto'>
+            <UserSuggestion
+              data={userData}
+              onClick={handleClick}
+            />
+          </div>
+        )}
+      </div>
+
       <InfiniteScroll
         dataLength={explorePageData.length}
         next={loadMore}
