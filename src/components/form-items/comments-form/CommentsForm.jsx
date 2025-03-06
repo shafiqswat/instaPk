@@ -185,6 +185,7 @@ const CommentsForm = ({
           pickerStyle={pickerStyle}
           IconParentStyle={IconParentStyle}
           textareaContainer={textareaContainer}
+          className='xs:w-full w-[200px]'
         />
         {commentValue.trim() !== "" && (
           <button

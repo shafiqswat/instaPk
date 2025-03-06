@@ -46,16 +46,21 @@ body {
     transform: rotate(1turn);
   }
 }
-/* .onboarding {
-  background: url("/onboarding/emulator.png");
-  background-position: center;
-  background-size: cover;
-  width: 380px;
-  width: 90%;
-  max-width: 380px;
-  width: 100%;
-  height: 581px;
-} */
+
+@media screen and (max-width: 400px) {
+  .epr-main {
+    width: 300px !important;
+  }
+}
+@media screen and (max-width: 320px) {
+  .epr-main {
+    width: 270px !important;
+  }
+}
+
+.upload-caption .epr-main {
+  width: 250px !important;
+}
 .comment::-webkit-scrollbar {
   display: none; /* Hide scrollbar for Chrome, Edge, and Safari */
 }

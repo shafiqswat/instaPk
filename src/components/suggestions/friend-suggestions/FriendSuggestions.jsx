@@ -17,7 +17,7 @@ const FriendSuggestions = () => {
   const firstUsers = useMemo(() => filteredUsers.slice(0, 3), [allUsers]);
 
   return (
-    <div className='flex overflow-x-auto gap-3 sm:gap-5 pb-2 scrollbar-hidden overflow-hidden mb-5'>
+    <div className='flex overflow-x-auto gap-3 sm:gap-5 h-28 scrollbar-hidden overflow-hidden mb-5'>
       <div className='relative w-14 h-14 sm:w-16 sm:h-16 md:w-20 md:h-20 text-center flex-shrink-0'>
         <img
           src={user?.profilePic}
@@ -39,7 +39,7 @@ const FriendSuggestions = () => {
           <img
             src={items.profilePic}
             alt='user'
-            className='rounded-full h-full w-full object-cover cursor-pointer'
+            className='rounded-full h-full w-full object-cover cursor-pointer mb-2'
             onClick={() => router.push(`/${items.userName}`)}
           />
           <p className='text-xs mt-1'>{items.userName}</p>

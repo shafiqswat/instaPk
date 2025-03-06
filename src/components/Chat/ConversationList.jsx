@@ -12,7 +12,7 @@ const ConversationList = () => {
   const { user } = useAuth();
   const tabs = ["Primary"];
   return (
-    <div className='lg:w-[395px] md:w-[250px] sm:[200px] border-r sm:block hidden h-screen'>
+    <div className='lg:w-[395px] md:w-[250px] sm:[200px] border-r  h-screen'>
       <div className='flex items-center justify-between gap-2 p-5 mt-5'>
         <h2 className='md:text-xl md:font-bold  font-semibold text-lg'>
           {user?.userName}

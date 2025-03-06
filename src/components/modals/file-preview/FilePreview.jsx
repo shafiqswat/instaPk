@@ -42,7 +42,7 @@ const FilePreview = ({
         )}
       </div>
       {caption && (
-        <div className='overflow-y-scroll col-span-3'>
+        <div className='overflow-y-scroll md:col-span-3 col-span-7 upload-caption'>
           <div className='flex items-center gap-3 p-2'>
             <img
               src={user?.profilePic}
@@ -60,6 +60,7 @@ const FilePreview = ({
             IconParentStyle='left-4 top-32 absolute'
             value={captionValue}
             onChange={(newValue) => setCaptionValue(newValue)}
+            pickerStyle='-top-20'
           />
         </div>
       )}
