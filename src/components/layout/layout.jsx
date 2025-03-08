@@ -28,7 +28,7 @@ const LayoutContent = ({ children }) => {
       <div className='flex overflow-x-hidden'>
         {isAuthenticated && <SidebarWrapper />}
         <div className='flex-1'>{children}</div>
-        <Footer />
+        {isAuthenticated && <Footer />}
       </div>
     </ChatProvider>
   );

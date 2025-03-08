@@ -8,7 +8,7 @@ import { CopyIcon, OptionIcon, ThreeDotsIcon } from "@/constants/SvgIcon";
 import { useAuth } from "@/context/AuthContext";
 import { Plus, UserPlus } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
-import React, { use, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import ProtectedRoute from "@/components/protected-route/ProtectedRoute";
 import Loading from "@/components/loading/Loading";
 import Followers from "@/components/modals/followers/Followers";

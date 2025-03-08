@@ -18,9 +18,7 @@ const PostCard = ({ items, handlePostClick }) => {
   const [showShareModal, setShowShareModal] = useState(false);
   const { user, singleUser, singleUserData } = useAuth();
   const router = useRouter();
-  const [isFollow, setIsFollow] = useState(
-    user?.following?.includes(items?.user?._id)
-  );
+  const { setIsFollow, isFollow } = useAuth();
 
   /*<<<<<<<<<<<---------------------  Fetch User Through Hover  ------------------------->>>>>>>>>>>>> */
 
@@ -123,9 +121,9 @@ const PostCard = ({ items, handlePostClick }) => {
       <Report
         showModal={showModal}
         setShowModal={setShowModal}
-        isFollow={isFollow}
         setIsFollow={setIsFollow}
         userId={items?.user?._id}
+        selectedUser={items?.user}
       />
 
       {/*<<<<<<<<<<<---------------------  Share Modal  ------------------------->>>>>>>>>>>>> */}

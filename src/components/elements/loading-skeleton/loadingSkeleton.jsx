@@ -43,7 +43,7 @@ const LoadingSkeleton = ({
               /*<<<<<<<<<<<---------------------   Home page  ------------------------->>>>>>>>>>>>> */
 
               <div
-                className='flex flex-col space-y-3 mb-10'
+                className='flex flex-col items-center space-y-3 mb-10'
                 key={i}>
                 <Skeleton className='sm:h-[500px] h-[400px] w-full  sm:w-[468px] rounded-xl' />
                 <div className='space-y-2 '>

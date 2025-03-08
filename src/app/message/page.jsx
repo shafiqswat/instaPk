@@ -12,9 +12,7 @@ const Chat = () => {
     <div className='flex h-screen'>
       {/* Large Screens: Show both */}
       <div className='hidden md:flex w-full'>
-        <div className='w-[395px] border-r'>
-          <ConversationList />
-        </div>
+        <ConversationList />
         <div className='flex-1'>
           <ChatWindow />
         </div>

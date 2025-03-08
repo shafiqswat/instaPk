@@ -18,11 +18,14 @@ import { useAuth } from "@/context/AuthContext";
 import { Popover, PopoverContent, PopoverTrigger } from "../../ui/popover";
 import Post from "@/components/cards/post/Post";
 import { Settings } from "lucide-react";
+import { usePathname } from "next/navigation";
 
 const Sidebar = ({ handleClick, width }) => {
   const { user, signOut } = useAuth();
   const [isClient, setIsClient] = useState(false);
   const [createPost, setCreatePost] = useState(false);
+  const pathname = usePathname();
+
   useEffect(() => {
     setIsClient(true);
   }, []);
@@ -32,22 +35,22 @@ const Sidebar = ({ handleClick, width }) => {
     {
       text: "Search",
       icon: <SearchIcon className='w-6 h-6' />,
-      path: "",
+      path: "#",
       className: "border",
       onClick: () => handleClick(),
     },
     { text: "Explore", icon: <ExploreIcon />, path: "/explore" },
     { text: "Reels", icon: <ReelsIcon className='w-6 h-6' />, path: "/reels" },
     { text: "Messages", icon: <MessengerIcon />, path: "/message" },
-    { text: "Notifications", icon: <HurtIcon />, path: "" },
-    { text: "Create", icon: <CreateIcon />, path: "" },
+    { text: "Notifications", icon: <HurtIcon />, path: "/notifications" },
+    { text: "Create", icon: <CreateIcon />, path: "#" },
     {
       text: "Profile",
       path: `/${user?.userName}`,
       avatar: true,
       ImgPath: `${user?.profilePic}`,
     },
-    { text: "More", icon: <MoreIcon />, path: "" },
+    { text: "More", icon: <MoreIcon />, path: "#" },
   ];
 
   const handleSignOut = () => {
@@ -60,13 +63,14 @@ const Sidebar = ({ handleClick, width }) => {
 
   return (
     <div
-      className={`border-r fixed z-30 p-3 h-screen  ${
+      className={`border-r fixed z-30 p-3 h-screen ${
         width ? "w-[73px]" : "w-[18%]"
       }`}
       style={{
         transition: "width 0.3s ease-in-out",
       }}>
-      <div className={` ${width ? "p-3" : "p-2"} h-[64px] mt-3`}>
+      {/* Logo */}
+      <div className={`${width ? "p-3" : "p-2"} h-[64px] mt-3`}>
         {width ? (
           <InstagramIcon className='w-[40px] h-[40px]' />
         ) : (
@@ -82,12 +86,10 @@ const Sidebar = ({ handleClick, width }) => {
       <ul className='flex flex-col mt-2'>
         {sidebarData.map((items, i) => (
           <li
-            className={`${
-              items.text === "More" ? "mt-5" : ""
-            } p-3 rounded mb-2 hover:bg-gray-200 ${
-              width ? items.className : ""
-            }`}
             key={i}
+            className={`p-3 rounded mb-2 hover:bg-gray-200 ${
+              items.text === "More" ? "mt-5" : ""
+            } ${pathname === items.path ? "bg-gray-300 font-bold" : ""}`} // Active class
             onClick={items.onClick}>
             {items.text === "Create" || items.text === "More" ? (
               <Popover>
@@ -143,6 +145,8 @@ const Sidebar = ({ handleClick, width }) => {
           </li>
         ))}
       </ul>
+
+      {/* Post Modal */}
       <Post
         showModal={createPost}
         setShowModal={setCreatePost}

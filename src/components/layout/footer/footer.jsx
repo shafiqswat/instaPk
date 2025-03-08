@@ -6,35 +6,49 @@ import {
   HomeIcon,
   MessengerIcon,
   ReelsIcon,
-  SearchIcon,
 } from "@/constants/SvgIcon";
 import { useAuth } from "@/context/AuthContext";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import React, { useState } from "react";
 
 const Footer = () => {
   const [showModal, setShowModal] = useState(false);
   const { user } = useAuth();
+  const pathName = usePathname();
+
   const icons = [
     {
-      icon: <HomeIcon className='xs:w-8 xs:h-8 w-6 h-6' />,
+      icon: (
+        <HomeIcon className='w-7 h-7 transition-transform hover:scale-110' />
+      ),
       href: "/",
     },
     {
-      icon: <ExploreIcon className='xs:w-8 xs:h-8 w-6 h-6' />,
+      icon: (
+        <ExploreIcon className='w-7 h-7 transition-transform hover:scale-110' />
+      ),
       href: "/explore",
     },
     {
-      icon: <CreateIcon className='xs:w-8 xs:h-8 w-6 h-6' />,
+      icon: (
+        <div className='p-2 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full shadow-lg hover:scale-110 transition'>
+          <CreateIcon className='w-7 h-7 text-white' />
+        </div>
+      ),
       href: "#",
       click: () => setShowModal(true),
     },
     {
-      icon: <ReelsIcon className='xs:w-8 xs:h-8 w-6 h-6' />,
+      icon: (
+        <ReelsIcon className='w-7 h-7 transition-transform hover:scale-110' />
+      ),
       href: "/reels",
     },
     {
-      icon: <MessengerIcon className='xs:w-8 xs:h-8 w-6 h-6' />,
+      icon: (
+        <MessengerIcon className='w-7 h-7 transition-transform hover:scale-110' />
+      ),
       href: "/message",
     },
     {
@@ -42,7 +56,7 @@ const Footer = () => {
         <img
           src={user?.profilePic}
           alt='User Profile'
-          className='xs:w-8 xs:h-8 w-6 h-6 rounded-full'
+          className='w-8 h-8 rounded-full border-2 border-blue-500 hover:scale-110 transition-transform'
         />
       ),
       href: `/${user?.userName}`,
@@ -50,13 +64,18 @@ const Footer = () => {
   ];
 
   return (
-    <div className='bg-white block sm:hidden h-12 fixed bottom-0 left-0 right-0 shadow-2xl'>
-      <nav className='flex items-center justify-between h-full px-5'>
+    <div className='bg-white block sm:hidden h-14 fixed bottom-0 left-0 right-0 shadow-xl border-t border-gray-200'>
+      <nav className='flex items-center justify-around h-full px-5 bg-gradient-to-r from-gray-100 to-white'>
         {icons.map((item, i) => (
           <Link
             href={item.href}
             key={i}
-            onClick={item.click}>
+            onClick={item.click}
+            className={`p-2 rounded-full transition-all ${
+              pathName === item.href
+                ? "bg-gray-300 font-bold"
+                : "hover:bg-gray-200"
+            }`}>
             {item.icon}
           </Link>
         ))}

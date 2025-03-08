@@ -19,8 +19,7 @@ const AuthenticatedLanding = () => {
   const [homePageData, setHomePageData] = useState([]);
   const [page, setPage] = useState(0);
   const [hasMore, setHasMore] = useState(true);
-  const limit = 6; // Number of posts per page
-
+  const limit = 6;
   useEffect(() => {
     fetchData();
   }, []);
