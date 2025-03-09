@@ -31,13 +31,14 @@ const CommentsForm = ({
   const [showShareModal, setShowShareModal] = useState(false);
   const [isLike, setIsLike] = useState(items?.likes?.includes(user?._id));
   const [commentValue, setCommentValue] = useState("");
-  const { addComment, loading, error } = useComments();
+  const { addComment } = useComments();
   const { savePost } = useAuth();
   const { likePost } = usePost();
   const [isSavePost, setIsSavePost] = useState(
     user?.favorites?.includes(postData?._id)
   );
   const [isExpanded, setIsExpanded] = useState(false);
+
   /*<<<<<<<<<<<---------------------  Check the post is  Like  by the current user or not  ------------------------->>>>>>>>>>>>> */
 
   useEffect(() => {

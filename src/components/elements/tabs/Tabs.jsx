@@ -79,10 +79,7 @@ const TabsCustom = ({ isCurrentUser, searchUser }) => {
       </TabsContent>
       <TabsContent value='reels'></TabsContent>
       <TabsContent value='saved'>
-        <Save
-          user={searchUser}
-          isCurrentUser={isCurrentUser}
-        />
+        <Save selectedUser={isCurrentUser ? user : searchUser} />
       </TabsContent>
       <TabsContent value='tagged'></TabsContent>
       <Comment

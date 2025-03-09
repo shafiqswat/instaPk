@@ -20,17 +20,26 @@ const AuthenticatedLanding = () => {
   const [page, setPage] = useState(0);
   const [hasMore, setHasMore] = useState(true);
   const limit = 6;
+
   useEffect(() => {
     fetchData();
   }, []);
 
   const fetchData = async () => {
-    const data = await allFollowingPosts(user?.following);
+    if (!user?.following || user.following.length === 0) {
+      setHomePageData([]);
+      setHasMore(false);
+      return;
+    }
+    const data = await allFollowingPosts(user.following);
     setHomePageData(data.slice(0, limit));
+    setHasMore(data.length > limit);
   };
 
   const loadMore = async () => {
-    const data = await allFollowingPosts(user?.following);
+    if (!user?.following || user.following.length === 0) return;
+
+    const data = await allFollowingPosts(user.following);
     const nextPagePosts = data.slice((page + 1) * limit, (page + 2) * limit);
 
     if (nextPagePosts.length === 0) {
@@ -50,26 +59,34 @@ const AuthenticatedLanding = () => {
     <div className='flex gap-y-20 sm:px-10 lg:gap-x-20 w-full md:w-[calc(100vw-18%)] p-5'>
       <div className='w-full'>
         <FriendSuggestions />
-        <InfiniteScroll
-          dataLength={homePageData.length}
-          next={loadMore}
-          hasMore={hasMore}
-          loader={
-            <LoadingSkeleton
-              count={3}
-              homePage={true}
-            />
-          }>
-          <div className='flex flex-col gap-10'>
-            {homePageData.map((items, i) => (
-              <PostCard
-                key={i}
-                items={items}
-                handlePostClick={handlePostClick}
-              />
-            ))}
+
+        {user?.following?.length === 0 ? (
+          <div className='text-center text-gray-500 mt-10'>
+            <p>You are not following anyone yet.</p>
+            <p>Follow people to see their posts!</p>
           </div>
-        </InfiniteScroll>
+        ) : (
+          <InfiniteScroll
+            dataLength={homePageData.length}
+            next={loadMore}
+            hasMore={hasMore}
+            loader={
+              <LoadingSkeleton
+                count={3}
+                homePage={true}
+              />
+            }>
+            <div className='flex flex-col gap-10'>
+              {homePageData.map((items, i) => (
+                <PostCard
+                  key={i}
+                  items={items}
+                  handlePostClick={handlePostClick}
+                />
+              ))}
+            </div>
+          </InfiniteScroll>
+        )}
       </div>
 
       <div className='xl:block hidden w-80 mt-5'>

@@ -74,7 +74,7 @@ export const PostProvider = ({ children }) => {
   const singlePost = async (postId) => {
     setLoading(true);
     try {
-      const { data } = await postService?.singlePost(postId);
+      const { data } = await getUserPosts(postId);
       if (data.message === "Post fetched successfully") {
         return data.post;
       }
@@ -88,13 +88,14 @@ export const PostProvider = ({ children }) => {
   };
 
   const fetchPosts = async (searchUserPosts) => {
+    // console.log("fav", searchUserPosts);
     setLoading(true);
     try {
       const posts = await Promise.all(
         searchUserPosts?.map((postId) => singlePost(postId))
       );
-      const validPosts = posts.filter((post) => post !== null);
-      setAllPosts(validPosts);
+      // const validPosts = posts.filter((post) => post !== null);
+      setAllPosts(posts);
     } catch (err) {
       console.error("Error fetching posts:", err);
       setError(err);
