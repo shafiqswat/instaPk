@@ -1,5 +1,5 @@
 /** @format */
-
+"use client";
 import LoadingSkeleton from "@/components/elements/loading-skeleton/loadingSkeleton";
 import { usePost } from "@/context/PostContext";
 import React, { useEffect } from "react";
