@@ -10,7 +10,7 @@ const AuthForm = ({ signUp }) => {
   const router = useRouter();
 
   const inputData = [
-    { type: "tel", placeholder: "Mobile Number or Email" },
+    { type: "email", placeholder: "Mobile Number or Email" },
     { type: "password", placeholder: "Password" },
     { type: "text", placeholder: "Full Name " },
     { type: "text", placeholder: "Username" },

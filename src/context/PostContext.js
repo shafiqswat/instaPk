@@ -75,9 +75,9 @@ export const PostProvider = ({ children }) => {
     setLoading(true);
     try {
       const { data } = await getUserPosts(postId);
-      if (data.message === "Post fetched successfully") {
-        return data.post;
-      }
+      // if (data.message === "Post fetched successfully") {
+      return data;
+      // }
     } catch (err) {
       console.error(err);
       setError(err);

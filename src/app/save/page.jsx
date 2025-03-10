@@ -1,14 +1,23 @@
 /** @format */
 
-// /** @format */
-
 // "use client";
+// import SocialCard from "@/components/cards/social-card/SocialCard";
 // import LoadingSkeleton from "@/components/elements/loading-skeleton/loadingSkeleton";
+// import Comment from "@/components/modals/comment/Comment";
+// import { useAuth } from "@/context/AuthContext";
 // import { usePost } from "@/context/PostContext";
-// import React, { useEffect } from "react";
+// import React, { useEffect, useState } from "react";
 
 // const Save = ({ selectedUser }) => {
 //   const { fetchPosts, allPosts, loading } = usePost();
+//   const [showComment, setShowComment] = useState(false);
+//   const [selectedPost, setSelectedPost] = useState(null);
+//   const { user } = useAuth();
+//   const handlePostClick = (post) => {
+//     setSelectedPost(post);
+//     setShowComment(true);
+//   };
+
 //   useEffect(() => {
 //     fetchPosts(selectedUser?.favorites);
 //   }, []);
@@ -30,6 +39,14 @@
 //           </div>
 //         ))
 //       )}
+//       <Comment
+//         showModal={showComment}
+//         setShowModal={setShowComment}
+//         postData={selectedPost}
+//         setSelectedPost={setSelectedPost}
+//         selectedUser={isCurrentUser ? user : searchUser}
+//         isCurrentUser={isCurrentUser}
+//       />
 //     </div>
 //   );
 // };
