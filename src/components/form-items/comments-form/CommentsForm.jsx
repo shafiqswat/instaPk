@@ -15,7 +15,6 @@ import { useComments } from "@/context/commentsContext";
 import { useAuth } from "@/context/AuthContext";
 
 const CommentsForm = ({
-  user,
   items,
   homePage,
   handleModal,
@@ -27,6 +26,7 @@ const CommentsForm = ({
   iconsContainerStyle,
   textareaContainer,
 }) => {
+  const { user } = useAuth();
   const [postData, setPostData] = useState(items);
   const [showShareModal, setShowShareModal] = useState(false);
   const [isLike, setIsLike] = useState(items?.likes?.includes(user?._id));
@@ -38,7 +38,6 @@ const CommentsForm = ({
     user?.favorites?.includes(postData?._id)
   );
   const [isExpanded, setIsExpanded] = useState(false);
-
   /*<<<<<<<<<<<---------------------  Check the post is  Like  by the current user or not  ------------------------->>>>>>>>>>>>> */
 
   useEffect(() => {
@@ -72,7 +71,6 @@ const CommentsForm = ({
     savePost(postData.id, user._id, isSavePost, setIsSavePost);
   };
   const formattedTime = useCompactTimeFormat(postData?.createdAt);
-
   return (
     <div className='w-full'>
       <div className={`py-2 ${iconsContainerStyle}`}>

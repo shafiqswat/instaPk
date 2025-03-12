@@ -15,6 +15,7 @@ import Followers from "@/components/modals/followers/Followers";
 import Highlights from "@/components/modals/highlights/Highlights";
 import { useNote } from "@/context/NoteContext";
 import { useChat } from "@/context/chatContext";
+import { usePost } from "@/context/PostContext";
 
 const Profile = () => {
   const [isNoteModal, setIsNoteModal] = useState(false);
@@ -23,6 +24,8 @@ const Profile = () => {
   const [showFollowers, setShowFollowers] = useState(false);
   const [isFollowing, setIsFollowing] = useState(false);
   const [loading, setLoading] = useState(true);
+  const { myPostsData } = usePost();
+
   const router = useRouter();
   const { setActiveThread } = useChat();
   const {
@@ -170,10 +173,7 @@ const Profile = () => {
 
           <div className='flex my-5 gap-3 sm:gap-5'>
             <p>
-              <span className='font-semibold'>
-                {isCurrentUser ? user?.postCount : searchUser?.postCount}
-              </span>{" "}
-              post
+              <span className='font-semibold'>{myPostsData.length}</span> post
             </p>
             <p
               className='cursor-pointer'

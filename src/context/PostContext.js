@@ -88,7 +88,7 @@ export const PostProvider = ({ children }) => {
   };
 
   const fetchPosts = async (searchUserPosts) => {
-    // console.log("fav", searchUserPosts);
+    console.log("fav", searchUserPosts);
     setLoading(true);
     try {
       const posts = await Promise.all(

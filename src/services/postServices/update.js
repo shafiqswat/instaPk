@@ -10,7 +10,6 @@ import {
   increment,
   getDoc,
   Timestamp,
-  runTransaction,
 } from "firebase/firestore";
 
 // Update post details

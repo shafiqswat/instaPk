@@ -112,11 +112,10 @@ const PostCard = ({ items, handlePostClick }) => {
         handleModal={() => handlePostClick(items)}
         btnStyle='right-[45px] bottom-8'
         IconStyle='top-0'
-        user={user}
+        // user={user}
         items={items}
         textareaContainer='md:block hidden'
       />
-
       {/*<<<<<<<<<<<---------------------  Report Modal   ------------------------->>>>>>>>>>>>> */}
       <Report
         showModal={showModal}
