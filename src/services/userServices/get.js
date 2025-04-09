@@ -51,7 +51,7 @@ export const userByUserName = async (userName) => {
     const snapshot = await getDocs(q);
 
     if (!snapshot.empty) {
-      const userDoc = snapshot.docs[0]; // Assuming `userName` is unique
+      const userDoc = snapshot.docs[0];
       return {
         ...userDoc.data(),
         _id: userDoc.id,

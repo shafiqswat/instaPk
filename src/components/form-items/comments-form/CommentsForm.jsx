@@ -42,7 +42,7 @@ const CommentsForm = ({
 
   useEffect(() => {
     setIsLike(postData?.likes?.includes(user?._id));
-  }, [postData?.likes]);
+  }, [postData]);
 
   /*<<<<<<<<<<<---------------------  Check the post is  save  by the current user or not  ------------------------->>>>>>>>>>>>> */
 

@@ -11,6 +11,27 @@ import {
 } from "firebase/firestore";
 import { getUserData } from "../userServices";
 
+export const getSinglePostById = async (postId) => {
+  try {
+    const postRef = doc(firestore, "posts", postId);
+    const postSnap = await getDoc(postRef);
+
+    if (!postSnap.exists()) return null;
+
+    const postData = postSnap.data();
+    const userSnap = await getDoc(postData.postBy);
+
+    return {
+      id: postSnap.id,
+      ...postData,
+      user: userSnap.exists() ? { ...userSnap.data(), _id: userSnap.id } : null,
+    };
+  } catch (err) {
+    console.error("Error fetching single post:", err);
+    return null;
+  }
+};
+
 export const getUserPosts = async (userId) => {
   try {
     const postsRef = collection(firestore, "posts");

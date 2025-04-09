@@ -1,5 +1,7 @@
 /** @format */
 
+// /** @format */
+
 "use client";
 import SocialCard from "@/components/cards/social-card/SocialCard";
 import LoadingSkeleton from "@/components/elements/loading-skeleton/loadingSkeleton";
@@ -19,7 +21,11 @@ const Save = ({ selectedUser }) => {
   };
   const isCurrentUser = selectedUser?._id === user?._id;
   useEffect(() => {
-    fetchPosts(user?.favorites);
+    if (isCurrentUser) {
+      fetchPosts(user?.favorites);
+    } else {
+      fetchPosts(selectedUser?.favorites);
+    }
   }, []);
   return (
     <div className='grid grid-cols-3 gap-3'>
@@ -52,10 +58,11 @@ const Save = ({ selectedUser }) => {
 };
 
 export default Save;
+
 // import React from "react";
 
-// const page = () => {
+// const Save = () => {
 //   return <div>page</div>;
 // };
 
-// export default page;
+// export default Save;

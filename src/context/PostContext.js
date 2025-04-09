@@ -5,6 +5,7 @@ import {
   deletePosts,
   getAllPosts,
   getFollowingPosts,
+  getSinglePostById,
   getUserPosts,
   likeUserPost,
   updateUserPost,
@@ -74,10 +75,8 @@ export const PostProvider = ({ children }) => {
   const singlePost = async (postId) => {
     setLoading(true);
     try {
-      const { data } = await getUserPosts(postId);
-      // if (data.message === "Post fetched successfully") {
-      return data;
-      // }
+      const post = await getSinglePostById(postId);
+      return post;
     } catch (err) {
       console.error(err);
       setError(err);
@@ -88,14 +87,13 @@ export const PostProvider = ({ children }) => {
   };
 
   const fetchPosts = async (searchUserPosts) => {
-    console.log("fav", searchUserPosts);
     setLoading(true);
     try {
       const posts = await Promise.all(
         searchUserPosts?.map((postId) => singlePost(postId))
       );
-      // const validPosts = posts.filter((post) => post !== null);
-      setAllPosts(posts);
+      const validPosts = posts.filter((post) => post !== null);
+      setAllPosts(validPosts);
     } catch (err) {
       console.error("Error fetching posts:", err);
       setError(err);
@@ -103,6 +101,7 @@ export const PostProvider = ({ children }) => {
       setLoading(false);
     }
   };
+
   const getAppPosts = async () => {
     setLoading(true);
     try {
@@ -114,6 +113,7 @@ export const PostProvider = ({ children }) => {
       setLoading(false);
     }
   };
+
   const allFollowingPosts = async (followingUserIds) => {
     setLoading(true);
     try {
@@ -125,6 +125,7 @@ export const PostProvider = ({ children }) => {
       setLoading(false);
     }
   };
+
   const likePost = async (postId, userId, setPostData, isLike, setIsLike) => {
     setIsLike(!isLike);
     try {
