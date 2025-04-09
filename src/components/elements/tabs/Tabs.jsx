@@ -1,59 +1,73 @@
 /** @format */
 
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { FavoriteIcon, ReelsIcon } from "@/constants/SvgIcon";
+"use client";
+
+import { useState, useEffect } from "react";
+import { useRouter, useParams } from "next/navigation";
+import { FavoriteIcon } from "@/constants/SvgIcon";
 import { Grid } from "lucide-react";
 import Save from "@/app/(auth)/[slug]/save/page";
 import MyPosts from "@/app/(auth)/[slug]/page";
-import { useRouter } from "next/navigation";
-import { useParams } from "next/navigation";
 
 const TabsCustom = ({ isCurrentUser, searchUser }) => {
+  const { slug } = useParams();
   const router = useRouter();
-  const params = useParams();
-  const slug = params.slug;
+
+  const [tab, setTab] = useState("posts");
+
+  // Sync tab with URL on initial render
+  useEffect(() => {
+    const path = window.location.pathname;
+    if (path.endsWith("/save")) {
+      setTab("saved");
+    } else {
+      setTab("posts");
+    }
+  }, []);
+
+  // Update tab + URL without reload
+  const handleTabChange = (newTab) => {
+    setTab(newTab);
+    const basePath = `/${slug}`;
+    router.push(newTab === "saved" ? `${basePath}/save` : basePath);
+  };
+
   return (
-    <Tabs
-      defaultValue='posts'
-      className='w-full mt-10 border-t'>
-      <TabsList className='flex gap-5'>
-        <TabsTrigger
-          value='posts'
-          className=''
-          onClick={() => router.push(`${slug}`)}>
-          <span>
-            <Grid className='w-4 h-4 mr-1' />
-          </span>
+    <div className='w-full mt-10 border-t'>
+      <div className='flex gap-5 mt-4'>
+        <button
+          onClick={() => handleTabChange("posts")}
+          className={`flex items-center px-4 py-2 rounded-md text-sm font-medium ${
+            tab === "posts"
+              ? "bg-gray-100 text-black"
+              : "text-gray-500 hover:text-black"
+          }`}>
+          <Grid className='w-4 h-4 mr-1' />
           POSTS
-        </TabsTrigger>
-        {/* <TabsTrigger value='reels'>
-          <span>
-            <ReelsIcon className='w-4 h-4 mr-1' />
-          </span>
-          REELS
-        </TabsTrigger> */}
-        <TabsTrigger value='saved'>
-          <span>
-            <FavoriteIcon className='w-4 h-4 mr-1' />
-          </span>
+        </button>
+        <button
+          onClick={() => handleTabChange("saved")}
+          className={`flex items-center px-4 py-2 rounded-md text-sm font-medium ${
+            tab === "saved"
+              ? "bg-gray-100 text-black"
+              : "text-gray-500 hover:text-black"
+          }`}>
+          <FavoriteIcon className='w-4 h-4 mr-1' />
           SAVED
-        </TabsTrigger>
-        {/* <TabsTrigger value='tagged'>
-          <Contact className='w-4 h-4 mr-1' /> TAGGED
-        </TabsTrigger> */}
-      </TabsList>
-      <TabsContent value='posts'>
-        <MyPosts
-          isCurrentUser={isCurrentUser}
-          searchUser={searchUser}
-        />
-      </TabsContent>
-      <TabsContent value='reels'></TabsContent>
-      <TabsContent value='saved'>
-        <Save selectedUser={searchUser} />
-      </TabsContent>
-      <TabsContent value='tagged'></TabsContent>
-    </Tabs>
+        </button>
+      </div>
+
+      <div className='mt-6'>
+        {tab === "posts" && (
+          <MyPosts
+            isCurrentUser={isCurrentUser}
+            searchUser={searchUser}
+          />
+        )}
+        {tab === "saved" && <Save selectedUser={searchUser} />}
+      </div>
+    </div>
   );
 };
+
 export default TabsCustom;

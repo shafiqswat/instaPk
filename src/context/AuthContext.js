@@ -228,19 +228,24 @@ export const AuthProvider = ({ children }) => {
     setIsSave(!isSave);
     try {
       await saveUserPost(postId, userId);
-      if (!isSave) {
-        setUser((prev) => ({
-          ...prev,
-          favorites: [...prev.favorites, postId],
-        }));
-      } else {
-        setUser((prev) => ({
-          ...prev,
-          favorites: prev.favorites.filter((id) => id !== postId),
-        }));
+      const updatedFavorites = isSave
+        ? user.favorites.filter((id) => id !== postId)
+        : [...user.favorites, postId];
+
+      setUser((prev) => ({
+        ...prev,
+        favorites: updatedFavorites,
+      }));
+
+      // Update post data in PostContext
+      if (postContext) {
+        postContext.updatePostInState(postId, {
+          save: updatedFavorites,
+        });
       }
     } catch (err) {
       console.log(err);
+      setIsSave(isSave); // Revert on error
     }
   };
 

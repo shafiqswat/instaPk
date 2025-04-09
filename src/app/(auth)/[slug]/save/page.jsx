@@ -1,7 +1,4 @@
 /** @format */
-
-// /** @format */
-
 "use client";
 import SocialCard from "@/components/cards/social-card/SocialCard";
 import LoadingSkeleton from "@/components/elements/loading-skeleton/loadingSkeleton";
