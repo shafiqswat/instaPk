@@ -40,6 +40,7 @@ export const createComments = async (postId, user, comment) => {
     const postRef = doc(firestore, "posts", postId);
     await updateDoc(postRef, {
       commentsCount: increment(1),
+      updatedAt: Timestamp.now(),
     });
 
     return commentWithId;

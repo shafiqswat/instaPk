@@ -13,6 +13,7 @@ import { CommentsProvider } from "@/context/commentsContext";
 import { ChatProvider } from "@/context/chatContext";
 import { usePathname } from "next/navigation";
 import Footer from "./footer/footer";
+import { LikeProvider } from "@/context/likeContext";
 
 const LayoutContent = ({ children }) => {
   const { isAuthLoading, isAuthenticated, user } = useAuth();
@@ -41,7 +42,9 @@ const Layout = ({ children }) => {
         <SearchProvider>
           <NoteProvider>
             <CommentsProvider>
-              <LayoutContent>{children}</LayoutContent>
+              <LikeProvider>
+                <LayoutContent>{children}</LayoutContent>
+              </LikeProvider>
             </CommentsProvider>
           </NoteProvider>
         </SearchProvider>

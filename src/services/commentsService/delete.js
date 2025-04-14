@@ -1,7 +1,13 @@
 /** @format */
 
 import { firestore } from "@/lib/firebaseConfig";
-import { doc, deleteDoc, updateDoc, increment } from "firebase/firestore";
+import {
+  doc,
+  deleteDoc,
+  updateDoc,
+  increment,
+  Timestamp,
+} from "firebase/firestore";
 
 export const deleteComment = async (postId, commentsId) => {
   try {
@@ -10,6 +16,7 @@ export const deleteComment = async (postId, commentsId) => {
     const postRef = doc(firestore, "posts", postId);
     await updateDoc(postRef, {
       commentsCount: increment(-1),
+      updatedAt: Timestamp.now(),
     });
 
     console.log("Comment deleted successfully");

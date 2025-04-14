@@ -15,13 +15,11 @@ export const addPost = async (uid, caption, imgUrls, user) => {
   try {
     const postData = {
       caption,
-      comments: [],
       commentsCount: 0,
       createdAt: Timestamp.now(),
       imageUrls: imgUrls,
       isPublic: true,
       likeCount: 0,
-      likes: [],
       postBy: userRef,
       updatedAt: "",
       save: [],

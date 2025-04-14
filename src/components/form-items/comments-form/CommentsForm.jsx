@@ -7,12 +7,13 @@ import {
   HurtIcon,
   ShareIcon,
 } from "@/constants/SvgIcon";
-import { usePost } from "@/context/PostContext";
+
 import React, { useEffect, useState } from "react";
 import TextArea from "../textarea/TextArea";
 import useCompactTimeFormat from "@/components/hooks/useCompactTimeFormat";
 import { useComments } from "@/context/commentsContext";
 import { useAuth } from "@/context/AuthContext";
+import { useLike } from "@/context/likeContext";
 
 const CommentsForm = ({
   items,
@@ -29,57 +30,71 @@ const CommentsForm = ({
   const { user } = useAuth();
   const [postData, setPostData] = useState(items);
   const [showShareModal, setShowShareModal] = useState(false);
-  const [isLike, setIsLike] = useState(items?.likes?.includes(user?._id));
   const [commentValue, setCommentValue] = useState("");
   const { addComment } = useComments();
   const { savePost } = useAuth();
-  const { likePost } = usePost();
+  const {
+    handleLike,
+    handleUnlike,
+    isPostLiked,
+    getLikeCount,
+    fetchLikeStatus,
+  } = useLike();
   const [isSavePost, setIsSavePost] = useState(
     user?.favorites?.includes(postData?._id)
   );
   const [isExpanded, setIsExpanded] = useState(false);
-  /*<<<<<<<<<<<---------------------  Check the post is  Like  by the current user or not  ------------------------->>>>>>>>>>>>> */
+  const formattedTime = useCompactTimeFormat(postData?.createdAt);
 
   useEffect(() => {
-    setIsLike(postData?.likes?.includes(user?._id));
-  }, [postData]);
+    if (postData?.id && user?._id) {
+      fetchLikeStatus(postData.id, user._id);
+      setIsSavePost(user?.favorites?.includes(postData?.id));
+    }
+  }, [postData, user]);
 
-  /*<<<<<<<<<<<---------------------  Check the post is  save  by the current user or not  ------------------------->>>>>>>>>>>>> */
-
-  useEffect(() => {
-    setIsSavePost(user?.favorites?.includes(postData?.id));
-  }, [postData]);
-
-  /*<<<<<<<<<<<---------------------  Function to handle Like and Dislike  ------------------------->>>>>>>>>>>>> */
-
-  const handleLike = () => {
-    likePost(postData.id, user._id, setPostData, isLike, setIsLike, postData);
+  const handleLikePost = async () => {
+    if (!postData?.id || !user?._id) return;
+    try {
+      const updatedData = isPostLiked(postData.id)
+        ? await handleUnlike(postData.id, user._id)
+        : await handleLike(postData.id, user._id);
+      setPostData((prev) => ({
+        ...prev,
+        likeCount: updatedData.likeCount,
+      }));
+    } catch (error) {
+      console.error("Error handling like:", error);
+    }
   };
-
-  /*<<<<<<<<<<<---------------------  Function To Post Comments  ------------------------->>>>>>>>>>>>> */
 
   const handleCommentPost = (e) => {
     e.preventDefault();
+    if (!postData?.id || !user?._id || !commentValue.trim()) return;
     addComment(postData.id, user, commentValue);
-
     setCommentValue("");
   };
 
-  /*<<<<<<<<<<<--------------------- Function to handle Save and UnSave Posts  ------------------------->>>>>>>>>>>>> */
-
   const handleSavePost = () => {
+    if (!postData?.id || !user?._id) return;
     savePost(postData.id, user._id, isSavePost, setIsSavePost);
   };
-  const formattedTime = useCompactTimeFormat(postData?.createdAt);
+
+  const currentLikeCount =
+    getLikeCount(postData?.id) || postData?.likeCount || 0;
+  const isLiked = isPostLiked(postData?.id);
+  const caption = isExpanded
+    ? postData.caption
+    : postData?.caption?.slice(0, 100);
+  const showMore = !isExpanded && postData?.caption?.length > 100;
+
   return (
     <div className='w-full'>
       <div className={`py-2 ${iconsContainerStyle}`}>
-        {/*<<<<<<<<<<<---------------------  Icons Container  ------------------------->>>>>>>>>>>>> */}
-
         <div className='flex gap-3 mt-3'>
           <HurtIcon
-            onClick={handleLike}
-            fill={isLike}
+            onClick={handleLikePost}
+            fill={isLiked}
           />
           <CommentsIcon
             className='hover:text-gray-400'
@@ -102,13 +117,11 @@ const CommentsForm = ({
           />
         </div>
 
-        {/*<<<<<<<<<<<---------------------  Post Details or Bio , likes, comments , caption etc   ------------------------->>>>>>>>>>>>> */}
-
         {!homePage && (
           <>
             <h2 className='text-sm font-semibold mt-5'>
-              {`${postData?.likeCount} ${
-                postData?.likes?.length > 1 ? "likes" : "like"
+              {`${currentLikeCount} ${
+                currentLikeCount === 1 ? "like" : "likes"
               }`}
             </h2>
             <p className='text-xs text-gray-500'>{formattedTime}</p>
@@ -116,48 +129,36 @@ const CommentsForm = ({
         )}
         {homePage && (
           <>
-            <>
-              {postData.likeCount > 0 && (
-                <p className='text-sm mt-2 font-semibold'>
-                  Liked by{" "}
-                  <strong className='font-semibold cursor-pointer'>
-                    {postData.likeCount}
-                  </strong>{" "}
-                  person
-                </p>
-              )}
-
-              {/*<<<<<<<<<<<---------------------   Ellipsis  For Caption mean add see more and see less   ------------------------->>>>>>>>>>>>> */}
-
-              <p className='text-sm font-sans mt-2'>
-                <strong className='font-sans text-sm font-semibold'>
-                  {postData.user.userName}
+            {currentLikeCount > 0 && (
+              <p className='text-sm mt-2 font-semibold'>
+                Liked by{" "}
+                <strong className='font-semibold cursor-pointer'>
+                  {currentLikeCount}
                 </strong>{" "}
-                {isExpanded ? (
-                  <>
-                    {postData.caption}
-                    <span
-                      className='cursor-pointer font-semibold text-gray-600'
-                      onClick={() => setIsExpanded(false)}>
-                      {""} ...less
-                    </span>
-                  </>
-                ) : (
-                  <>
-                    {postData?.caption?.slice(0, 100)}
-                    {postData?.caption?.length > 100 && (
-                      <>
-                        <span
-                          className='cursor-pointer text-gray-600 font-semibold'
-                          onClick={() => setIsExpanded(true)}>
-                          {""} ...more
-                        </span>
-                      </>
-                    )}
-                  </>
-                )}
+                person
               </p>
-            </>
+            )}
+
+            <p className='text-sm font-sans mt-2'>
+              <strong className='font-sans text-sm font-semibold'>
+                {postData.user.userName}
+              </strong>{" "}
+              {caption}
+              {showMore && (
+                <span
+                  className='cursor-pointer text-gray-600 font-semibold'
+                  onClick={() => setIsExpanded(true)}>
+                  ...more
+                </span>
+              )}
+              {isExpanded && (
+                <span
+                  className='cursor-pointer font-semibold text-gray-600'
+                  onClick={() => setIsExpanded(false)}>
+                  ...less
+                </span>
+              )}
+            </p>
             {postData.commentsCount > 0 && (
               <p
                 className='text-sm cursor-pointer text-gray-500 mt-2'
@@ -168,8 +169,6 @@ const CommentsForm = ({
           </>
         )}
       </div>
-
-      {/*<<<<<<<<<<<---------------------  Form Text area for commenting    ------------------------->>>>>>>>>>>>> */}
 
       <form
         className='px-3 relative'

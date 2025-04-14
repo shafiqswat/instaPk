@@ -225,33 +225,27 @@ export const AuthProvider = ({ children }) => {
   };
 
   const savePost = async (postId, userId, isSave, setIsSave) => {
-    setIsSave(!isSave);
+    if (!postId || !userId) return;
+
+    // Optimistic update
+    const newSaveState = !isSave;
+    setIsSave(newSaveState);
+
     try {
       await saveUserPost(postId, userId);
-      const updatedFavorites = isSave
-        ? user.favorites.filter((id) => id !== postId)
-        : [...user.favorites, postId];
-
       setUser((prev) => ({
         ...prev,
-        favorites: updatedFavorites,
+        favorites: newSaveState
+          ? [...(prev.favorites || []), postId]
+          : (prev.favorites || []).filter((id) => id !== postId),
       }));
-
-      // Update post data in PostContext
-      if (postContext) {
-        postContext.updatePostInState(postId, {
-          save: updatedFavorites,
-        });
-      }
-    } catch (err) {
-      console.log(err);
-      setIsSave(isSave); // Revert on error
+    } catch (error) {
+      setIsSave(isSave);
+      console.error("Error saving post:", error);
     }
   };
 
   const handleFollow = async (userId, otherUserId, isFollow, setIsFollow) => {
-    console.log(userId, "userid");
-    console.log(otherUserId, "other user id ");
     try {
       const newFollowState = !isFollow[otherUserId];
       await followUser(userId, otherUserId);

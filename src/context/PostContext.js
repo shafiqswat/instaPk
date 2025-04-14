@@ -7,16 +7,21 @@ import {
   getFollowingPosts,
   getSinglePostById,
   getUserPosts,
-  likeUserPost,
   updateUserPost,
 } from "@/services/postServices";
 import React, { createContext, useContext, useState } from "react";
+import { likeUserPost } from "@/services/postServices/update";
+
 const PostContext = createContext();
+
 export const PostProvider = ({ children }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [myPostsData, setMyPostsData] = useState([]);
   const [allPosts, setAllPosts] = useState([]);
+  const [homePagePosts, setHomePagePosts] = useState([]);
+  const [postData, setPostData] = useState(null);
+
   const createPost = async ({ uid, caption, imgUrls, user }) => {
     setLoading(true);
     try {
@@ -126,25 +131,26 @@ export const PostProvider = ({ children }) => {
     }
   };
 
-  const likePost = async (postId, userId, setPostData, isLike, setIsLike) => {
-    setIsLike(!isLike);
+  const likePost = async (postId, userId) => {
     try {
-      await likeUserPost(postId, userId);
-      if (!isLike) {
-        setPostData((prev) => ({
-          ...prev,
-          likeCount: prev.likeCount + 1,
-          likes: [...prev.likes, userId],
-        }));
-      } else {
-        setPostData((prev) => ({
-          ...prev,
-          likeCount: prev.likeCount - 1,
-          likes: prev.likes.filter((id) => id !== userId),
-        }));
+      const updatedData = await likeUserPost(postId, userId);
+
+      // Update home page posts
+      setHomePagePosts((prev) =>
+        prev.map((post) =>
+          post._id === postId ? { ...post, ...updatedData } : post
+        )
+      );
+
+      // Update single post data if it exists
+      if (postData?._id === postId) {
+        setPostData((prev) => ({ ...prev, ...updatedData }));
       }
-    } catch (err) {
-      console.log(err);
+
+      return updatedData;
+    } catch (error) {
+      console.error("Error in likePost:", error);
+      throw error;
     }
   };
 
@@ -161,9 +167,13 @@ export const PostProvider = ({ children }) => {
         allPosts,
         deletePost,
         updatedPost,
-        likePost,
         getAppPosts,
         allFollowingPosts,
+        homePagePosts,
+        setHomePagePosts,
+        postData,
+        setPostData,
+        likePost,
       }}>
       {children}
     </PostContext.Provider>
