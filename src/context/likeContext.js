@@ -11,82 +11,51 @@ import {
 const LikeContext = createContext();
 
 export const LikeProvider = ({ children }) => {
-  const [likes, setLikes] = useState({});
+  const [likes, setLikes] = useState({
+    // post1: { isLiked: true, likeCount: 5 },
+  });
+
+  const updateLikeState = (postId, isLiked, likeCount) => {
+    setLikes((prev) => ({
+      ...prev,
+      [postId]: { isLiked, likeCount },
+    }));
+  };
 
   const fetchLikeStatus = async (postId, userId) => {
     if (!postId || !userId) return;
-
     try {
       const [isLiked, { likeCount }] = await Promise.all([
         isPostLikedByUser(postId, userId),
         getPostLikes(postId),
       ]);
-
-      setLikes((prev) => ({ ...prev, [postId]: { isLiked, likeCount } }));
+      updateLikeState(postId, isLiked, likeCount);
     } catch (error) {
       console.error("Error fetching like status:", error);
     }
   };
 
   const handleLike = async (postId, userId) => {
-    // Optimistic update
-    setLikes((prev) => ({
-      ...prev,
-      [postId]: {
-        isLiked: true,
-        likeCount: (prev[postId]?.likeCount || 0) + 1,
-      },
-    }));
-
+    const currentCount = likes[postId]?.likeCount || 0;
+    updateLikeState(postId, true, currentCount + 1);
     try {
-      const updatedData = await LikePost(postId, userId);
-      // Update with actual data
-      setLikes((prev) => ({
-        ...prev,
-        [postId]: { isLiked: true, likeCount: updatedData.likeCount },
-      }));
-      return updatedData;
+      const { likeCount } = await LikePost(postId, userId);
+      updateLikeState(postId, true, likeCount);
     } catch (error) {
-      // Revert on error
-      setLikes((prev) => ({
-        ...prev,
-        [postId]: {
-          isLiked: false,
-          likeCount: (prev[postId]?.likeCount || 0) - 1,
-        },
-      }));
+      updateLikeState(postId, false, Math.max(0, currentCount));
       console.error("Error liking post:", error);
       throw error;
     }
   };
 
   const handleUnlike = async (postId, userId) => {
-    // Optimistic update
-    setLikes((prev) => ({
-      ...prev,
-      [postId]: {
-        isLiked: false,
-        likeCount: Math.max(0, (prev[postId]?.likeCount || 0) - 1),
-      },
-    }));
-
+    const currentCount = likes[postId]?.likeCount || 0;
+    updateLikeState(postId, false, Math.max(0, currentCount - 1));
     try {
-      const updatedData = await UnlikePost(postId, userId);
-      // Update with actual data
-      setLikes((prev) => ({
-        ...prev,
-        [postId]: { isLiked: false, likeCount: updatedData.likeCount },
-      }));
-      return updatedData;
+      const { likeCount } = await UnlikePost(postId, userId);
+      updateLikeState(postId, false, likeCount);
     } catch (error) {
-      // Revert on error
-      setLikes((prev) => ({
-        ...prev,
-        [postId]: {
-          isLiked: true,
-          likeCount: (prev[postId]?.likeCount || 0) + 1,
-        },
-      }));
+      updateLikeState(postId, true, currentCount + 1);
       console.error("Error unliking post:", error);
       throw error;
     }

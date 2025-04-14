@@ -25,6 +25,7 @@ export const isPostLikedByUser = async (postId, userId) => {
       where("userId", "==", userId)
     );
     const querySnapshot = await getDocs(likesQuery);
+
     return !querySnapshot.empty;
   } catch (error) {
     console.error("Error checking if post is liked:", error);
@@ -80,18 +81,21 @@ export const UnlikePost = async (postId, userId) => {
     const deletePromises = querySnapshot.docs.map((doc) => deleteDoc(doc.ref));
     await Promise.all(deletePromises);
 
-    // Update post like count
+    // Get current like count
     const postRef = doc(postsCollection, postId);
-    await updateDoc(postRef, {
-      likeCount: increment(-1), // Using increment with negative value instead of decrement
-    });
-
-    // Get updated like count
     const postDoc = await getDoc(postRef);
     const postData = postDoc.data();
+    const currentLikes = postData.likeCount || 0;
+
+    // Only decrement if greater than 0
+    if (currentLikes > 0) {
+      await updateDoc(postRef, {
+        likeCount: increment(-1),
+      });
+    }
 
     return {
-      likeCount: Math.max(0, postData.likeCount || 0),
+      likeCount: Math.max(0, currentLikes - 1),
     };
   } catch (error) {
     console.error("Error unliking post:", error);

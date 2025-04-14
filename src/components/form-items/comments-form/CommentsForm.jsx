@@ -1,16 +1,16 @@
 /** @format */
 "use client";
+
+import React, { useEffect, useState } from "react";
 import Share from "@/components/modals/share/Share";
+import TextArea from "../textarea/TextArea";
+import useCompactTimeFormat from "@/components/hooks/useCompactTimeFormat";
 import {
   CommentsIcon,
   FavoriteIcon,
   HurtIcon,
   ShareIcon,
 } from "@/constants/SvgIcon";
-
-import React, { useEffect, useState } from "react";
-import TextArea from "../textarea/TextArea";
-import useCompactTimeFormat from "@/components/hooks/useCompactTimeFormat";
 import { useComments } from "@/context/commentsContext";
 import { useAuth } from "@/context/AuthContext";
 import { useLike } from "@/context/likeContext";
@@ -27,12 +27,8 @@ const CommentsForm = ({
   iconsContainerStyle,
   textareaContainer,
 }) => {
-  const { user } = useAuth();
-  const [postData, setPostData] = useState(items);
-  const [showShareModal, setShowShareModal] = useState(false);
-  const [commentValue, setCommentValue] = useState("");
+  const { user, savePost } = useAuth();
   const { addComment } = useComments();
-  const { savePost } = useAuth();
   const {
     handleLike,
     handleUnlike,
@@ -40,60 +36,51 @@ const CommentsForm = ({
     getLikeCount,
     fetchLikeStatus,
   } = useLike();
-  const [isSavePost, setIsSavePost] = useState(
-    user?.favorites?.includes(postData?._id)
-  );
-  const [isExpanded, setIsExpanded] = useState(false);
+
+  const [postData, setPostData] = useState(items);
+  const [comment, setComment] = useState("");
+  const [showShareModal, setShowShareModal] = useState(false);
+  const [expanded, setExpanded] = useState(false);
+  const [saved, setSaved] = useState(user?.favorites?.includes(items?._id));
+
   const formattedTime = useCompactTimeFormat(postData?.createdAt);
+  const isLiked = isPostLiked(postData?.id);
+  const likeCount = getLikeCount(postData?.id) || postData?.likeCount || 0;
+  const caption = expanded ? postData.caption : postData.caption?.slice(0, 100);
 
   useEffect(() => {
     if (postData?.id && user?._id) {
       fetchLikeStatus(postData.id, user._id);
-      setIsSavePost(user?.favorites?.includes(postData?.id));
+      setSaved(user.favorites?.includes(postData.id));
     }
   }, [postData, user]);
 
-  const handleLikePost = async () => {
+  const toggleLike = async () => {
     if (!postData?.id || !user?._id) return;
-    try {
-      const updatedData = isPostLiked(postData.id)
-        ? await handleUnlike(postData.id, user._id)
-        : await handleLike(postData.id, user._id);
-      setPostData((prev) => ({
-        ...prev,
-        likeCount: updatedData.likeCount,
-      }));
-    } catch (error) {
-      console.error("Error handling like:", error);
-    }
+    const updated = isLiked
+      ? await handleUnlike(postData.id, user._id)
+      : await handleLike(postData.id, user._id);
+    setPostData((prev) => ({ ...prev, likeCount: updated?.likeCount }));
   };
 
-  const handleCommentPost = (e) => {
+  const submitComment = (e) => {
     e.preventDefault();
-    if (!postData?.id || !user?._id || !commentValue.trim()) return;
-    addComment(postData.id, user, commentValue);
-    setCommentValue("");
+    if (!comment.trim()) return;
+    addComment(postData.id, user, comment.trim());
+    setComment("");
   };
 
-  const handleSavePost = () => {
+  const toggleSave = () => {
     if (!postData?.id || !user?._id) return;
-    savePost(postData.id, user._id, isSavePost, setIsSavePost);
+    savePost(postData.id, user._id, saved, setSaved);
   };
-
-  const currentLikeCount =
-    getLikeCount(postData?.id) || postData?.likeCount || 0;
-  const isLiked = isPostLiked(postData?.id);
-  const caption = isExpanded
-    ? postData.caption
-    : postData?.caption?.slice(0, 100);
-  const showMore = !isExpanded && postData?.caption?.length > 100;
 
   return (
     <div className='w-full'>
       <div className={`py-2 ${iconsContainerStyle}`}>
         <div className='flex gap-3 mt-3'>
           <HurtIcon
-            onClick={handleLikePost}
+            onClick={toggleLike}
             fill={isLiked}
           />
           <CommentsIcon
@@ -106,9 +93,9 @@ const CommentsForm = ({
           />
           <div className='ml-auto'>
             <FavoriteIcon
-              className={`${!isSavePost ? " hover:text-gray-400" : ""}`}
-              onClick={handleSavePost}
-              fill={isSavePost}
+              onClick={toggleSave}
+              fill={saved}
+              className={!saved ? "hover:text-gray-400" : ""}
             />
           </div>
           <Share
@@ -117,45 +104,27 @@ const CommentsForm = ({
           />
         </div>
 
-        {!homePage && (
+        {!homePage ? (
           <>
             <h2 className='text-sm font-semibold mt-5'>
-              {`${currentLikeCount} ${
-                currentLikeCount === 1 ? "like" : "likes"
-              }`}
+              {likeCount} {likeCount === 1 ? "like" : "likes"}
             </h2>
             <p className='text-xs text-gray-500'>{formattedTime}</p>
           </>
-        )}
-        {homePage && (
+        ) : (
           <>
-            {currentLikeCount > 0 && (
+            {likeCount > 0 && (
               <p className='text-sm mt-2 font-semibold'>
-                Liked by{" "}
-                <strong className='font-semibold cursor-pointer'>
-                  {currentLikeCount}
-                </strong>{" "}
-                person
+                Liked by <strong>{likeCount}</strong> person
               </p>
             )}
-
             <p className='text-sm font-sans mt-2'>
-              <strong className='font-sans text-sm font-semibold'>
-                {postData.user.userName}
-              </strong>{" "}
-              {caption}
-              {showMore && (
+              <strong>{postData.user?.userName}</strong> {caption}
+              {postData.caption?.length > 100 && (
                 <span
-                  className='cursor-pointer text-gray-600 font-semibold'
-                  onClick={() => setIsExpanded(true)}>
-                  ...more
-                </span>
-              )}
-              {isExpanded && (
-                <span
-                  className='cursor-pointer font-semibold text-gray-600'
-                  onClick={() => setIsExpanded(false)}>
-                  ...less
+                  onClick={() => setExpanded(!expanded)}
+                  className='cursor-pointer text-gray-600 font-semibold'>
+                  {expanded ? "...less" : "...more"}
                 </span>
               )}
             </p>
@@ -172,12 +141,12 @@ const CommentsForm = ({
 
       <form
         className='px-3 relative'
-        onSubmit={handleCommentPost}>
+        onSubmit={submitComment}>
         <TextArea
           placeholder='Add a comment...'
           maxLength={2200}
-          value={commentValue}
-          onChange={(newValue) => setCommentValue(newValue)}
+          value={comment}
+          onChange={setComment}
           textareaStyle={textareaStyle}
           IconStyle={IconStyle}
           pickerStyle={pickerStyle}
@@ -185,10 +154,10 @@ const CommentsForm = ({
           textareaContainer={textareaContainer}
           className='xs:w-full w-[200px]'
         />
-        {commentValue.trim() !== "" && (
+        {comment.trim() && (
           <button
-            className={`${btnStyle} font-semibold text-blue-500 absolute bottom-6 right-4`}
-            type='submit'>
+            type='submit'
+            className={`${btnStyle} font-semibold text-blue-500 absolute bottom-6 right-4`}>
             Post
           </button>
         )}
