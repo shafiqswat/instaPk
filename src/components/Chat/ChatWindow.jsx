@@ -3,27 +3,29 @@
 import { useAuth } from "@/context/AuthContext";
 import {
   AudioCallIcon,
-  ChatGallery,
   ChatMessageIcon,
-  EmojiPickerIcon,
-  GifIcon,
-  HurtIcon,
   MoreInfoIcon,
-  VoiceIcon,
 } from "@/constants/SvgIcon";
 import React, { useState, useEffect, useRef } from "react";
 import { useChat } from "@/context/chatContext";
 import { useRouter } from "next/navigation";
 import { Video } from "lucide-react";
-import EmojiPicker from "emoji-picker-react";
+import { uploadToCloudinary } from "@/helpers/cloudinaryUpload.helper";
+import Modal from "../modals/modal/Modal";
+import MessagesList from "./MessagesList";
+import MessageInput from "./MessageInput";
 
 const ChatWindow = () => {
   const [newMessage, setNewMessage] = useState("");
-  const [emojiPickerVisible, setEmojiPickerVisible] = useState(false);
-  const { activeThread, messages, sendMessageToUser } = useChat();
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [selectedMessage, setSelectedMessage] = useState(null);
+  const [selectedImage, setSelectedImage] = useState(null);
+  const [imagePreview, setImagePreview] = useState(null);
+  const [isUploading, setIsUploading] = useState(false);
+  const { activeThread, messages, sendMessageToUser, deleteMessageForUser } =
+    useChat();
   const { user } = useAuth();
   const messagesEndRef = useRef(null);
-  const emojiRef = useRef(null);
   const router = useRouter();
 
   // Scroll to bottom when new messages arrive
@@ -31,33 +33,56 @@ const ChatWindow = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
+  // Handle image selection
+  const handleImageSelect = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setSelectedImage(file);
+      setImagePreview(URL.createObjectURL(file));
+    }
+  };
+
+  // Remove selected image
+  const removeSelectedImage = () => {
+    setSelectedImage(null);
+    setImagePreview(null);
+  };
+
   // Handle sending a message
   const handleSend = async (e) => {
     e.preventDefault();
-    if (!newMessage.trim()) return;
-    await sendMessageToUser(newMessage);
-    setNewMessage("");
-  };
+    if (!newMessage.trim() && !selectedImage) return;
 
-  // Handle emoji selection
-  const handleEmojiClick = (emojiObject) => {
-    setNewMessage((prev) => prev + emojiObject.emoji);
-  };
-
-  // Handle outside click to close emoji picker
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (
-        emojiRef.current &&
-        !emojiRef.current.contains(event.target) &&
-        !event.target.closest("#emoji-button")
-      ) {
-        setEmojiPickerVisible(false);
+    if (selectedImage) {
+      setIsUploading(true);
+      try {
+        const imageUrl = await uploadToCloudinary(selectedImage);
+        await sendMessageToUser(newMessage, imageUrl);
+        setNewMessage("");
+        setSelectedImage(null);
+        setImagePreview(null);
+      } catch (error) {
+        console.error("Error uploading image:", error);
+      } finally {
+        setIsUploading(false);
       }
-    };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
+    } else {
+      await sendMessageToUser(newMessage);
+      setNewMessage("");
+    }
+  };
+
+  // Handle message deletion
+  const handleDeleteMessage = async (messageId, deleteForEveryone = false) => {
+    if (!messageId) return;
+    try {
+      await deleteMessageForUser(messageId, deleteForEveryone);
+      setShowDeleteModal(false);
+      setSelectedMessage(null);
+    } catch (error) {
+      console.error("Error deleting message:", error);
+    }
+  };
 
   if (!activeThread)
     return (
@@ -69,9 +94,9 @@ const ChatWindow = () => {
     );
 
   return (
-    <div className='p-4 w-full md:h-[calc(100vh)] h-[calc(100vh-60px)] flex flex-col relative'>
+    <div className='flex flex-col h-full w-full overflow-hidden relative'>
       {/* Chat Header */}
-      <div className='flex items-center gap-2 border-b pb-4'>
+      <div className='flex items-center gap-2 border-b pb-4 p-4 sticky top-0 bg-white z-10'>
         <img
           onClick={() => router.push(`/${activeThread.otherUser.userName}`)}
           src={activeThread.otherUser.profilePic}
@@ -90,99 +115,53 @@ const ChatWindow = () => {
         </div>
       </div>
 
-      {/* Messages List */}
-      <div className='flex-1 overflow-y-auto p-2 flex flex-col'>
-        {messages.map((msg, index) => (
-          <React.Fragment key={msg._id}>
-            {index === 0 ||
-            new Date(messages[index - 1]?.timestamp).toDateString() !==
-              new Date(msg.timestamp).toDateString() ? (
-              <div className='text-center text-gray-500 font-semibold text-xs my-2'>
-                {new Date(msg.timestamp).toDateString()}
-              </div>
-            ) : null}
-
-            <div
-              className={`flex items-end ${
-                msg.sender === user._id ? "justify-end" : "justify-start"
-              }`}>
-              {msg.sender !== user._id && (
-                <img
-                  src={activeThread.otherUser.profilePic}
-                  className='w-8 h-8 rounded-full mr-2'
-                  alt='Profile'
-                />
-              )}
-              <div
-                className={`p-2 my-1 rounded-xl max-w-[70%] w-fit ${
-                  msg.sender === user._id
-                    ? "bg-blue-500 text-white"
-                    : "bg-gray-200"
-                }`}>
-                <p>{msg.text}</p>
-                <small className='text-xs block text-gray-600 text-right'>
-                  {new Date(msg.timestamp).toLocaleTimeString()}
-                </small>
-              </div>
-            </div>
-          </React.Fragment>
-        ))}
+      {/* Messages Container */}
+      <div className='flex-1 overflow-y-auto overflow-x-hidden'>
+        <MessagesList
+          messages={messages}
+          currentUser={user}
+          otherUserProfilePic={activeThread.otherUser.profilePic}
+          onDeleteMessage={(messageId) => {
+            setSelectedMessage(messages.find((msg) => msg._id === messageId));
+            setShowDeleteModal(true);
+          }}
+        />
         <div ref={messagesEndRef} />
       </div>
 
       {/* Message Input */}
-      <form
-        onSubmit={handleSend}
-        className='mt-4 flex gap-2 w-full relative'>
-        <div className='relative flex items-center w-full'>
-          {/* Left-side icons */}
-          <div className='absolute left-3 flex items-center gap-2'>
+      <div className='p-4 border-t sticky bottom-0 bg-white'>
+        <MessageInput
+          newMessage={newMessage}
+          setNewMessage={setNewMessage}
+          onSend={handleSend}
+          onImageSelect={handleImageSelect}
+          imagePreview={imagePreview}
+          removeSelectedImage={removeSelectedImage}
+          isUploading={isUploading}
+        />
+      </div>
+
+      {/* Delete Message Modal */}
+      <Modal
+        showModal={showDeleteModal}
+        setShowModal={setShowDeleteModal}>
+        <div className='p-4'>
+          <h3 className='text-lg font-semibold mb-4'>Delete Message</h3>
+          <div className='flex flex-col gap-2'>
             <button
-              id='emoji-button'
-              type='button'
-              className='cursor-pointer'
-              onClick={() => setEmojiPickerVisible((prev) => !prev)}>
-              <EmojiPickerIcon className='w-5 h-5' />
+              className='text-red-500 font-semibold py-2 border-b'
+              onClick={() => handleDeleteMessage(selectedMessage?._id, true)}>
+              Delete for Everyone
+            </button>
+            <button
+              className='text-red-500 font-semibold py-2'
+              onClick={() => handleDeleteMessage(selectedMessage?._id, false)}>
+              Delete for Me
             </button>
           </div>
-
-          {/* Input Field */}
-          <input
-            type='text'
-            value={newMessage}
-            onChange={(e) => setNewMessage(e.target.value)}
-            className='border py-2 pl-10 pr-14 rounded-full w-full focus:outline-none'
-            placeholder='Message...'
-          />
-
-          {/* Right-side icons OR Send button */}
-          <div className='absolute right-3 flex items-center gap-3'>
-            {newMessage.trim() ? (
-              <button
-                type='submit'
-                className='text-sm font-semibold text-blue-500'>
-                Send
-              </button>
-            ) : (
-              <>
-                <VoiceIcon />
-                <ChatGallery />
-                <GifIcon />
-                <HurtIcon />
-              </>
-            )}
-          </div>
         </div>
-      </form>
-
-      {/* Emoji Picker  */}
-      {emojiPickerVisible && (
-        <div
-          ref={emojiRef}
-          className='absolute bottom-20 left-10 z-50 bg-white border shadow-lg rounded-lg'>
-          <EmojiPicker onEmojiClick={handleEmojiClick} />
-        </div>
-      )}
+      </Modal>
     </div>
   );
 };

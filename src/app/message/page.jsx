@@ -1,16 +1,31 @@
 /** @format */
+
 "use client";
 import ChatWindow from "@/components/Chat/ChatWindow";
 import ConversationList from "@/components/Chat/ConversationList";
-import React from "react";
+import React, { useEffect } from "react";
 import { useChat } from "@/context/chatContext";
+import { useSearchParams } from "next/navigation";
 
 const Chat = () => {
-  const { activeThread } = useChat();
+  const { setActiveThread, activeThread, conversations } = useChat();
+  const searchParams = useSearchParams();
+  const threadId = searchParams.get("threadId");
+
+  useEffect(() => {
+    if (threadId) {
+      if (!activeThread) {
+        const thread = conversations?.find((c) => c._id === threadId);
+        if (thread) setActiveThread(thread);
+      }
+    } else {
+      setActiveThread(null);
+    }
+  }, [threadId, conversations]);
 
   return (
     <div className='flex h-screen'>
-      {/* Large Screens: Show both */}
+      {/* Desktop */}
       <div className='hidden md:flex w-full'>
         <ConversationList />
         <div className='flex-1'>
@@ -18,9 +33,9 @@ const Chat = () => {
         </div>
       </div>
 
-      {/* Small Screens: Conditional Rendering */}
+      {/* Mobile */}
       <div className='flex md:hidden w-full'>
-        {!activeThread ? <ConversationList /> : <ChatWindow />}
+        {!threadId ? <ConversationList /> : <ChatWindow />}
       </div>
     </div>
   );

@@ -4,6 +4,7 @@ import {
   fetchConversations,
   fetchMessages,
   sendMessage,
+  deleteMessage,
 } from "../services/chatService";
 const ChatContext = createContext();
 
@@ -27,11 +28,23 @@ export const ChatProvider = ({ children, user }) => {
     return () => unsubscribe();
   }, [activeThread?._id]);
 
-  const sendMessageToUser = async (text) => {
+  const sendMessageToUser = async (text, imageUrl = null) => {
     if (!userId || !activeThread?.otherUser) return;
     setLoading(true);
     try {
-      await sendMessage(userId, activeThread.otherUser._id, text);
+      await sendMessage(userId, activeThread.otherUser._id, text, imageUrl);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const deleteMessageForUser = async (messageId, deleteForEveryone = false) => {
+    if (!activeThread?._id || !messageId) return;
+    setLoading(true);
+    try {
+      await deleteMessage(activeThread._id, messageId, deleteForEveryone);
     } catch (err) {
       setError(err.message);
     } finally {
@@ -47,6 +60,7 @@ export const ChatProvider = ({ children, user }) => {
         setActiveThread,
         messages,
         sendMessageToUser,
+        deleteMessageForUser,
         loading,
         error,
       }}>

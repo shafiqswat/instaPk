@@ -4,10 +4,12 @@ import { EditIcon } from "lucide-react";
 import React, { useState } from "react";
 import { useChat } from "@/context/chatContext";
 import ChatModal from "../modals/chat/chatModal";
+import { useRouter } from "next/navigation";
 
 const ConversationList = () => {
   const [isChatOpen, setIsChatOpen] = useState(false);
   const { conversations, setActiveThread } = useChat();
+  const router = useRouter();
 
   const { user } = useAuth();
   const tabs = ["Primary"];
@@ -38,7 +40,10 @@ const ConversationList = () => {
           <div
             key={convo._id}
             className='p-2 flex gap-2 hover:bg-gray-100 cursor-pointer'
-            onClick={() => setActiveThread(convo)}>
+            onClick={() => {
+              setActiveThread(convo);
+              router.push(`/message?threadId=${convo._id}`);
+            }}>
             <img
               className='w-12 h-12 rounded-full'
               src={convo.otherUser.profilePic}

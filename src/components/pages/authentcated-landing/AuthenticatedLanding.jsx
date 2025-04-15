@@ -26,27 +26,28 @@ const AuthenticatedLanding = () => {
   }, []);
 
   const fetchData = async () => {
-    if (!user?.following || user.following.length === 0) {
+    if (!user?.following?.length) {
       setHomePageData([]);
       setHasMore(false);
       return;
     }
+
     const data = await allFollowingPosts(user.following);
     setHomePageData(data.slice(0, limit));
     setHasMore(data.length > limit);
   };
 
   const loadMore = async () => {
-    if (!user?.following || user.following.length === 0) return;
+    if (!user?.following?.length) return;
 
-    const data = await allFollowingPosts(user.following);
+    const data = await allFollowingPosts(user?.following);
     const nextPagePosts = data.slice((page + 1) * limit, (page + 2) * limit);
 
     if (nextPagePosts.length === 0) {
       setHasMore(false);
     } else {
       setHomePageData((prev) => [...prev, ...nextPagePosts]);
-      setPage((prevPage) => prevPage + 1);
+      setPage((prev) => prev + 1);
     }
   };
 
@@ -60,7 +61,7 @@ const AuthenticatedLanding = () => {
       <div className='w-full'>
         <FriendSuggestions />
 
-        {user?.following?.length === 0 ? (
+        {!user?.following?.length ? (
           <div className='text-center text-gray-500 mt-10'>
             <p>You are not following anyone yet.</p>
             <p>Follow people to see their posts!</p>
