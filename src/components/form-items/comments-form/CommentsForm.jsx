@@ -11,9 +11,9 @@ import {
   HurtIcon,
   ShareIcon,
 } from "@/constants/SvgIcon";
-import { useComments } from "@/context/commentsContext";
-import { useAuth } from "@/context/AuthContext";
-import { useLike } from "@/context/likeContext";
+import { useComments } from "@/context/comments.context";
+import { useAuth } from "@/context/auth.context";
+import { useLike } from "@/context/likes.context";
 
 const CommentsForm = ({
   items,

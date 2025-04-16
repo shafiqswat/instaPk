@@ -2,8 +2,8 @@
 "use client";
 import React, { useState } from "react";
 import { CrossIcon } from "@/constants/SvgIcon";
-import { useAuth } from "@/context/AuthContext";
-import { useChat } from "@/context/chatContext";
+import { useAuth } from "@/context/auth.context";
+import { useChat } from "@/context/chat.context";
 import Modal from "../modal/Modal";
 
 const ChatModal = ({ isChatOpen, setIsChatOpen }) => {

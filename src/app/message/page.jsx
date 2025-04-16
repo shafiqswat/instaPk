@@ -4,7 +4,7 @@
 import ChatWindow from "@/components/Chat/ChatWindow";
 import ConversationList from "@/components/Chat/ConversationList";
 import React, { useEffect } from "react";
-import { useChat } from "@/context/chatContext";
+import { useChat } from "@/context/chat.context";
 import { useSearchParams } from "next/navigation";
 
 const Chat = () => {

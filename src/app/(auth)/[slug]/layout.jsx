@@ -5,7 +5,7 @@ import Notes from "@/components/modals/notes/Notes";
 import PictureModal from "@/components/modals/picture-modal/PictureModal";
 import TabsCustom from "@/components/elements/tabs/Tabs";
 import { CopyIcon, OptionIcon, ThreeDotsIcon } from "@/constants/SvgIcon";
-import { useAuth } from "@/context/AuthContext";
+import { useAuth } from "@/context/auth.context";
 import { Plus, UserPlus } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
@@ -13,9 +13,9 @@ import ProtectedRoute from "@/components/protected-route/ProtectedRoute";
 import Loading from "@/components/loading/Loading";
 import Followers from "@/components/modals/followers/Followers";
 import Highlights from "@/components/modals/highlights/Highlights";
-import { useNote } from "@/context/NoteContext";
-import { useChat } from "@/context/chatContext";
-import { usePost } from "@/context/PostContext";
+import { useNote } from "@/context/note.context";
+import { useChat } from "@/context/chat.context";
+import { usePost } from "@/context/post.context";
 
 const Profile = () => {
   const [isNoteModal, setIsNoteModal] = useState(false);

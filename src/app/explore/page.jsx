@@ -5,12 +5,12 @@ import SocialCard from "@/components/cards/social-card/SocialCard";
 import LoadingSkeleton from "@/components/elements/loading-skeleton/loadingSkeleton";
 import Comment from "@/components/modals/comment/Comment";
 import ProtectedRoute from "@/components/protected-route/ProtectedRoute";
-import { usePost } from "@/context/PostContext";
+import { usePost } from "@/context/post.context";
 import InfiniteScroll from "react-infinite-scroll-component";
-import { useSearch } from "@/context/SearchContext";
+import { useSearch } from "@/context/search.context";
 import UserSuggestion from "@/components/cards/user-suggestion/userSuggestion";
 import { useRouter } from "next/navigation";
-import { useAuth } from "@/context/AuthContext";
+import { useAuth } from "@/context/auth.context";
 
 const ExplorePage = () => {
   const { getAppPosts } = usePost();

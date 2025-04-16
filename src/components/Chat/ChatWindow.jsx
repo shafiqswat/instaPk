@@ -1,13 +1,13 @@
 /** @format */
 
-import { useAuth } from "@/context/AuthContext";
+import { useAuth } from "@/context/auth.context";
 import {
   AudioCallIcon,
   ChatMessageIcon,
   MoreInfoIcon,
 } from "@/constants/SvgIcon";
 import React, { useState, useEffect, useRef } from "react";
-import { useChat } from "@/context/chatContext";
+import { useChat } from "@/context/chat.context";
 import { useRouter } from "next/navigation";
 import { Video } from "lucide-react";
 import { uploadToCloudinary } from "@/helpers/cloudinaryUpload.helper";

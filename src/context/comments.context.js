@@ -1,10 +1,6 @@
 /** @format */
 
-import {
-  createComments,
-  deleteComment,
-  getComments,
-} from "@/services/commentsService";
+import { commentsService } from "@/services/comments.service";
 import React, { createContext, useContext, useState } from "react";
 const commentsContext = createContext();
 export const CommentsProvider = ({ children }) => {
@@ -15,7 +11,7 @@ export const CommentsProvider = ({ children }) => {
   const addComment = async (postId, user, comment) => {
     setLoading(true);
     try {
-      const data = await createComments(postId, user, comment);
+      const data = await commentsService.createComments(postId, user, comment);
       console.log(data, "commmmmmmmmmmmmments");
       setComments((prev) => [...prev, data]);
     } catch (err) {
@@ -28,7 +24,7 @@ export const CommentsProvider = ({ children }) => {
     setLoading(true);
     try {
       if (postId) {
-        const data = await getComments(postId);
+        const data = await commentsService.getComments(postId);
         setComments(data);
       }
     } catch (err) {
@@ -42,7 +38,7 @@ export const CommentsProvider = ({ children }) => {
     console.log(postId, commentsId);
     setLoading(true);
     try {
-      await deleteComment(postId, commentsId);
+      await commentsService.deleteComment(postId, commentsId);
       setComments((prevData) =>
         prevData.filter((comment) => comment._id !== commentsId)
       );

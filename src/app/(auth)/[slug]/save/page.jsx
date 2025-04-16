@@ -3,8 +3,8 @@
 import SocialCard from "@/components/cards/social-card/SocialCard";
 import LoadingSkeleton from "@/components/elements/loading-skeleton/loadingSkeleton";
 import Comment from "@/components/modals/comment/Comment";
-import { useAuth } from "@/context/AuthContext";
-import { usePost } from "@/context/PostContext";
+import { useAuth } from "@/context/auth.context";
+import { usePost } from "@/context/post.context";
 import React, { useEffect, useState } from "react";
 
 const Save = ({ selectedUser }) => {

@@ -1,19 +1,19 @@
 /** @format */
 
 "use client";
-import { AuthProvider, useAuth } from "@/context/AuthContext";
+import { AuthProvider, useAuth } from "@/context/auth.context";
 import React from "react";
 import Loading from "../loading/Loading";
 import Header from "./header/Header";
 import SidebarWrapper from "./sidebar-wrapper/SidebarWrapper";
-import { PostProvider } from "@/context/PostContext";
-import { SearchProvider } from "@/context/SearchContext";
-import { NoteProvider } from "@/context/NoteContext";
-import { CommentsProvider } from "@/context/commentsContext";
-import { ChatProvider } from "@/context/chatContext";
+import { PostProvider } from "@/context/post.context";
+import { SearchProvider } from "@/context/search.context";
+import { NoteProvider } from "@/context/note.context";
+import { CommentsProvider } from "@/context/comments.context";
+import { ChatProvider } from "@/context/chat.context";
 import { usePathname } from "next/navigation";
 import Footer from "./footer/footer";
-import { LikeProvider } from "@/context/likeContext";
+import { LikeProvider } from "@/context/likes.context";
 
 const LayoutContent = ({ children }) => {
   const { isAuthLoading, isAuthenticated, user } = useAuth();

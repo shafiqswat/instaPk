@@ -8,7 +8,7 @@ import Share from "../../modals/share/Share";
 import Report from "@/components/modals/report/Report";
 import CarouselCustom from "@/components/carousel/Carousel";
 import CommentsForm from "@/components/form-items/comments-form/CommentsForm";
-import { useAuth } from "@/context/AuthContext";
+import { useAuth } from "@/context/auth.context";
 
 import useCompactTimeFormat from "@/components/hooks/useCompactTimeFormat";
 import { useRouter } from "next/navigation";
@@ -121,8 +121,8 @@ const PostCard = ({ items, handlePostClick }) => {
         showModal={showModal}
         setShowModal={setShowModal}
         setIsFollow={setIsFollow}
-        userId={items?.user?._id}
         selectedUser={items?.user}
+        selectedPost={items}
       />
 
       {/*<<<<<<<<<<<---------------------  Share Modal  ------------------------->>>>>>>>>>>>> */}

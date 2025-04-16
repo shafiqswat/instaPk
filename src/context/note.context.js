@@ -1,11 +1,6 @@
 /** @format */
 
-import {
-  addNote,
-  deleteUserNote,
-  getUserNote,
-  update,
-} from "@/services/noteService";
+import { noteService } from "@/services/note.service";
 import React, { createContext, useContext, useState } from "react";
 const NoteContext = createContext();
 export const NoteProvider = ({ children }) => {
@@ -15,7 +10,7 @@ export const NoteProvider = ({ children }) => {
   const createNote = async (userId, notedData) => {
     setLoading(true);
     try {
-      const data = await addNote(userId, notedData);
+      const data = await noteService.addNote(userId, notedData);
       setNote(data);
       console.log(note);
     } catch (err) {
@@ -27,7 +22,7 @@ export const NoteProvider = ({ children }) => {
   const getNote = async (userId) => {
     setLoading(true);
     try {
-      const data = await getUserNote(userId);
+      const data = await noteService.getUserNote(userId);
       setNote(data);
     } catch (err) {
       console.log(err);
@@ -39,7 +34,7 @@ export const NoteProvider = ({ children }) => {
   const updateNote = async (userId, updatedData) => {
     setLoading(true);
     try {
-      const data = await update(userId, updatedData);
+      const data = await noteService.update(userId, updatedData);
       if (data) {
         setNote((prev) => ({
           ...prev,
@@ -58,7 +53,7 @@ export const NoteProvider = ({ children }) => {
   const deleteNote = async (userId) => {
     setLoading(true);
     try {
-      await deleteUserNote(userId);
+      await noteService.deleteUserNote(userId);
       setNote("");
     } catch (err) {
       console.log(err);

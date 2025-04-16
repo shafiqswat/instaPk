@@ -2,7 +2,7 @@
 
 import React from "react";
 import Modal from "../modal/Modal";
-import { useComments } from "@/context/commentsContext";
+import { useComments } from "@/context/comments.context";
 
 const DeleteComments = ({ deleteModal, setDeleteModal, postId, commentId }) => {
   const { deleteComments } = useComments();

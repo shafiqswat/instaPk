@@ -1,8 +1,8 @@
 /** @format */
-import { useAuth } from "@/context/AuthContext";
+import { useAuth } from "@/context/auth.context";
 import { EditIcon } from "lucide-react";
 import React, { useState } from "react";
-import { useChat } from "@/context/chatContext";
+import { useChat } from "@/context/chat.context";
 import ChatModal from "../modals/chat/chatModal";
 import { useRouter } from "next/navigation";
 

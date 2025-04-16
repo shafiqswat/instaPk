@@ -10,22 +10,16 @@ import {
   ThreeDotsIcon,
   VerifyIcon,
 } from "@/constants/SvgIcon";
-import { useAuth } from "@/context/AuthContext";
+import { useAuth } from "@/context/auth.context";
 import UpdatePost from "../update-post/UpdatePost";
 import LoadingSkeleton from "@/components/elements/loading-skeleton/loadingSkeleton";
 import Report from "../report/Report";
 import CommentsForm from "@/components/form-items/comments-form/CommentsForm";
 import { useRouter } from "next/navigation";
-import { useComments } from "@/context/commentsContext";
+import { useComments } from "@/context/comments.context";
 import DeleteComments from "../delete-comments/deleteComments";
 
-const Comment = ({
-  showModal,
-  setShowModal,
-  postData,
-  selectedUser,
-  isCurrentUser,
-}) => {
+const Comment = ({ showModal, setShowModal, postData, selectedUser }) => {
   const { loading: commentsLoading, fetchComments, comments } = useComments();
   const [showUpdateModal, setShowUpdateModal] = useState(false);
   const [commentToDelete, setCommentToDelete] = useState(null);
@@ -35,7 +29,6 @@ const Comment = ({
   const {
     user,
     singleUser,
-    singleUserData,
     loading: userLoading,
     handleFollow,
     setIsFollow,
@@ -61,6 +54,8 @@ const Comment = ({
       setDeleteModal(true);
     }
   };
+
+  const isCurrentUser = selectedUser?._id === user?._id;
   return (
     <div>
       <Modal
@@ -101,10 +96,17 @@ const Comment = ({
                 <VerifyIcon />
                 {!isCurrentUser && (
                   <>
-                    {!isFollow && (
+                    {!isFollow[selectedUser?._id] && (
                       <button
                         className='text-sm font-semibold text-sky-500 ms-2'
-                        onClick={handleFollow}>
+                        onClick={() =>
+                          handleFollow(
+                            user?._id,
+                            selectedUser?._id,
+                            isFollow,
+                            setIsFollow
+                          )
+                        }>
                         Follow
                       </button>
                     )}
@@ -199,12 +201,13 @@ const Comment = ({
         caption={postData?.caption}
         postData={postData}
       />
+
       <Report
         showModal={showReportModal}
         setShowModal={setShowReportModal}
         setIsFollow={setIsFollow}
-        userId={singleUserData._id}
         selectedUser={selectedUser}
+        selectedPost={postData}
       />
       <DeleteComments
         deleteModal={deleteModal}

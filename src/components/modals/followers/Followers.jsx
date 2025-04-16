@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import Modal from "../modal/Modal";
 import { CrossIcon } from "@/constants/SvgIcon";
 import { SearchIcon } from "lucide-react";
-import { useAuth } from "@/context/AuthContext";
+import { useAuth } from "@/context/auth.context";
 import { useRouter } from "next/navigation";
 
 const Followers = ({

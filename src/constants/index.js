@@ -110,16 +110,21 @@ export const suggestionDeskTopData = [
     onclick: () => handleClick(),
   },
 ];
-export const ReportModalData = [
-  { text: "Report" },
-  { text: "Add to favorites" },
-  { text: "Go to post" },
-  { text: "Share to..." },
-  { text: "Copy link" },
-  { text: "Embed" },
-  { text: "About this account" },
-  { text: "Cancel" },
+
+export const ReportModalData = (toggleSave, saved, dummyHandlers) => [
+  { text: "Report", onclick: dummyHandlers.handleReport },
+  {
+    text: saved ? "Remove from favorites" : "Add to favorites",
+    onclick: toggleSave,
+  },
+  { text: "Go to post", onclick: dummyHandlers.handleGoToPost },
+  { text: "Share to...", onclick: dummyHandlers.handleShare },
+  { text: "Copy link", onclick: dummyHandlers.handleCopyLink },
+  { text: "Embed", onclick: dummyHandlers.handleEmbed },
+  { text: "About this account", onclick: dummyHandlers.handleAboutAccount },
+  { text: "Cancel", onclick: dummyHandlers.handleCancel },
 ];
+
 // export const sidebarData = [
 //   { text: "Home", icon: <HomeIcon />, path: "/" },
 //   {

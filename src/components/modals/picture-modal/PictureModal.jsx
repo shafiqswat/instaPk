@@ -3,7 +3,7 @@
 "use client";
 import React, { useRef } from "react";
 import Modal from "../modal/Modal";
-import { useAuth } from "@/context/AuthContext";
+import { useAuth } from "@/context/auth.context";
 import convertImageToBase64, {
   uploadToCloudinary,
 } from "@/helpers/cloudinaryUpload.helper";

@@ -1,11 +1,8 @@
 /** @format */
+
+import { chatService } from "@/services/chat.service";
 import { createContext, useContext, useState, useEffect } from "react";
-import {
-  fetchConversations,
-  fetchMessages,
-  sendMessage,
-  deleteMessage,
-} from "../services/chatService";
+
 const ChatContext = createContext();
 
 export const ChatProvider = ({ children, user }) => {
@@ -15,24 +12,50 @@ export const ChatProvider = ({ children, user }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const userId = user?._id;
-
   useEffect(() => {
     if (!userId) return;
-    const unsubscribe = fetchConversations(userId, setConversations);
-    return () => unsubscribe();
+
+    let unsubscribe;
+
+    const fetchData = async () => {
+      unsubscribe = await chatService.fetchConversations(
+        userId,
+        setConversations
+      );
+    };
+
+    fetchData();
+
+    return () => {
+      if (unsubscribe) unsubscribe();
+    };
   }, [userId]);
 
   useEffect(() => {
     if (!activeThread?._id) return;
-    const unsubscribe = fetchMessages(activeThread?._id, setMessages);
-    return () => unsubscribe();
+    let unsubscribe;
+    const fetchData = async () => {
+      unsubscribe = await chatService.fetchMessages(
+        activeThread._id,
+        setMessages
+      );
+    };
+    fetchData();
+    return () => {
+      if (unsubscribe) unsubscribe();
+    };
   }, [activeThread?._id]);
 
   const sendMessageToUser = async (text, imageUrl = null) => {
     if (!userId || !activeThread?.otherUser) return;
     setLoading(true);
     try {
-      await sendMessage(userId, activeThread.otherUser._id, text, imageUrl);
+      await chatService.sendMessage(
+        userId,
+        activeThread.otherUser._id,
+        text,
+        imageUrl
+      );
     } catch (err) {
       setError(err.message);
     } finally {
@@ -44,7 +67,11 @@ export const ChatProvider = ({ children, user }) => {
     if (!activeThread?._id || !messageId) return;
     setLoading(true);
     try {
-      await deleteMessage(activeThread._id, messageId, deleteForEveryone);
+      await chatService.deleteMessage(
+        activeThread._id,
+        messageId,
+        deleteForEveryone
+      );
     } catch (err) {
       setError(err.message);
     } finally {

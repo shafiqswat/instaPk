@@ -8,9 +8,9 @@ import {
 } from "@radix-ui/react-hover-card";
 import { MessengerIcon } from "@/constants/SvgIcon";
 import { useRouter } from "next/navigation";
-import { useAuth } from "@/context/AuthContext";
+import { useAuth } from "@/context/auth.context";
 import LoadingSkeleton from "@/components/elements/loading-skeleton/loadingSkeleton";
-import { usePost } from "@/context/PostContext";
+import { usePost } from "@/context/post.context";
 const HoverCardCustom = ({ children, userData }) => {
   const { user, loading: userLoading } = useAuth();
   const { allPosts, loading } = usePost();

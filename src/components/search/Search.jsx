@@ -1,11 +1,11 @@
 /** @format */
 
-import { useAuth } from "@/context/AuthContext";
+import { useAuth } from "@/context/auth.context";
 import { XCircle } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import UserSuggestion from "../cards/user-suggestion/userSuggestion";
-import { useSearch } from "@/context/SearchContext";
+import { useSearch } from "@/context/search.context";
 
 const Search = ({ className }) => {
   const { allUsers } = useAuth();

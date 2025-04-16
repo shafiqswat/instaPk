@@ -7,7 +7,7 @@ import {
   MessengerIcon,
   ReelsIcon,
 } from "@/constants/SvgIcon";
-import { useAuth } from "@/context/AuthContext";
+import { useAuth } from "@/context/auth.context";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React, { useState } from "react";

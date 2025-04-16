@@ -1,14 +1,6 @@
 /** @format */
 
-import {
-  addPost,
-  deletePosts,
-  getAllPosts,
-  getFollowingPosts,
-  getSinglePostById,
-  getUserPosts,
-  updateUserPost,
-} from "@/services/postServices";
+import { postService } from "@/services/post.service";
 import React, { createContext, useContext, useState } from "react";
 
 const PostContext = createContext();
@@ -24,7 +16,7 @@ export const PostProvider = ({ children }) => {
   const createPost = async ({ uid, caption, imgUrls, user }) => {
     setLoading(true);
     try {
-      const data = await addPost(uid, caption, imgUrls, user);
+      const data = await postService.addPost(uid, caption, imgUrls, user);
       setMyPostsData((prev) => [data, ...prev]);
     } catch (err) {
       console.log(err);
@@ -36,7 +28,7 @@ export const PostProvider = ({ children }) => {
   const myPosts = async (userId) => {
     setLoading(true);
     try {
-      const userPosts = await getUserPosts(userId);
+      const userPosts = await postService.getUserPosts(userId);
       setMyPostsData(userPosts);
     } catch (err) {
       setError(err);
@@ -49,7 +41,7 @@ export const PostProvider = ({ children }) => {
   const updatedPost = async (postId, credentials) => {
     setLoading(true);
     try {
-      const data = await updateUserPost(postId, credentials);
+      const data = await postService.updateUserPost(postId, credentials);
       setMyPostsData((prevData) =>
         prevData.map((post) =>
           post.id === postId ? { ...post, ...data } : post
@@ -65,7 +57,7 @@ export const PostProvider = ({ children }) => {
   const deletePost = async (postId, userId) => {
     setLoading(true);
     try {
-      await deletePosts(postId, userId);
+      await postService.deletePosts(postId, userId);
       setMyPostsData((prevData) =>
         prevData.filter((post) => post.id !== postId)
       );
@@ -79,7 +71,7 @@ export const PostProvider = ({ children }) => {
   const singlePost = async (postId) => {
     setLoading(true);
     try {
-      const post = await getSinglePostById(postId);
+      const post = await postService.getSinglePostById(postId);
       return post;
     } catch (err) {
       console.error(err);
@@ -109,7 +101,7 @@ export const PostProvider = ({ children }) => {
   const getAppPosts = async () => {
     setLoading(true);
     try {
-      const posts = await getAllPosts();
+      const posts = await postService.getAllPosts();
       return posts;
     } catch (err) {
       console.log(err);
@@ -121,7 +113,7 @@ export const PostProvider = ({ children }) => {
   const allFollowingPosts = async (followingUserIds) => {
     setLoading(true);
     try {
-      const posts = getFollowingPosts(followingUserIds);
+      const posts = postService.getFollowingPosts(followingUserIds);
       return posts;
     } catch (err) {
       console.log(err);

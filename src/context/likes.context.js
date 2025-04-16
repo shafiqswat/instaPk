@@ -1,12 +1,7 @@
 /** @format */
 
+import { likeService } from "@/services/like.service";
 import { createContext, useContext, useState } from "react";
-import {
-  isPostLikedByUser,
-  LikePost,
-  UnlikePost,
-  getPostLikes,
-} from "@/services/likeService";
 
 const LikeContext = createContext();
 
@@ -26,8 +21,8 @@ export const LikeProvider = ({ children }) => {
     if (!postId || !userId) return;
     try {
       const [isLiked, { likeCount }] = await Promise.all([
-        isPostLikedByUser(postId, userId),
-        getPostLikes(postId),
+        likeService.isPostLikedByUser(postId, userId),
+        likeService.getPostLikes(postId),
       ]);
       updateLikeState(postId, isLiked, likeCount);
     } catch (error) {
@@ -39,7 +34,7 @@ export const LikeProvider = ({ children }) => {
     const currentCount = likes[postId]?.likeCount || 0;
     updateLikeState(postId, true, currentCount + 1);
     try {
-      const { likeCount } = await LikePost(postId, userId);
+      const { likeCount } = await likeService.LikePost(postId, userId);
       updateLikeState(postId, true, likeCount);
     } catch (error) {
       updateLikeState(postId, false, Math.max(0, currentCount));
@@ -52,7 +47,7 @@ export const LikeProvider = ({ children }) => {
     const currentCount = likes[postId]?.likeCount || 0;
     updateLikeState(postId, false, Math.max(0, currentCount - 1));
     try {
-      const { likeCount } = await UnlikePost(postId, userId);
+      const { likeCount } = await likeService.UnlikePost(postId, userId);
       updateLikeState(postId, false, likeCount);
     } catch (error) {
       updateLikeState(postId, true, currentCount + 1);

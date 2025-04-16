@@ -3,8 +3,8 @@
 import React, { useEffect, useState } from "react";
 import Modal from "../modal/Modal";
 import { CrossIcon } from "@/constants/SvgIcon";
-import { useAuth } from "@/context/AuthContext";
-import { useNote } from "@/context/NoteContext";
+import { useAuth } from "@/context/auth.context";
+import { useNote } from "@/context/note.context";
 
 const Notes = ({ isNoteModal, setIsNoteModal }) => {
   const [content, setContent] = useState("");

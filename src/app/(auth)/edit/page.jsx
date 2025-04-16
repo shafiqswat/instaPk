@@ -2,7 +2,7 @@
 "use client";
 import PictureModal from "@/components/modals/picture-modal/PictureModal";
 import ProtectedRoute from "@/components/protected-route/ProtectedRoute";
-import { useAuth } from "@/context/AuthContext";
+import { useAuth } from "@/context/auth.context";
 import React, { useState } from "react";
 
 const Edit = () => {

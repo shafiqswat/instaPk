@@ -2,7 +2,7 @@
 
 import HoverCardCustom from "@/components/cards/hover-card/HoverCard";
 import LoadingSkeleton from "@/components/elements/loading-skeleton/loadingSkeleton";
-import { useAuth } from "@/context/AuthContext";
+import { useAuth } from "@/context/auth.context";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 

@@ -14,7 +14,7 @@ import {
   ReelsIcon,
   SearchIcon,
 } from "@/constants/SvgIcon";
-import { useAuth } from "@/context/AuthContext";
+import { useAuth } from "@/context/auth.context";
 import { Popover, PopoverContent, PopoverTrigger } from "../../ui/popover";
 import Post from "@/components/cards/post/Post";
 import { Settings } from "lucide-react";

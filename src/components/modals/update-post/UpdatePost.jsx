@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import Modal from "../modal/Modal";
-import { usePost } from "@/context/PostContext";
+import { usePost } from "@/context/post.context";
 import FilePreview from "../file-preview/FilePreview";
 
 const UpdatePost = ({

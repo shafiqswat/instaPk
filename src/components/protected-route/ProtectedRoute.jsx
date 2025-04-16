@@ -2,7 +2,7 @@
 // components/ProtectedRoute.jsx
 "use client";
 
-import { useAuth } from "@/context/AuthContext";
+import { useAuth } from "@/context/auth.context";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import Loading from "../loading/Loading";

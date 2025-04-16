@@ -4,7 +4,7 @@
 import Loading from "@/components/loading/Loading";
 import AuthenticatedLanding from "@/components/pages/authentcated-landing/AuthenticatedLanding";
 import GuestLanding from "@/components/pages/guest-landing/GuestLanding";
-import { useAuth } from "@/context/AuthContext";
+import { useAuth } from "@/context/auth.context";
 
 const Home = () => {
   const { isAuthenticated, isAuthLoading } = useAuth();

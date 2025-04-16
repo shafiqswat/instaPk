@@ -2,19 +2,7 @@
 "use client";
 import { createContext, useContext, useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import {
-  followUser,
-  forgotPassword,
-  getAllUsers,
-  getUserData,
-  login,
-  onAuthStateChangedUser,
-  register,
-  saveUserPost,
-  signOutUser,
-  updateUserData,
-  userByUserName,
-} from "@/services/userServices";
+import { userServices } from "@/services/user.service";
 
 const AuthContext = createContext();
 
@@ -47,21 +35,23 @@ export const AuthProvider = ({ children }) => {
   }, [user, allUsers]);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChangedUser(async (currentUser) => {
-      if (currentUser) {
-        try {
-          const userDoc = await getUserData(currentUser.uid);
-          setUser({ ...userDoc, _id: currentUser.uid });
-          setIsAuthenticated(true);
-        } catch (err) {
-          console.error("Error fetching user data:", err);
+    const unsubscribe = userServices.onAuthStateChangedUser(
+      async (currentUser) => {
+        if (currentUser) {
+          try {
+            const userDoc = await userServices.getUserData(currentUser.uid);
+            setUser({ ...userDoc, _id: currentUser.uid });
+            setIsAuthenticated(true);
+          } catch (err) {
+            console.error("Error fetching user data:", err);
+          }
+        } else {
+          setUser(null);
+          setIsAuthenticated(false);
         }
-      } else {
-        setUser(null);
-        setIsAuthenticated(false);
+        setIsAuthLoading(false);
       }
-      setIsAuthLoading(false);
-    });
+    );
 
     return () => unsubscribe();
   }, []);
@@ -71,7 +61,7 @@ export const AuthProvider = ({ children }) => {
     setLoading(true);
     setError(null);
     try {
-      const userData = await login(email, password);
+      const userData = await userServices.login(email, password);
       setUser(userData);
       setIsAuthenticated(true);
       router.push("/");
@@ -88,7 +78,12 @@ export const AuthProvider = ({ children }) => {
     setLoading(true);
     setError(null);
     try {
-      const userData = await register(email, password, fullName, userName);
+      const userData = await userServices.register(
+        email,
+        password,
+        fullName,
+        userName
+      );
       setUser(userData);
       setIsAuthenticated(true);
       router.push("/edit");
@@ -105,7 +100,7 @@ export const AuthProvider = ({ children }) => {
     setLoading(true);
     setError(null);
     try {
-      await forgotPassword(email);
+      await userServices.forgotPassword(email);
       router.push("/reset-password");
     } catch (err) {
       setError(err.message);
@@ -132,7 +127,7 @@ export const AuthProvider = ({ children }) => {
   const signOut = async () => {
     setLoading(true);
     try {
-      await signOutUser();
+      await userServices.signOutUser();
       setUser(null);
       setIsAuthenticated(false);
       router.push("/");
@@ -147,7 +142,7 @@ export const AuthProvider = ({ children }) => {
   const singleUser = async (userId) => {
     setLoading(true);
     try {
-      const userData = await getUserData(userId);
+      const userData = await userServices.getUserData(userId);
       setSingleUserData(userData);
       return userData;
     } catch (err) {
@@ -160,7 +155,7 @@ export const AuthProvider = ({ children }) => {
 
   const fetchUserByUserName = async (userName) => {
     try {
-      const userData = await userByUserName(userName);
+      const userData = await userServices.userByUserName(userName);
       return userData;
     } catch (err) {
       console.error("Error fetching user:", err);
@@ -186,7 +181,7 @@ export const AuthProvider = ({ children }) => {
   const ProfilePic = async (base64Image) => {
     setLoading(true);
     try {
-      const updatedData = await updateUserData(user?._id, {
+      const updatedData = await userServices.updateUserData(user?._id, {
         profilePic: base64Image,
       });
       setUser(updatedData);
@@ -201,7 +196,10 @@ export const AuthProvider = ({ children }) => {
   const ProfileSettings = async (credentials) => {
     setLoading(true);
     try {
-      const updateData = await updateUserData(user?._id, credentials);
+      const updateData = await userServices.updateUserData(
+        user?._id,
+        credentials
+      );
       setUser(updateData);
       router.push(`/${user.userName}`);
     } catch (err) {
@@ -215,7 +213,7 @@ export const AuthProvider = ({ children }) => {
   const GetAllUsers = async () => {
     setLoading(true);
     try {
-      const data = await getAllUsers();
+      const data = await userServices.getAllUsers();
       setAllUsers(data);
     } catch (err) {
       setError(err);
@@ -232,7 +230,7 @@ export const AuthProvider = ({ children }) => {
     setIsSave(newSaveState);
 
     try {
-      await saveUserPost(postId, userId);
+      await userServices.saveUserPost(postId, userId);
       setUser((prev) => ({
         ...prev,
         favorites: newSaveState
@@ -246,9 +244,10 @@ export const AuthProvider = ({ children }) => {
   };
 
   const handleFollow = async (userId, otherUserId, isFollow, setIsFollow) => {
+    console.log("user id ", otherUserId);
     try {
       const newFollowState = !isFollow[otherUserId];
-      await followUser(userId, otherUserId);
+      await userServices.followUser(userId, otherUserId);
       setIsFollow((prev) => ({
         ...prev,
         [otherUserId]: newFollowState,
