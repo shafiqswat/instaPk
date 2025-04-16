@@ -10,7 +10,6 @@ import {
   updateUserPost,
 } from "@/services/postServices";
 import React, { createContext, useContext, useState } from "react";
-import { likeUserPost } from "@/services/postServices/update";
 
 const PostContext = createContext();
 
@@ -131,29 +130,6 @@ export const PostProvider = ({ children }) => {
     }
   };
 
-  const likePost = async (postId, userId) => {
-    try {
-      const updatedData = await likeUserPost(postId, userId);
-
-      // Update home page posts
-      setHomePagePosts((prev) =>
-        prev.map((post) =>
-          post._id === postId ? { ...post, ...updatedData } : post
-        )
-      );
-
-      // Update single post data if it exists
-      if (postData?._id === postId) {
-        setPostData((prev) => ({ ...prev, ...updatedData }));
-      }
-
-      return updatedData;
-    } catch (error) {
-      console.error("Error in likePost:", error);
-      throw error;
-    }
-  };
-
   return (
     <PostContext.Provider
       value={{
@@ -173,7 +149,6 @@ export const PostProvider = ({ children }) => {
         setHomePagePosts,
         postData,
         setPostData,
-        likePost,
       }}>
       {children}
     </PostContext.Provider>

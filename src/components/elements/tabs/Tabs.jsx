@@ -73,7 +73,7 @@ const TabsCustom = ({ isCurrentUser, searchUser }) => {
       value={tab}
       onValueChange={handleTabChange}
       className='w-full mt-10 border-t'>
-      <TabsList className='flex gap-5'>
+      <TabsList className='flex xs:gap-4'>
         {tabsData.map(({ value, label, icon: Icon }) => (
           <TabsTrigger
             key={value}

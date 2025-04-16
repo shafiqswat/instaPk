@@ -26,7 +26,7 @@ const LayoutContent = ({ children }) => {
   return (
     <ChatProvider user={user || null}>
       {!pathName.includes("/message") && <Header />}
-      <div className='flex overflow-x-hidden'>
+      <div className='flex overflow-x-hidden '>
         {isAuthenticated && <SidebarWrapper />}
         <div className='flex-1'>{children}</div>
         {isAuthenticated && <Footer />}

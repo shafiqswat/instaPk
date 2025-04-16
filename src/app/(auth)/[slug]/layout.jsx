@@ -96,7 +96,7 @@ const Profile = () => {
 
   return (
     <ProtectedRoute>
-      <div className=' w-full md:w-[calc(vw-18%)] p-2 flex  flex-col  sm:grid  sm:grid-cols-3 gap-20 items-center'>
+      <div className='w-full md:w-[calc(vw-18%)]   p-2 flex  flex-col  sm:grid  sm:grid-cols-3 gap-20 items-center'>
         {/*<<<<<<<<<<<---------------------   Note and user Profile Picture    ------------------------->>>>>>>>>>>>> */}
 
         <div className='col-span-1 flex justify-center mt-5 items-center relative'>
@@ -265,7 +265,7 @@ const Profile = () => {
 
       {/*<<<<<<<<<<<---------------------   Tabs   ------------------------->>>>>>>>>>>>> */}
 
-      <div className='sm:px-16 px-2'>
+      <div className='sm:px-16 min-h-96 px-2 '>
         <TabsCustom
           searchUser={searchUser}
           isCurrentUser={isCurrentUser}
