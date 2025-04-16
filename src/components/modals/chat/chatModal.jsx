@@ -5,6 +5,7 @@ import { CrossIcon } from "@/constants/SvgIcon";
 import { useAuth } from "@/context/auth.context";
 import { useChat } from "@/context/chat.context";
 import Modal from "../modal/Modal";
+import Image from "next/image";
 
 const ChatModal = ({ isChatOpen, setIsChatOpen }) => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -57,8 +58,10 @@ const ChatModal = ({ isChatOpen, setIsChatOpen }) => {
             key={user._id}
             className='flex items-center gap-2 p-2 cursor-pointer hover:bg-gray-100'
             onClick={() => handleStartChat(user)}>
-            <img
+            <Image
               src={user.profilePic}
+              width={40}
+              height={40}
               alt={user.userName}
               className='w-10 h-10 rounded-full'
             />

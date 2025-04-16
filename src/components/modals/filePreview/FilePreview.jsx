@@ -3,6 +3,7 @@ import React from "react";
 import { PlusIcon, XIcon } from "lucide-react";
 import { OpenGalleryIcon } from "@/constants/SvgIcon";
 import TextArea from "@/components/form-items/textarea/TextArea";
+import Image from "next/image";
 
 const FilePreview = ({
   preview,
@@ -19,8 +20,10 @@ const FilePreview = ({
   return (
     <div className={`${caption ? "grid grid-cols-7" : ""}`}>
       <div className={`col-span-4 border-r ${caption && "md:block hidden"}`}>
-        <img
+        <Image
           src={preview[0]}
+          width={509}
+          height={432}
           alt='upload'
           className='w-full h-auto '
         />
@@ -44,8 +47,10 @@ const FilePreview = ({
       {caption && (
         <div className='overflow-y-scroll md:col-span-3 col-span-7 upload-caption'>
           <div className='flex items-center gap-3 p-2'>
-            <img
+            <Image
               src={user?.profilePic}
+              width={40}
+              height={40}
               alt='user'
               className='w-10 h-10 rounded-full'
             />
@@ -83,8 +88,10 @@ const PopoverGallery = ({ preview, popover, inputRef, setPreview }) => {
           <div
             className='relative'
             key={i}>
-            <img
+            <Image
               src={item}
+              width={96}
+              height={96}
               alt='all'
               className='w-24 h-24'
             />

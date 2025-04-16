@@ -16,9 +16,10 @@ import {
 } from "@/constants/SvgIcon";
 import { useAuth } from "@/context/auth.context";
 import { Popover, PopoverContent, PopoverTrigger } from "../../ui/popover";
-import Post from "@/components/cards/post/Post";
+import Post from "@/components/cards/createPost/createPost";
 import { Settings } from "lucide-react";
 import { usePathname } from "next/navigation";
+import Image from "next/image";
 
 const Sidebar = ({ handleClick, width }) => {
   const { user, signOut } = useAuth();
@@ -74,8 +75,10 @@ const Sidebar = ({ handleClick, width }) => {
         {width ? (
           <InstagramIcon className='w-[40px] h-[40px]' />
         ) : (
-          <img
+          <Image
             src='/icons/loginLogo.png'
+            width={103}
+            height={103}
             alt='login-logo'
             className='invert w-[103px] h-auto'
           />
@@ -131,8 +134,10 @@ const Sidebar = ({ handleClick, width }) => {
                 href={items.path}
                 className='flex items-center gap-4'>
                 {items.avatar ? (
-                  <img
+                  <Image
                     src={items.ImgPath || "/icons/avatar.jpg"}
+                    width={24}
+                    height={24}
                     alt='user'
                     className='w-6 h-6 rounded-full'
                   />

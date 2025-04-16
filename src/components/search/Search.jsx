@@ -4,8 +4,8 @@ import { useAuth } from "@/context/auth.context";
 import { XCircle } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
-import UserSuggestion from "../cards/user-suggestion/userSuggestion";
 import { useSearch } from "@/context/search.context";
+import SearchSuggestions from "../cards/searchSuggestion/SearchSuggestions";
 
 const Search = ({ className }) => {
   const { allUsers } = useAuth();
@@ -58,7 +58,7 @@ const Search = ({ className }) => {
       </div>
 
       {/* Suggestions List */}
-      <UserSuggestion
+      <SearchSuggestions
         data={userData}
         onClick={handleClick}
       />

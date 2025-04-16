@@ -1,5 +1,5 @@
 /** @format */
-import Post from "@/components/cards/post/Post";
+import Post from "@/components/cards/createPost/createPost";
 import {
   CreateIcon,
   ExploreIcon,
@@ -8,6 +8,7 @@ import {
   ReelsIcon,
 } from "@/constants/SvgIcon";
 import { useAuth } from "@/context/auth.context";
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React, { useState } from "react";
@@ -53,8 +54,10 @@ const Footer = () => {
     },
     {
       icon: (
-        <img
+        <Image
           src={user?.profilePic}
+          width={32}
+          height={32}
           alt='User Profile'
           className='w-8 h-8 rounded-full border-2 border-blue-500 hover:scale-110 transition-transform'
         />

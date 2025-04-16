@@ -269,7 +269,6 @@ export const AuthProvider = ({ children }) => {
         loading,
         error,
         ForgotPassword,
-        // ResetPassword,
         isAuthLoading,
         singleUser,
         singleUserData,

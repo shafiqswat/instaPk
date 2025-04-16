@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from "react";
 import Modal from "../modal/Modal";
 import CarouselCustom from "../../carousel/Carousel";
-import HoverCardCustom from "../../cards/hover-card/HoverCard";
+import HoverCardCustom from "../../cards/hoverCard/HoverCard";
 import {
   HurtIcon,
   StarIcon,
@@ -11,13 +11,14 @@ import {
   VerifyIcon,
 } from "@/constants/SvgIcon";
 import { useAuth } from "@/context/auth.context";
-import UpdatePost from "../update-post/UpdatePost";
+import UpdatePost from "../updatePost/UpdatePost";
 import LoadingSkeleton from "@/components/elements/loading-skeleton/loadingSkeleton";
 import Report from "../report/Report";
-import CommentsForm from "@/components/form-items/comments-form/CommentsForm";
+import CommentsForm from "@/components/form-items/commentsForm/CommentsForm";
 import { useRouter } from "next/navigation";
 import { useComments } from "@/context/comments.context";
-import DeleteComments from "../delete-comments/deleteComments";
+import DeleteComments from "../deleteComments/deleteComments";
+import Image from "next/image";
 
 const Comment = ({ showModal, setShowModal, postData, selectedUser }) => {
   const { loading: commentsLoading, fetchComments, comments } = useComments();
@@ -65,9 +66,11 @@ const Comment = ({ showModal, setShowModal, postData, selectedUser }) => {
         <div className='min-w-full min-h-full md:block hidden bg-black p-2'>
           <CarouselCustom postData={postData}>
             {postData?.imageUrls?.map((img, i) => (
-              <img
+              <Image
                 key={i}
                 src={img}
+                width={1200}
+                height={600}
                 alt={`slider ${i + 1}`}
                 className='min-w-full h-[600px] object-cover'
                 onClick={() => router.push(`/${postData?.user.userName}`)}
@@ -81,9 +84,11 @@ const Comment = ({ showModal, setShowModal, postData, selectedUser }) => {
           ) : (
             <div className='flex items-center gap-3 border-b p-4  w-full'>
               <HoverCardCustom userData={postData?.user}>
-                <img
+                <Image
                   src={postData?.user?.profilePic}
                   alt='pcb'
+                  width={32}
+                  height={32}
                   className='w-8 h-8 rounded-full cursor-pointer'
                 />
               </HoverCardCustom>
@@ -146,8 +151,10 @@ const Comment = ({ showModal, setShowModal, postData, selectedUser }) => {
                       className='p-4 flex gap-4 group'
                       key={i}>
                       <HoverCardCustom userData={items.user}>
-                        <img
+                        <Image
                           src={items?.user?.profilePic}
+                          width={32}
+                          height={32}
                           alt='comments'
                           className='w-8 h-8 rounded-full cursor-pointer'
                         />

@@ -4,6 +4,7 @@
 
 import AuthForm from "@/components/form-items/forms/AuthForm";
 import { LinksData } from "@/constants";
+import Image from "next/image";
 import Link from "next/link";
 import { useState, useEffect } from "react";
 
@@ -36,12 +37,15 @@ const GuestLanding = () => {
     <main>
       <section className='flex flex-col xl:flex-row items-center justify-center xl:items-start gap-6 p-5'>
         <div className='relative w-[250px] xs:w-[380px] h-[580px] '>
-          <img
+          <Image
+            fill
             src='/onboarding/emulator.png'
             alt='Onboarding Emulator'
             className='max-w-full h-full'
           />
-          <img
+          <Image
+            width={130}
+            height={500}
             src={onboardingImages[currentImageIndex]}
             alt={`Onboarding Step ${currentImageIndex + 1}`}
             className={`absolute top-5 right-[2rem] xs:right-[3rem] xs:w-[210px] w-[130px] h-[500px] transition-opacity duration-1000 ${

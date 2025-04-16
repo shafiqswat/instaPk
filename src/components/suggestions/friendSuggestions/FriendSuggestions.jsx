@@ -4,7 +4,8 @@ import { Plus, UserCheck, UserPlus } from "lucide-react";
 import React, { useState, useMemo } from "react";
 import { useAuth } from "@/context/auth.context";
 import { useRouter } from "next/navigation";
-import Post from "@/components/cards/post/Post";
+import Post from "@/components/cards/createPost/createPost";
+import Image from "next/image";
 
 const FriendSuggestions = () => {
   const { user, allUsers, handleFollow, setIsFollow, isFollow } = useAuth();
@@ -19,9 +20,11 @@ const FriendSuggestions = () => {
   return (
     <div className='flex overflow-x-auto gap-3 sm:gap-5 h-28 scrollbar-hidden overflow-hidden mb-5'>
       <div className='relative w-14 h-14 sm:w-16 sm:h-16 md:w-20 md:h-20 text-center flex-shrink-0'>
-        <img
+        <Image
           src={user?.profilePic}
           alt='user'
+          width={80}
+          height={80}
           className='rounded-full h-full w-full object-cover cursor-pointer'
           onClick={() => router.push(`/${user?.userName}`)}
         />
@@ -36,9 +39,11 @@ const FriendSuggestions = () => {
         <div
           className='relative w-14 h-14 sm:w-16 sm:h-16 md:w-20 md:h-20 text-center flex-shrink-0'
           key={items._id || items.userName}>
-          <img
+          <Image
             src={items.profilePic}
             alt='user'
+            width={80}
+            height={80}
             className='rounded-full h-full w-full object-cover cursor-pointer mb-2'
             onClick={() => router.push(`/${items.userName}`)}
           />

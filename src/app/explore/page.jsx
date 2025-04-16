@@ -1,16 +1,16 @@
 /** @format */
 "use client";
 import React, { useEffect, useState } from "react";
-import SocialCard from "@/components/cards/social-card/SocialCard";
+import SocialCard from "@/components/cards/socialCard/SocialCard";
 import LoadingSkeleton from "@/components/elements/loading-skeleton/loadingSkeleton";
 import Comment from "@/components/modals/comment/Comment";
-import ProtectedRoute from "@/components/protected-route/ProtectedRoute";
+import ProtectedRoute from "@/components/protectedRoute/ProtectedRoute";
 import { usePost } from "@/context/post.context";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { useSearch } from "@/context/search.context";
-import UserSuggestion from "@/components/cards/user-suggestion/userSuggestion";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/auth.context";
+import SearchSuggestions from "@/components/cards/searchSuggestion/SearchSuggestions";
 
 const ExplorePage = () => {
   const { getAppPosts } = usePost();
@@ -86,7 +86,7 @@ const ExplorePage = () => {
 
         {isFocused && userData.length > 0 && (
           <div className='absolute w-full bg-white shadow-lg rounded-md mt-2 z-50 max-h-60 overflow-y-auto'>
-            <UserSuggestion
+            <SearchSuggestions
               data={userData}
               onClick={handleClick}
             />

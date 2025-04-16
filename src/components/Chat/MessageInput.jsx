@@ -9,6 +9,7 @@ import {
 } from "@/constants/SvgIcon";
 import { X } from "lucide-react";
 import EmojiPicker from "emoji-picker-react";
+import Image from "next/image";
 
 const MessageInput = ({
   newMessage,
@@ -48,7 +49,9 @@ const MessageInput = ({
       {imagePreview && (
         <div className='relative mb-4 mx-4'>
           <div className='relative inline-block'>
-            <img
+            <Image
+              width={200}
+              height={140}
               src={imagePreview}
               alt='Preview'
               className='max-h-40 rounded-lg'

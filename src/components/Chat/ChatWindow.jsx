@@ -14,6 +14,7 @@ import { uploadToCloudinary } from "@/helpers/cloudinaryUpload.helper";
 import Modal from "../modals/modal/Modal";
 import MessagesList from "./MessagesList";
 import MessageInput from "./MessageInput";
+import Image from "next/image";
 
 const ChatWindow = () => {
   const [newMessage, setNewMessage] = useState("");
@@ -97,7 +98,9 @@ const ChatWindow = () => {
     <div className='flex flex-col h-full w-full overflow-hidden relative'>
       {/* Chat Header */}
       <div className='flex items-center gap-2 border-b pb-4 p-4 sticky top-0 bg-white z-10'>
-        <img
+        <Image
+          width={40}
+          height={40}
           onClick={() => router.push(`/${activeThread.otherUser.userName}`)}
           src={activeThread.otherUser.profilePic}
           className='w-10 h-10 rounded-full cursor-pointer'

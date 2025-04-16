@@ -136,6 +136,7 @@ export const postService = {
   },
 
   async addPost(uid, caption, imgUrls, user) {
+    console.log(imgUrls, ";;;;;;;;;;;;;;;;;;;;;;;;;;;;;");
     const userRef = doc(firestore, "users", uid);
     try {
       const postData = {

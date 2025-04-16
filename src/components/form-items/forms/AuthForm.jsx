@@ -1,12 +1,13 @@
 /** @format */
 "use client";
 import { useAuth } from "@/context/auth.context";
+import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 const AuthForm = ({ signUp }) => {
-  const { signUpFun, signIn, loading, error } = useAuth();
+  const { signUpFun, signIn, loading = false, error } = useAuth();
   const router = useRouter();
 
   const inputData = [
@@ -32,10 +33,13 @@ const AuthForm = ({ signUp }) => {
   return (
     <form
       onSubmit={handleSubmit}
+      autoComplete=''
       className='w-full border text-center p-3'>
       <Link href='/'>
-        <img
-          src='icons/loginLogo.png'
+        <Image
+          src='/icons/loginLogo.png'
+          width={176}
+          height={52}
           alt='Login Logo'
           className='mt-5 invert mx-auto'
         />
@@ -137,10 +141,11 @@ const AuthForm = ({ signUp }) => {
         OR
       </div>
       <div className='flex items-center justify-center font-semibold mt-4'>
-        <img
-          src='icons/facebookLogo.webp'
+        <Image
+          src='/icons/facebookLogo.webp'
+          width={32}
+          height={32}
           alt='Facebook Logo'
-          className='w-8 h-8'
         />
         <p className='text-sm cursor-pointer text-[#4CB5F9]'>
           Log in with Facebook
@@ -161,15 +166,17 @@ const AuthForm = ({ signUp }) => {
       </div>
       <p className='text-center text-sm my-4'>Get the app.</p>
       <div className='flex justify-center items-center gap-2'>
-        <img
+        <Image
           src='/brands/googlePlay.png'
+          width={128}
+          height={40}
           alt='google play'
-          className='w-32 h-10'
         />
-        <img
+        <Image
           src='/brands/microsoft.png'
           alt='microsoft'
-          className='w-32 h-10'
+          width={128}
+          height={40}
         />
       </div>
     </form>

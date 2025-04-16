@@ -11,6 +11,7 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/auth.context";
 import LoadingSkeleton from "@/components/elements/loading-skeleton/loadingSkeleton";
 import { usePost } from "@/context/post.context";
+import Image from "next/image";
 const HoverCardCustom = ({ children, userData }) => {
   const { user, loading: userLoading } = useAuth();
   const { allPosts, loading } = usePost();
@@ -47,7 +48,7 @@ const HoverCardCustom = ({ children, userData }) => {
             <div
               className='flex gap-3 items-start p-3 cursor-pointer w-fit'
               onClick={() => router.push(`/${userData.userName}`)}>
-              <img
+              <Image
                 src={userData?.profilePic}
                 alt='User avatar'
                 width={50}
@@ -74,9 +75,11 @@ const HoverCardCustom = ({ children, userData }) => {
             <div className='flex justify-between overflow-hidden'>
               {allPosts?.slice(0, 3)?.map((post, index) =>
                 post?.imageUrls?.map((imageUrl, i) => (
-                  <img
+                  <Image
                     key={`${index}-${i}`}
                     src={imageUrl}
+                    width={104}
+                    height={128}
                     alt='user'
                     className='w-[6.5rem] h-32 cursor-pointer'
                   />

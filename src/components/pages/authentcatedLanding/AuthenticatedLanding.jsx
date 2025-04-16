@@ -1,15 +1,15 @@
 /** @format */
 import React, { useEffect, useState } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
-import PostCard from "../../cards/post-card/PostCard";
+import PostCard from "../../cards/postCard/PostCard";
 import Link from "next/link";
 import { footerData } from "@/constants";
 import { useAuth } from "@/context/auth.context";
 import { usePost } from "@/context/post.context";
 import Comment from "@/components/modals/comment/Comment";
 import LoadingSkeleton from "@/components/elements/loading-skeleton/loadingSkeleton";
-import UserSuggestion from "@/components/suggestions/user-suggestions/UserSuggestion";
-import FriendSuggestions from "@/components/suggestions/friend-suggestions/FriendSuggestions";
+import UserSuggestion from "@/components/suggestions/userSuggestions/UserSuggestion";
+import FriendSuggestions from "@/components/suggestions/friendSuggestions/FriendSuggestions";
 
 const AuthenticatedLanding = () => {
   const { user } = useAuth();

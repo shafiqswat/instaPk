@@ -2,6 +2,7 @@
 import { MoreHorizontal } from "lucide-react";
 import useCompactTimeFormat from "../hooks/useCompactTimeFormat";
 import PopoverCustom from "../elements/popover/Popover";
+import Image from "next/image";
 
 const Message = ({
   message,
@@ -36,21 +37,25 @@ const Message = ({
         isCurrentUser ? "flex-row-reverse" : "flex-row"
       }`}>
       {!isCurrentUser && (
-        <img
+        <Image
           src={otherUserProfilePic}
           alt='Profile'
+          width={32}
+          height={32}
           className='w-8 h-8 rounded-full object-cover'
         />
       )}
       <div className='relative group max-w-[85%]'>
         <div
-          className={`rounded-lg p-3 ${
+          className={`rounded-lg p-1 ${
             isCurrentUser
               ? "bg-blue-500 text-white rounded-tr-none"
               : "bg-gray-100 text-gray-900 rounded-tl-none"
           }`}>
           {message.imageUrl && (
-            <img
+            <Image
+              width={250}
+              height={250}
               src={message.imageUrl}
               alt='Message'
               className='rounded-lg mb-2 max-w-full h-auto'

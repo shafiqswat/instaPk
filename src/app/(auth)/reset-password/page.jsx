@@ -1,7 +1,7 @@
 /** @format */
 "use client";
 
-import ProtectedRoute from "@/components/protected-route/ProtectedRoute";
+import ProtectedRoute from "@/components/protectedRoute/ProtectedRoute";
 import { InstagramLogo, ResetPasswordIcon } from "@/constants/SvgIcon";
 import { useAuth } from "@/context/auth.context";
 import Link from "next/link";

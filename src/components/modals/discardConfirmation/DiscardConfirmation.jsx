@@ -1,7 +1,7 @@
 /** @format */
 
 import React from "react";
-import Modal from "../../modals/modal/Modal";
+import Modal from "../modal/Modal";
 
 const DiscardConfirmationModal = ({
   discardPost,

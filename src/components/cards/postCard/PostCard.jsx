@@ -3,15 +3,16 @@
 import { ThreeDotsIcon } from "@/constants/SvgIcon";
 
 import React, { useEffect, useState } from "react";
-import HoverCardCustom from "../hover-card/HoverCard";
+import HoverCardCustom from "../hoverCard/HoverCard";
 import Share from "../../modals/share/Share";
 import Report from "@/components/modals/report/Report";
 import CarouselCustom from "@/components/carousel/Carousel";
-import CommentsForm from "@/components/form-items/comments-form/CommentsForm";
+import CommentsForm from "@/components/form-items/commentsForm/CommentsForm";
 import { useAuth } from "@/context/auth.context";
 
 import useCompactTimeFormat from "@/components/hooks/useCompactTimeFormat";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 
 const PostCard = ({ items, handlePostClick }) => {
   const [showModal, setShowModal] = useState(false);
@@ -41,7 +42,7 @@ const PostCard = ({ items, handlePostClick }) => {
       <div className='flex items-center gap-2'>
         <div className='flex items-center gap-2 cursor-pointer'>
           <HoverCardCustom userData={singleUserData}>
-            <img
+            <Image
               onClick={() => router.push(`/${items.user.userName}`)}
               onMouseOver={() => handleHover(items?.user)}
               src={items.user.profilePic}
@@ -95,9 +96,11 @@ const PostCard = ({ items, handlePostClick }) => {
       {/*<<<<<<<<<<<---------------------   Carousel to Display the  Post card Images  ------------------------->>>>>>>>>>>>> */}
       <CarouselCustom postData={items}>
         {items?.imageUrls?.map((img, i) => (
-          <img
+          <Image
             key={i}
             src={img}
+            width={484}
+            height={484}
             alt='Post content'
             className='min-w-full object-cover cursor-pointer mt-5 '
           />

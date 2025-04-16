@@ -1,6 +1,7 @@
 /** @format */
 
 import { CommentsIcon } from "@/constants/SvgIcon";
+import Image from "next/image";
 import React from "react";
 
 const SocialCard = ({ items, index, handlePostClick, isBoost }) => {
@@ -10,10 +11,12 @@ const SocialCard = ({ items, index, handlePostClick, isBoost }) => {
       key={index}
       onClick={() => handlePostClick(items)}>
       {items?.imageUrls?.slice(0, 1).map((img, j) => (
-        <img
+        <Image
           key={j}
           src={img}
-          alt='post1'
+          alt={items?.caption || "post"}
+          width={350}
+          height={150}
           className='w-full h-[150px] sm:h-[300px] md:h-[350px] object-cover'
         />
       ))}

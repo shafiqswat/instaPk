@@ -2,8 +2,8 @@
 
 "use client";
 import Loading from "@/components/loading/Loading";
-import AuthenticatedLanding from "@/components/pages/authentcated-landing/AuthenticatedLanding";
-import GuestLanding from "@/components/pages/guest-landing/GuestLanding";
+import AuthenticatedLanding from "@/components/pages/authentcatedLanding/AuthenticatedLanding";
+import GuestLanding from "@/components/pages/guestLanding/GuestLanding";
 import { useAuth } from "@/context/auth.context";
 
 const Home = () => {

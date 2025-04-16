@@ -5,6 +5,7 @@ import React, { useState } from "react";
 import DropdownMenuCustom from "../../form-items/dropdown/Dropdown";
 import { ChevronDown, Star, UserRound } from "lucide-react";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 
 const Header = () => {
   const [showDropdown, setShowDropdown] = useState(false);
@@ -16,8 +17,10 @@ const Header = () => {
         onClick={() => {
           setShowDropdown(true);
         }}>
-        <img
+        <Image
           src='/icons/loginLogo.png'
+          width={103}
+          height={10}
           alt='login-login'
           className='invert w-[103px] h-auto my-5'
         />

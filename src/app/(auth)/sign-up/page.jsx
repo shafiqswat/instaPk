@@ -1,7 +1,7 @@
 /** @format */
 
 import AuthForm from "@/components/form-items/forms/AuthForm";
-import ProtectedRoute from "@/components/protected-route/ProtectedRoute";
+import ProtectedRoute from "@/components/protectedRoute/ProtectedRoute";
 import React from "react";
 
 const SignUp = () => {

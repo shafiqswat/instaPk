@@ -5,6 +5,7 @@ import React, { useState } from "react";
 import { useChat } from "@/context/chat.context";
 import ChatModal from "../modals/chat/chatModal";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 
 const ConversationList = () => {
   const [isChatOpen, setIsChatOpen] = useState(false);
@@ -44,9 +45,11 @@ const ConversationList = () => {
               setActiveThread(convo);
               router.push(`/message?threadId=${convo._id}`);
             }}>
-            <img
+            <Image
               className='w-12 h-12 rounded-full'
               src={convo.otherUser.profilePic}
+              width={48}
+              height={48}
               alt='profilePic'
             />
             <div>

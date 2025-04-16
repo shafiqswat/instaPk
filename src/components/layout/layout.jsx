@@ -5,7 +5,7 @@ import { AuthProvider, useAuth } from "@/context/auth.context";
 import React from "react";
 import Loading from "../loading/Loading";
 import Header from "./header/Header";
-import SidebarWrapper from "./sidebar-wrapper/SidebarWrapper";
+import SidebarWrapper from "./sidebarWrapper/SidebarWrapper";
 import { PostProvider } from "@/context/post.context";
 import { SearchProvider } from "@/context/search.context";
 import { NoteProvider } from "@/context/note.context";

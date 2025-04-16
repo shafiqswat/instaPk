@@ -1,8 +1,9 @@
 /** @format */
 
-import HoverCardCustom from "@/components/cards/hover-card/HoverCard";
+import HoverCardCustom from "@/components/cards/hoverCard/HoverCard";
 import LoadingSkeleton from "@/components/elements/loading-skeleton/loadingSkeleton";
 import { useAuth } from "@/context/auth.context";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
@@ -48,9 +49,11 @@ const UserSuggestion = () => {
 
       <div className='flex items-center justify-center gap-2 mb-4'>
         <HoverCardCustom userData={user}>
-          <img
+          <Image
             src={user.profilePic}
             alt='avatar'
+            width={40}
+            height={40}
             className='w-10 h-10 rounded-full cursor-pointer'
             onClick={() => router.push(`${user.userName}`)}
           />
@@ -103,9 +106,11 @@ const UserSuggestion = () => {
             key={i}
             onMouseEnter={() => handleMouseEnter(items?._id)}>
             <HoverCardCustom userData={singleUserData}>
-              <img
+              <Image
                 onClick={() => router.push(`${items.userName}`)}
                 src={items.profilePic}
+                width={40}
+                height={40}
                 alt='avatar'
                 className='w-10 h-10 rounded-full cursor-pointer'
               />

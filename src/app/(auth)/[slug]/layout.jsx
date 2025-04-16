@@ -2,20 +2,21 @@
 
 "use client";
 import Notes from "@/components/modals/notes/Notes";
-import PictureModal from "@/components/modals/picture-modal/PictureModal";
+import PictureModal from "@/components/modals/profilePictureModal/ProfilePictureModal";
 import TabsCustom from "@/components/elements/tabs/Tabs";
 import { CopyIcon, OptionIcon, ThreeDotsIcon } from "@/constants/SvgIcon";
 import { useAuth } from "@/context/auth.context";
 import { Plus, UserPlus } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
-import ProtectedRoute from "@/components/protected-route/ProtectedRoute";
+import ProtectedRoute from "@/components/protectedRoute/ProtectedRoute";
 import Loading from "@/components/loading/Loading";
 import Followers from "@/components/modals/followers/Followers";
 import Highlights from "@/components/modals/highlights/Highlights";
 import { useNote } from "@/context/note.context";
 import { useChat } from "@/context/chat.context";
 import { usePost } from "@/context/post.context";
+import Image from "next/image";
 
 const Profile = () => {
   const [isNoteModal, setIsNoteModal] = useState(false);
@@ -100,9 +101,11 @@ const Profile = () => {
         {/*<<<<<<<<<<<---------------------   Note and user Profile Picture    ------------------------->>>>>>>>>>>>> */}
 
         <div className='col-span-1 flex justify-center mt-5 items-center relative'>
-          <img
+          <Image
             src={isCurrentUser ? user?.profilePic : searchUser?.profilePic}
             alt='user'
+            width={160}
+            height={160}
             className='rounded-full w-40 h-40 cursor-pointer'
             onClick={() => setProfilePic(true)}
           />

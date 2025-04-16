@@ -5,6 +5,7 @@ import Modal from "../modal/Modal";
 import { CrossIcon } from "@/constants/SvgIcon";
 import { useAuth } from "@/context/auth.context";
 import { useNote } from "@/context/note.context";
+import Image from "next/image";
 
 const Notes = ({ isNoteModal, setIsNoteModal }) => {
   const [content, setContent] = useState("");
@@ -75,10 +76,12 @@ const Notes = ({ isNoteModal, setIsNoteModal }) => {
         </button>
       </div>
       <div className='relative flex flex-col items-center justify-center'>
-        <img
+        <Image
           src={user.profilePic}
+          width={144}
+          height={144}
           alt='user'
-          className='rounded-full w-36 h-36'
+          className='rounded-full '
         />
         <div className='absolute bottom-48 bg-white border py-4 px-2 rounded-xl cursor-pointer'>
           <textarea

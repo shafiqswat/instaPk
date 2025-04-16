@@ -1,8 +1,9 @@
 /** @format */
 
+import Image from "next/image";
 import React from "react";
 
-const UserSuggestion = ({ data, onClick }) => {
+const SearchSuggestions = ({ data, onClick }) => {
   return (
     <ul>
       {data.map((item, index) => (
@@ -11,9 +12,12 @@ const UserSuggestion = ({ data, onClick }) => {
           key={index}
           onClick={() => onClick(item)}>
           <div className='w-11 h-11 rounded-full border flex justify-center items-center'>
-            <img
+            <Image
+              width={44}
+              height={44}
               src={item.profilePic}
               className='rounded-full'
+              alt='user profile picture'
             />
           </div>
           <div>
@@ -27,4 +31,4 @@ const UserSuggestion = ({ data, onClick }) => {
   );
 };
 
-export default UserSuggestion;
+export default SearchSuggestions;

@@ -5,6 +5,7 @@ import { CrossIcon } from "@/constants/SvgIcon";
 import { SearchIcon } from "lucide-react";
 import { useAuth } from "@/context/auth.context";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 
 const Followers = ({
   showModal,
@@ -88,7 +89,10 @@ const Followers = ({
               <div
                 className='w-11 h-11 rounded-full flex justify-center items-center'
                 onClick={() => router.push(`${item?.userName}`)}>
-                <img
+                <Image
+                  width={44}
+                  height={44}
+                  alt='User avatar'
                   src={item?.profilePic}
                   className='rounded-full'
                 />

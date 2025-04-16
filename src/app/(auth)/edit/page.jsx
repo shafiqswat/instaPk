@@ -1,8 +1,9 @@
 /** @format */
 "use client";
-import PictureModal from "@/components/modals/picture-modal/PictureModal";
-import ProtectedRoute from "@/components/protected-route/ProtectedRoute";
+import PictureModal from "@/components/modals/profilePictureModal/ProfilePictureModal";
+import ProtectedRoute from "@/components/protectedRoute/ProtectedRoute";
 import { useAuth } from "@/context/auth.context";
+import Image from "next/image";
 import React, { useState } from "react";
 
 const Edit = () => {
@@ -40,9 +41,11 @@ const Edit = () => {
           <h2 className='font-bold text-lg'>Edit Profile</h2>
           <div className='flex items-center justify-between p-5 rounded-2xl bg-gray-100 mt-5'>
             <div className='flex gap-3 items-center'>
-              <img
+              <Image
                 src={user?.profilePic}
                 alt='user'
+                width={64}
+                height={64}
                 className='w-16 h-16 rounded-full cursor-pointer'
                 onClick={() => setShowModal(true)}
               />

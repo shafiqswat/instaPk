@@ -1,6 +1,6 @@
 /** @format */
 "use client";
-import SocialCard from "@/components/cards/social-card/SocialCard";
+import SocialCard from "@/components/cards/socialCard/SocialCard";
 import LoadingSkeleton from "@/components/elements/loading-skeleton/loadingSkeleton";
 import Comment from "@/components/modals/comment/Comment";
 import { useAuth } from "@/context/auth.context";

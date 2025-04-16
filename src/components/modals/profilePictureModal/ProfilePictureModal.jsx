@@ -8,7 +8,7 @@ import convertImageToBase64, {
   uploadToCloudinary,
 } from "@/helpers/cloudinaryUpload.helper";
 
-const PictureModal = ({ showModal, setShowModal }) => {
+const ProfilePictureModal = ({ showModal, setShowModal }) => {
   const modalData = ["Upload Photo", "Remove Current Photo", "Cancel"];
   const fileInputRef = useRef(null);
   const { ProfilePic } = useAuth();
@@ -84,4 +84,4 @@ const PictureModal = ({ showModal, setShowModal }) => {
   );
 };
 
-export default PictureModal;
+export default ProfilePictureModal;

@@ -7,12 +7,12 @@ import { MediaIcon } from "@/constants/SvgIcon";
 import { ArrowLeft } from "lucide-react";
 import { useAuth } from "@/context/auth.context";
 import { usePost } from "@/context/post.context";
-import FilePreview from "@/components/modals/file-preview/FilePreview";
-import DiscardConfirmationModal from "@/components/modals/discard-confirmation/DiscardConfirmation";
+import FilePreview from "@/components/modals/filePreview/FilePreview";
+import DiscardConfirmationModal from "@/components/modals/discardConfirmation/DiscardConfirmation";
 import Loading from "@/components/loading/Loading";
 import { uploadToCloudinary } from "../../../helpers/cloudinaryUpload.helper";
 
-const Post = ({ showModal, setShowModal, story }) => {
+const CreatePost = ({ showModal, setShowModal, story }) => {
   const [image, setImage] = useState([]);
   const [preview, setPreview] = useState([]);
   const [discardPost, setDiscardPost] = useState(false);
@@ -163,4 +163,4 @@ const UploadPlaceholder = ({ inputRef }) => (
   </div>
 );
 
-export default Post;
+export default CreatePost;
