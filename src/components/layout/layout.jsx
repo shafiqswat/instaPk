@@ -11,9 +11,9 @@ import { NoteProvider } from "@/context/note.context";
 import { CommentsProvider } from "@/context/comments.context";
 import { ChatProvider } from "@/context/chat.context";
 import { usePathname } from "next/navigation";
-import Footer from "./footer/Footer";
 import { LikeProvider } from "@/context/likes.context";
 import SidebarWrapper from "./sidebarWrapper/SidebarWrapper";
+import Footer from "./footer/Footer";
 
 const LayoutContent = ({ children }) => {
   const { isAuthLoading, isAuthenticated, user } = useAuth();
