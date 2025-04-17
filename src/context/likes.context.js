@@ -1,5 +1,8 @@
 /** @format */
 
+import { ToastAction } from "@/components/ui/toast";
+import { toast } from "@/hooks/use-toast";
+import { getErrorMessage } from "@/lib/firebaseErrorUtils";
 import { likeService } from "@/services/like.service";
 import { createContext, useContext, useState } from "react";
 
@@ -35,11 +38,23 @@ export const LikeProvider = ({ children }) => {
     updateLikeState(postId, true, currentCount + 1);
     try {
       const { likeCount } = await likeService.LikePost(postId, userId);
+      toast({
+        title: "Post Liked",
+        description: "Post has been Liked successfully.",
+        variant: "success",
+        duration: 1000,
+      });
       updateLikeState(postId, true, likeCount);
     } catch (error) {
       updateLikeState(postId, false, Math.max(0, currentCount));
-      console.error("Error liking post:", error);
-      throw error;
+      const message = getErrorMessage(err.message);
+      toast({
+        variant: "destructive",
+        title: "Post Liked Failed",
+        description: message,
+        action: <ToastAction altText='Try again'>Try again</ToastAction>,
+        duration: 1000,
+      });
     }
   };
 
@@ -48,11 +63,22 @@ export const LikeProvider = ({ children }) => {
     updateLikeState(postId, false, Math.max(0, currentCount - 1));
     try {
       const { likeCount } = await likeService.UnlikePost(postId, userId);
+      toast({
+        title: "Post UnLiked",
+        description: "Post has been UnLiked successfully.",
+        variant: "success",
+        duration: 1000,
+      });
       updateLikeState(postId, false, likeCount);
     } catch (error) {
       updateLikeState(postId, true, currentCount + 1);
-      console.error("Error unliking post:", error);
-      throw error;
+      toast({
+        variant: "destructive",
+        title: "Post UnLiked Failed",
+        description: message,
+        action: <ToastAction altText='Try again'>Try again</ToastAction>,
+        duration: 1000,
+      });
     }
   };
 

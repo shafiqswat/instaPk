@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 const AuthForm = ({ signUp }) => {
-  const { signUpFun, signIn, loading = false, error } = useAuth();
+  const { signUpFun, signIn, loading, error } = useAuth();
   const router = useRouter();
 
   const inputData = [
@@ -33,7 +33,6 @@ const AuthForm = ({ signUp }) => {
   return (
     <form
       onSubmit={handleSubmit}
-      autoComplete=''
       className='w-full border text-center p-3'>
       <Link href='/'>
         <Image
@@ -169,14 +168,14 @@ const AuthForm = ({ signUp }) => {
         <Image
           src='/brands/googlePlay.png'
           width={128}
-          height={40}
+          height={60}
           alt='google play'
         />
         <Image
           src='/brands/microsoft.png'
-          alt='microsoft'
           width={128}
           height={40}
+          alt='microsoft'
         />
       </div>
     </form>

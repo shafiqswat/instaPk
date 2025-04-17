@@ -15,6 +15,7 @@ module.exports = {
       colors: {
         background: "var(--background)",
         foreground: "var(--foreground)",
+        whatsapp: "#25D366",
       },
       screens: {
         xs: "480px",

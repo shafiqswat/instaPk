@@ -1,5 +1,8 @@
 /** @format */
 
+import { ToastAction } from "@/components/ui/toast";
+import { toast } from "@/hooks/use-toast";
+import { getErrorMessage } from "@/lib/firebaseErrorUtils";
 import { noteService } from "@/services/note.service";
 import React, { createContext, useContext, useState } from "react";
 const NoteContext = createContext();
@@ -11,10 +14,23 @@ export const NoteProvider = ({ children }) => {
     setLoading(true);
     try {
       const data = await noteService.addNote(userId, notedData);
+      toast({
+        title: "Note Created",
+        description: "Your profile Note has been Created Successfully.",
+        variant: "success",
+        duration: 1000,
+      });
       setNote(data);
       console.log(note);
     } catch (err) {
-      setError(err);
+      const message = getErrorMessage(err.message);
+      toast({
+        variant: "destructive",
+        title: "Note Created Failed",
+        description: message,
+        action: <ToastAction altText='Try again'>Try again</ToastAction>,
+        duration: 1000,
+      });
     } finally {
       setLoading(false);
     }
@@ -32,6 +48,12 @@ export const NoteProvider = ({ children }) => {
   };
 
   const updateNote = async (userId, updatedData) => {
+    toast({
+      title: "Note Updated",
+      description: "Your Note has been Updated Successfully.",
+      variant: "success",
+      duration: 1000,
+    });
     setLoading(true);
     try {
       const data = await noteService.update(userId, updatedData);
@@ -44,7 +66,14 @@ export const NoteProvider = ({ children }) => {
       }
       console.log("Updated Note:", data);
     } catch (err) {
-      console.log(err);
+      const message = getErrorMessage(err.message);
+      toast({
+        variant: "destructive",
+        title: "Note Created Failed",
+        description: message,
+        action: <ToastAction altText='Try again'>Try again</ToastAction>,
+        duration: 1000,
+      });
     } finally {
       setLoading(false);
     }
@@ -54,9 +83,22 @@ export const NoteProvider = ({ children }) => {
     setLoading(true);
     try {
       await noteService.deleteUserNote(userId);
+      toast({
+        title: "Note Deleted",
+        description: "Your Note has been Deleted Successfully.",
+        variant: "success",
+        duration: 1000,
+      });
       setNote("");
     } catch (err) {
-      console.log(err);
+      const message = getErrorMessage(err.message);
+      toast({
+        variant: "destructive",
+        title: "Note Delete Failed",
+        description: message,
+        action: <ToastAction altText='Try again'>Try again</ToastAction>,
+        duration: 1000,
+      });
     } finally {
       setLoading(false);
     }

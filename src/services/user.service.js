@@ -27,12 +27,21 @@ import { auth, firestore } from "@/lib/firebaseConfig";
 export const userServices = {
   async register(email, password, fullName, userName) {
     try {
+      // 🔍 Step 1: Check if username is already taken
+      const usernameQuery = await getDocs(
+        query(collection(firestore, "users"), where("userName", "==", userName))
+      );
+      if (!usernameQuery.empty) {
+        throw new Error("Username is already taken.");
+      }
+      // ✅ Step 2: Continue with signup
       const userCredential = await createUserWithEmailAndPassword(
         auth,
         email,
         password
       );
       const uid = userCredential.user.uid;
+
       const userData = {
         fullName,
         userName,
@@ -55,6 +64,7 @@ export const userServices = {
         isSuspended: false,
         isPublic: true,
       };
+
       await setDoc(doc(firestore, "users", uid), userData);
       return { ...userData, _id: uid };
     } catch (err) {
@@ -69,7 +79,7 @@ export const userServices = {
         password
       );
       const uid = userCredential.user.uid;
-      const userDoc = await getUserData(uid);
+      const userDoc = await userServices.getUserData(uid);
       if (!userDoc) throw new Error("User data not found");
       return { ...userDoc, _id: uid };
     } catch (err) {

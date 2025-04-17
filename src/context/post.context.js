@@ -1,5 +1,8 @@
 /** @format */
 
+import { ToastAction } from "@/components/ui/toast";
+import { toast } from "@/hooks/use-toast";
+import { getErrorMessage } from "@/lib/firebaseErrorUtils";
 import { postService } from "@/services/post.service";
 import React, { createContext, useContext, useState } from "react";
 
@@ -17,9 +20,22 @@ export const PostProvider = ({ children }) => {
     setLoading(true);
     try {
       const data = await postService.addPost(uid, caption, imgUrls, user);
+      toast({
+        title: "Post Created",
+        description: "Your post has been created successfully.",
+        variant: "success",
+        duration: 2000,
+      });
       setMyPostsData((prev) => [data, ...prev]);
     } catch (err) {
-      console.log(err);
+      const message = getErrorMessage(err.message);
+      toast({
+        variant: "destructive",
+        title: "Post Created Failed",
+        description: message,
+        action: <ToastAction altText='Try again'>Try again</ToastAction>,
+        duration: 2000,
+      });
     } finally {
       setLoading(false);
     }
@@ -42,13 +58,26 @@ export const PostProvider = ({ children }) => {
     setLoading(true);
     try {
       const data = await postService.updateUserPost(postId, credentials);
+      toast({
+        title: "Post Updated",
+        description: "Your post has been updated successfully.",
+        variant: "success",
+        duration: 2000,
+      });
       setMyPostsData((prevData) =>
         prevData.map((post) =>
           post.id === postId ? { ...post, ...data } : post
         )
       );
     } catch (err) {
-      setError(err);
+      const message = getErrorMessage(err.message);
+      toast({
+        variant: "destructive",
+        title: "Post Updated Failed",
+        description: message,
+        action: <ToastAction altText='Try again'>Try again</ToastAction>,
+        duration: 2000,
+      });
     } finally {
       setLoading(false);
     }
@@ -58,11 +87,24 @@ export const PostProvider = ({ children }) => {
     setLoading(true);
     try {
       await postService.deletePosts(postId, userId);
+      toast({
+        title: "Post Deleted",
+        description: "Your post has been deleted successfully.",
+        variant: "success",
+        duration: 2000,
+      });
       setMyPostsData((prevData) =>
         prevData.filter((post) => post.id !== postId)
       );
     } catch (err) {
-      console.log(err);
+      const message = getErrorMessage(err.message);
+      toast({
+        variant: "destructive",
+        title: "Post Delete Failed",
+        description: message,
+        action: <ToastAction altText='Try again'>Try again</ToastAction>,
+        duration: 2000,
+      });
     } finally {
       setLoading(false);
     }

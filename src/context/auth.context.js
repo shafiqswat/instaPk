@@ -3,6 +3,9 @@
 import { createContext, useContext, useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { userServices } from "@/services/user.service";
+import { toast } from "@/hooks/use-toast";
+import { ToastAction } from "@/components/ui/toast";
+import { getErrorMessage } from "@/lib/firebaseErrorUtils";
 
 const AuthContext = createContext();
 
@@ -50,6 +53,7 @@ export const AuthProvider = ({ children }) => {
           setIsAuthenticated(false);
         }
         setIsAuthLoading(false);
+        setError(null);
       }
     );
 
@@ -62,14 +66,27 @@ export const AuthProvider = ({ children }) => {
     setError(null);
     try {
       const userData = await userServices.login(email, password);
+      toast({
+        title: "Login Successful",
+        description: "You have logged in successfully.",
+        variant: "success",
+        duration: 2000,
+      });
       setUser(userData);
       setIsAuthenticated(true);
       router.push("/");
     } catch (err) {
-      setError(err.message);
-      console.error("Sign-in failed:", err);
+      const message = getErrorMessage(err.message);
+      toast({
+        variant: "destructive",
+        title: "Uh oh! Something went wrong.",
+        description: message,
+        action: <ToastAction altText='Try again'>Try again</ToastAction>,
+        duration: 2000,
+      });
     } finally {
       setLoading(false);
+      setError(null);
     }
   };
 
@@ -84,14 +101,27 @@ export const AuthProvider = ({ children }) => {
         fullName,
         userName
       );
+      toast({
+        title: "Signup Successful",
+        description: "Account created! 🎉",
+        variant: "success",
+        duration: 2000,
+      });
       setUser(userData);
       setIsAuthenticated(true);
       router.push("/edit");
     } catch (err) {
-      setError(err.message);
-      console.error("Sign-up failed:", err);
+      const message = getErrorMessage(err.message);
+      toast({
+        variant: "destructive",
+        title: "Signup Failed",
+        description: message,
+        action: <ToastAction altText='Try again'>Try again</ToastAction>,
+        duration: 2000,
+      });
     } finally {
       setLoading(false);
+      setError(null);
     }
   };
 
@@ -128,14 +158,27 @@ export const AuthProvider = ({ children }) => {
     setLoading(true);
     try {
       await userServices.signOutUser();
+      toast({
+        title: "Logged Out",
+        description: "You have been logged out successfully.",
+        variant: "success",
+        duration: 2000,
+      });
       setUser(null);
       setIsAuthenticated(false);
       router.push("/");
     } catch (error) {
-      setError(error.message);
-      console.error("Sign Out Error:", error);
+      const message = getErrorMessage(err.message);
+      toast({
+        variant: "destructive",
+        title: "Logout Failed",
+        description: message,
+        action: <ToastAction altText='Try again'>Try again</ToastAction>,
+        duration: 2000,
+      });
     } finally {
       setLoading(false);
+      setError(null);
     }
   };
 
@@ -184,10 +227,23 @@ export const AuthProvider = ({ children }) => {
       const updatedData = await userServices.updateUserData(user?._id, {
         profilePic: base64Image,
       });
+      toast({
+        title: "Profile Picture Updated",
+        description: "Your profile picture has been successfully updated.",
+        variant: "success",
+        duration: 2000,
+      });
       setUser(updatedData);
     } catch (err) {
-      setError(err);
-      console.error("ProfilePic Error:", err);
+      const message = getErrorMessage(err.message);
+      toast({
+        variant: "destructive",
+        title: "Update Failed",
+        description:
+          message || "Something went wrong while updating your picture.",
+        action: <ToastAction altText='Try again'>Try again</ToastAction>,
+        duration: 2000,
+      });
     } finally {
       setLoading(false);
     }
@@ -200,25 +256,37 @@ export const AuthProvider = ({ children }) => {
         user?._id,
         credentials
       );
+      toast({
+        title: "Profile Updated",
+        description: "Your profile settings have been successfully updated.",
+        variant: "success",
+        duration: 2000,
+      });
       setUser(updateData);
       router.push(`/${user.userName}`);
     } catch (err) {
-      setError(err);
-      console.log(err);
+      const message = getErrorMessage(err.message);
+      toast({
+        variant: "destructive",
+        title: "Update Failed",
+        description: message,
+        action: <ToastAction altText='Try again'>Try again</ToastAction>,
+        duration: 2000,
+      });
     } finally {
       setLoading(false);
     }
   };
 
   const GetAllUsers = async () => {
-    setLoading(true);
+    setIsAuthLoading(true);
     try {
       const data = await userServices.getAllUsers();
       setAllUsers(data);
     } catch (err) {
       setError(err);
     } finally {
-      setLoading(false);
+      setIsAuthLoading(false);
     }
   };
 
@@ -231,6 +299,14 @@ export const AuthProvider = ({ children }) => {
 
     try {
       await userServices.saveUserPost(postId, userId);
+      toast({
+        title: newSaveState ? "Post Saved" : "Post Unsaved",
+        description: newSaveState
+          ? "The post has been added to your favorites."
+          : "The post has been removed from your favorites.",
+        variant: "success",
+        duration: 2000,
+      });
       setUser((prev) => ({
         ...prev,
         favorites: newSaveState
@@ -238,22 +314,42 @@ export const AuthProvider = ({ children }) => {
           : (prev.favorites || []).filter((id) => id !== postId),
       }));
     } catch (error) {
-      setIsSave(isSave);
-      console.error("Error saving post:", error);
+      const message = getErrorMessage(err.message);
+      toast({
+        variant: "destructive",
+        title: "Failed to Update the post",
+        description: message,
+        action: <ToastAction altText='Try again'>Try again</ToastAction>,
+        duration: 2000,
+      });
     }
   };
 
   const handleFollow = async (userId, otherUserId, isFollow, setIsFollow) => {
-    console.log("user id ", otherUserId);
     try {
       const newFollowState = !isFollow[otherUserId];
       await userServices.followUser(userId, otherUserId);
+      toast({
+        title: newFollowState ? "Followed" : "Unfollowed",
+        description: newFollowState
+          ? `You are now following`
+          : "You have unfollowed ",
+        variant: "success",
+        duration: 2000,
+      });
       setIsFollow((prev) => ({
         ...prev,
         [otherUserId]: newFollowState,
       }));
     } catch (err) {
-      console.log("Error following user:", err);
+      const message = getErrorMessage(err.message);
+      toast({
+        variant: "destructive",
+        title: "Follow Action Failed",
+        description: message,
+        action: <ToastAction altText='Try again'>Try again</ToastAction>,
+        duration: 2000,
+      });
     }
   };
 

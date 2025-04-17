@@ -1,5 +1,8 @@
 /** @format */
 
+import { ToastAction } from "@/components/ui/toast";
+import { toast } from "@/hooks/use-toast";
+import { getErrorMessage } from "@/lib/firebaseErrorUtils";
 import { commentsService } from "@/services/comments.service";
 import React, { createContext, useContext, useState } from "react";
 const commentsContext = createContext();
@@ -12,10 +15,22 @@ export const CommentsProvider = ({ children }) => {
     setLoading(true);
     try {
       const data = await commentsService.createComments(postId, user, comment);
-      console.log(data, "commmmmmmmmmmmmments");
+      toast({
+        title: "Comments Added",
+        description: "Your Comments has been added Successfully.",
+        variant: "success",
+        duration: 1000,
+      });
       setComments((prev) => [...prev, data]);
     } catch (err) {
-      setError(err.message);
+      const message = getErrorMessage(err.message);
+      toast({
+        variant: "destructive",
+        title: "Comments Add Failed",
+        description: message,
+        action: <ToastAction altText='Try again'>Try again</ToastAction>,
+        duration: 1000,
+      });
     } finally {
       setLoading(false);
     }
@@ -35,10 +50,23 @@ export const CommentsProvider = ({ children }) => {
     }
   };
   const deleteComments = async (postId, commentsId) => {
-    console.log(postId, commentsId);
+    toast({
+      title: "Comments Deleted",
+      description: "Your Comments has been deleted Successfully.",
+      variant: "success",
+      duration: 1000,
+    });
     setLoading(true);
     try {
       await commentsService.deleteComment(postId, commentsId);
+      const message = getErrorMessage(err.message);
+      toast({
+        variant: "destructive",
+        title: "Comments Delete Failed",
+        description: message,
+        action: <ToastAction altText='Try again'>Try again</ToastAction>,
+        duration: 1000,
+      });
       setComments((prevData) =>
         prevData.filter((comment) => comment._id !== commentsId)
       );
