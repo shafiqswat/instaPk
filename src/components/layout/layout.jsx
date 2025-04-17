@@ -5,15 +5,15 @@ import { AuthProvider, useAuth } from "@/context/auth.context";
 import React from "react";
 import Loading from "../loading/Loading";
 import Header from "./header/Header";
-import SidebarWrapper from "./sidebarWrapper/SidebarWrapper";
 import { PostProvider } from "@/context/post.context";
 import { SearchProvider } from "@/context/search.context";
 import { NoteProvider } from "@/context/note.context";
 import { CommentsProvider } from "@/context/comments.context";
 import { ChatProvider } from "@/context/chat.context";
 import { usePathname } from "next/navigation";
-import Footer from "./footer/footer";
+import Footer from "./footer/Footer";
 import { LikeProvider } from "@/context/likes.context";
+import SidebarWrapper from "./sidebarWrapper/SidebarWrapper";
 
 const LayoutContent = ({ children }) => {
   const { isAuthLoading, isAuthenticated, user } = useAuth();

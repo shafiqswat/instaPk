@@ -16,7 +16,7 @@ export const PostProvider = ({ children }) => {
   const [homePagePosts, setHomePagePosts] = useState([]);
   const [postData, setPostData] = useState(null);
 
-  const createPost = async ({ uid, caption, imgUrls, user }) => {
+  const addPost = async ({ uid, caption, imgUrls, user }) => {
     setLoading(true);
     try {
       const data = await postService.addPost(uid, caption, imgUrls, user);
@@ -169,7 +169,7 @@ export const PostProvider = ({ children }) => {
       value={{
         loading,
         error,
-        createPost,
+        addPost,
         myPosts,
         singlePost,
         myPostsData,

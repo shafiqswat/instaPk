@@ -8,8 +8,8 @@ import { useAuth } from "@/context/auth.context";
 import { usePost } from "@/context/post.context";
 import Comment from "@/components/modals/comment/Comment";
 import LoadingSkeleton from "@/components/elements/loading-skeleton/loadingSkeleton";
-import UserSuggestion from "@/components/suggestions/userSuggestions/UserSuggestion";
 import FriendSuggestions from "@/components/suggestions/friendSuggestions/FriendSuggestions";
+import UserSuggestion from "@/components/suggestions/userSuggestions/UserSuggestion";
 
 const AuthenticatedLanding = () => {
   const { user } = useAuth();

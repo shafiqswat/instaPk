@@ -4,8 +4,8 @@ import { Plus, UserCheck, UserPlus } from "lucide-react";
 import React, { useState, useMemo } from "react";
 import { useAuth } from "@/context/auth.context";
 import { useRouter } from "next/navigation";
-import Post from "@/components/cards/createPost/createPost";
 import Image from "next/image";
+import CreatePost from "@/components/cards/createPost/CreatePost";
 
 const FriendSuggestions = () => {
   const { user, allUsers, handleFollow, setIsFollow, isFollow } = useAuth();
@@ -69,7 +69,7 @@ const FriendSuggestions = () => {
         </div>
       ))}
 
-      <Post
+      <CreatePost
         showModal={showModal}
         setShowModal={setShowModal}
         story={true}

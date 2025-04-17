@@ -21,7 +21,7 @@ const CreatePost = ({ showModal, setShowModal, story }) => {
   const [popover, setPopover] = useState(false);
   // const { uploadStory } = useFollow();
   const { user } = useAuth();
-  const { createPost, loading } = usePost();
+  const { addPost, loading } = usePost();
   const inputRef = useRef();
 
   const handleImageChange = async (e) => {
@@ -44,7 +44,7 @@ const CreatePost = ({ showModal, setShowModal, story }) => {
     if (story) {
       // uploadStory({ data: image });
     } else {
-      createPost({
+      addPost({
         uid: user._id,
         caption: captionValue,
         imgUrls: image,
