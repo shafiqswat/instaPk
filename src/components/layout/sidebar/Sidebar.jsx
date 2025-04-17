@@ -16,10 +16,10 @@ import {
 } from "@/constants/SvgIcon";
 import { useAuth } from "@/context/auth.context";
 import { Popover, PopoverContent, PopoverTrigger } from "../../ui/popover";
-import Post from "@/components/cards/createPost/createPost";
 import { Settings } from "lucide-react";
 import { usePathname } from "next/navigation";
 import Image from "next/image";
+import CreatePost from "@/components/cards/createPost/CreatePost";
 
 const Sidebar = ({ handleClick, width }) => {
   const { user, signOut } = useAuth();
@@ -152,7 +152,7 @@ const Sidebar = ({ handleClick, width }) => {
       </ul>
 
       {/* Post Modal */}
-      <Post
+      <CreatePost
         showModal={createPost}
         setShowModal={setCreatePost}
       />

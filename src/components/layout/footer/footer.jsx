@@ -1,5 +1,5 @@
 /** @format */
-import Post from "@/components/cards/createPost/createPost";
+import CreatePost from "@/components/cards/createPost/CreatePost";
 import {
   CreateIcon,
   ExploreIcon,
@@ -83,7 +83,7 @@ const Footer = () => {
           </Link>
         ))}
       </nav>
-      <Post
+      <CreatePost
         showModal={showModal}
         setShowModal={setShowModal}
       />

@@ -1,6 +1,6 @@
 /** @format */
 "use client";
-import PictureModal from "@/components/modals/profilePictureModal/ProfilePictureModal";
+import ProfilePictureModal from "@/components/modals/profilePictureModal/ProfilePictureModal";
 import ProtectedRoute from "@/components/protectedRoute/ProtectedRoute";
 import { useAuth } from "@/context/auth.context";
 import Image from "next/image";
@@ -144,7 +144,7 @@ const Edit = () => {
               )}
             </button>
           </div>
-          <PictureModal
+          <ProfilePictureModal
             showModal={showModal}
             setShowModal={setShowModal}
           />

@@ -2,7 +2,7 @@
 
 "use client";
 import Notes from "@/components/modals/notes/Notes";
-import PictureModal from "@/components/modals/profilePictureModal/ProfilePictureModal";
+import ProfilePictureModal from "@/components/modals/profilePictureModal/ProfilePictureModal";
 import TabsCustom from "@/components/elements/tabs/Tabs";
 import { CopyIcon, OptionIcon, ThreeDotsIcon } from "@/constants/SvgIcon";
 import { useAuth } from "@/context/auth.context";
@@ -278,7 +278,7 @@ const Profile = () => {
       {/*<<<<<<<<<<<---------------------  Profile Picture Change Modal   ------------------------->>>>>>>>>>>>> */}
 
       {isCurrentUser && (
-        <PictureModal
+        <ProfilePictureModal
           showModal={profilePic}
           setShowModal={setProfilePic}
         />
