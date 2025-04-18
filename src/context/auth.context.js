@@ -46,7 +46,14 @@ export const AuthProvider = ({ children }) => {
             setUser({ ...userDoc, _id: currentUser.uid });
             setIsAuthenticated(true);
           } catch (err) {
-            console.error("Error fetching user data:", err);
+            const message = getErrorMessage(err.message);
+            toast({
+              variant: "destructive",
+              title: "Uh oh! Something went wrong.",
+              description: message,
+              action: <ToastAction altText='Try again'>Try again</ToastAction>,
+              duration: 2000,
+            });
           }
         } else {
           setUser(null);

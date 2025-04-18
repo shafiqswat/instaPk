@@ -15,6 +15,13 @@ export const getErrorMessage = (code) => {
       "Internet connection problem. Please check your network",
     "Firebase: Error (auth/invalid-email).":
       "Please enter a valid email address",
+
+    // Firestore errors
+    "Failed to get document because the client is offline.":
+      "You're offline. Please check your internet connection",
+    "Missing or insufficient permissions.":
+      "You don’t have permission to access this resource",
+
     // Custom errors
     "Username is already taken.":
       "This username is not available. Please try another one.",
@@ -23,8 +30,6 @@ export const getErrorMessage = (code) => {
     general: "Something went wrong. Please try again",
   };
 
-  // Find matching error or use general default
-  return (
-    Object.keys(errorMap).find((key) => code.includes(key)) || errorMap.general
-  );
+  const matchedKey = Object.keys(errorMap).find((key) => code.includes(key));
+  return matchedKey ? errorMap[matchedKey] : errorMap.general;
 };
