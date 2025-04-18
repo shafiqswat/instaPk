@@ -13,7 +13,6 @@ import { ChatProvider } from "@/context/chat.context";
 import { usePathname } from "next/navigation";
 import { LikeProvider } from "@/context/likes.context";
 import SidebarWrapper from "./sidebarWrapper/SidebarWrapper";
-import Footer from "./footer/Footer";
 
 const LayoutContent = ({ children }) => {
   const { isAuthLoading, isAuthenticated, user } = useAuth();
@@ -29,7 +28,7 @@ const LayoutContent = ({ children }) => {
       <div className='flex overflow-x-hidden '>
         {isAuthenticated && <SidebarWrapper />}
         <div className='flex-1'>{children}</div>
-        {isAuthenticated && <Footer />}
+        {/* {isAuthenticated && <Footer />} */}
       </div>
     </ChatProvider>
   );
