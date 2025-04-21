@@ -27,7 +27,6 @@ const MessageInput = ({
   const handleEmojiClick = (emojiObject) => {
     setNewMessage((prev) => prev + emojiObject.emoji);
   };
-
   // Handle outside click to close emoji picker
   React.useEffect(() => {
     const handleClickOutside = (event) => {

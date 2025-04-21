@@ -89,7 +89,9 @@ const CommentsForm = ({
           />
           <ShareIcon
             className='hover:text-gray-400'
-            onClick={() => setShowShareModal(true)}
+            onClick={() =>
+              setShowShareModal({ visible: true, postId: postData.id })
+            }
           />
           <div className='ml-auto'>
             <FavoriteIcon
@@ -101,6 +103,7 @@ const CommentsForm = ({
           <Share
             showModal={showShareModal}
             setShowModal={setShowShareModal}
+            postId={postData?.id}
           />
         </div>
 

@@ -77,16 +77,15 @@ const Profile = () => {
   }
   /*<<<<<<<<<<<---------------------   HandleMessage   ------------------------->>>>>>>>>>>>> */
 
-  const handleMessage = (user) => {
-    console.log("selected user for the text", user);
+  const handleMessage = (selectedUser) => {
+    const threadId = [selectedUser._id, user?._id].sort().join("_");
     if (!isCurrentUser) {
-      router.push("/message");
       setActiveThread({
-        otherUser: user,
-        participants: [user?._id],
+        otherUser: selectedUser,
+        participants: [selectedUser?._id],
+        _id: threadId,
       });
-    } else {
-      console.log("");
+      router.push(`/message?threadId=${threadId}`);
     }
   };
   /*<<<<<<<<<<<---------------------   Loading   ------------------------->>>>>>>>>>>>> */

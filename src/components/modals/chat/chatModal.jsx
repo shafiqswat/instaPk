@@ -6,12 +6,14 @@ import { useAuth } from "@/context/auth.context";
 import { useChat } from "@/context/chat.context";
 import Modal from "../modal/Modal";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 
 const ChatModal = ({ isChatOpen, setIsChatOpen }) => {
   const [searchQuery, setSearchQuery] = useState("");
   // const [selectedUsers, setSelectedUsers] = useState([]);
-  const { allUsers } = useAuth();
+  const { allUsers, user } = useAuth();
   const { setActiveThread } = useChat();
+  const router = useRouter();
 
   const filteredUsers = searchQuery
     ? allUsers.filter(
@@ -21,12 +23,17 @@ const ChatModal = ({ isChatOpen, setIsChatOpen }) => {
       )
     : [];
 
-  const handleStartChat = (user) => {
+  const handleStartChat = (selectedUser) => {
+    // Create thread ID in the same format as used in conversations
+    const threadId = [selectedUser._id, user?._id].sort().join("_");
+
     setActiveThread({
-      otherUser: user,
-      participants: [user._id],
+      otherUser: selectedUser,
+      participants: [selectedUser._id],
+      _id: threadId,
     });
     setIsChatOpen(false);
+    router.push(`/message?threadId=${threadId}`);
   };
 
   return (
