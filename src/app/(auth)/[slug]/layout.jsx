@@ -167,7 +167,13 @@ const Profile = () => {
               </button>
             )}
             <span className='cursor-pointer'>
-              {isCurrentUser ? <OptionIcon /> : <ThreeDotsIcon />}
+              {isCurrentUser ? (
+                <span onClick={() => router.push(`/edit`)}>
+                  <OptionIcon />
+                </span>
+              ) : (
+                <ThreeDotsIcon />
+              )}
             </span>
           </div>
 

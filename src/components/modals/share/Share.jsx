@@ -15,6 +15,7 @@ import { Facebook } from "lucide-react";
 import { useAuth } from "@/context/auth.context";
 import { useChat } from "@/context/chat.context";
 import { useRouter } from "next/navigation";
+import { toast } from "@/hooks/use-toast";
 
 const Share = ({ showModal, setShowModal, postId }) => {
   const [isFocus, setIsFocus] = useState(false);
@@ -61,41 +62,56 @@ const Share = ({ showModal, setShowModal, postId }) => {
     {
       icon: <CopyIcon />,
       text: "Copy link",
-      onClick: () => navigator.clipboard.writeText(window.location.href),
+      onClick: () => {
+        navigator.clipboard.writeText(
+          `https://insta-pk.vercel.app/p/${postId}`
+        ),
+          toast({
+            title: "Post Link Copy",
+            description: "Post Link Copy Successfully.",
+            variant: "success",
+            duration: 2000,
+          });
+      },
     },
     {
       icon: <Facebook className='text-blue-600' />,
       text: "Facebook",
       onClick: () =>
         window.open(
-          `https://www.facebook.com/sharer/sharer.php?u=${window.location.href}`
+          `https://www.facebook.com/sharer/sharer.php?u=${`https://insta-pk.vercel.app/p/${postId}`}`
         ),
     },
     {
       icon: <MessengerIcon className='text-blue-500' />,
       text: "Messenger",
       onClick: () =>
-        window.open(`fb-messenger://share/?link=${window.location.href}`),
+        window.open(
+          `fb-messenger://share/?link=${`https://insta-pk.vercel.app/p/${postId}`}`
+        ),
     },
     {
       icon: <WhatsappIcon className='text-green-500' />,
       text: "WhatsApp",
       onClick: () =>
         window.open(
-          `https://api.whatsapp.com/send?text=${window.location.href}`
+          `https://api.whatsapp.com/send?text=${`https://insta-pk.vercel.app/p/${postId}`}`
         ),
     },
     {
       icon: <EmailIcon className='text-gray-600' />,
       text: "Email",
-      onClick: () => window.open(`mailto:?body=${window.location.href}`),
+      onClick: () =>
+        window.open(
+          `mailto:?body=${`https://insta-pk.vercel.app/p/${postId}`}`
+        ),
     },
     {
       icon: <ThreadsIcon className='text-black' />,
       text: "Threads",
       onClick: () =>
         window.open(
-          `https://threads.net/intent/post?url=${window.location.href}`
+          `https://threads.net/intent/post?url=${`https://insta-pk.vercel.app/p/${postId}`}`
         ),
     },
     {
@@ -103,7 +119,7 @@ const Share = ({ showModal, setShowModal, postId }) => {
       text: "X",
       onClick: () =>
         window.open(
-          `https://twitter.com/intent/tweet?url=${window.location.href}`
+          `https://twitter.com/intent/tweet?url=${`https://insta-pk.vercel.app/p/${postId}`}`
         ),
     },
   ];

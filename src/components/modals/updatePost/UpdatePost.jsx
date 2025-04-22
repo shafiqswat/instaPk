@@ -4,6 +4,10 @@ import React, { useEffect, useState } from "react";
 import Modal from "../modal/Modal";
 import { usePost } from "@/context/post.context";
 import FilePreview from "../filePreview/FilePreview";
+import { useRouter } from "next/navigation";
+import Share from "../share/Share";
+import AccountInformation from "../accountInformation/AccountInformation";
+import { toast } from "@/hooks/use-toast";
 
 const UpdatePost = ({
   showModal,
@@ -15,8 +19,12 @@ const UpdatePost = ({
   setCommentModal,
 }) => {
   const [editModal, setEditModal] = useState(false);
+  const [shareModal, setShareModal] = useState(false);
   const [captionValue, setCaptionValue] = useState(caption);
+  const [accountModal, setAccountModal] = useState(false);
   const { deletePost, updatedPost } = usePost();
+  const router = useRouter();
+
   useEffect(() => {
     setCaptionValue(caption);
   }, [editModal]);
@@ -55,13 +63,29 @@ const UpdatePost = ({
       text: "Turn off commenting",
       action: () => console.log("Turn off commenting clicked"),
     },
-    { text: "Go to post", action: () => console.log("Go to post clicked") },
-    { text: "Share to...", action: () => console.log("Share to clicked") },
-    { text: "Copy link", action: () => console.log("Copy link clicked") },
+    { text: "Go to post", action: () => router.push(`/p/${postId}`) },
+    {
+      text: "Share to...",
+      action: () => setShareModal(true),
+    },
+    {
+      text: "Copy link",
+      action: () => {
+        navigator.clipboard.writeText(
+          `https://insta-pk.vercel.app/p/${postId}`
+        ),
+          toast({
+            title: "Post Link Copy",
+            description: "Post Link Copy Successfully.",
+            variant: "success",
+            duration: 2000,
+          });
+      },
+    },
     { text: "Embed", action: () => console.log("Embed clicked") },
     {
       text: "About this account",
-      action: () => console.log("About this account clicked"),
+      action: () => setAccountModal(true),
     },
     { text: "Cancel", action: () => setShowModal(false) },
   ];
@@ -70,7 +94,7 @@ const UpdatePost = ({
       <Modal
         showModal={showModal}
         setShowModal={setShowModal}
-        className='w-96'>
+        className='w-96 gap-0 overflow-hidden'>
         <ul>
           {updateModalData.map((item, i) => (
             <li
@@ -82,7 +106,17 @@ const UpdatePost = ({
             </li>
           ))}
         </ul>
+        <Share
+          showModal={shareModal}
+          setShowModal={setShareModal}
+        />
+        <AccountInformation
+          showModal={accountModal}
+          setShowModal={setAccountModal}
+          selectedUser={user}
+        />
       </Modal>
+
       <Modal
         showModal={editModal}
         setShowModal={setEditModal}

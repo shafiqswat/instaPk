@@ -45,7 +45,7 @@ const Message = ({
           className='w-8 h-8 rounded-full object-cover'
         />
       )}
-      <div className='relative group max-w-[85%]'>
+      <div className='relative group max-w-[85%] pb-5'>
         <div
           className={`rounded-lg px-3 py-2 shadow-sm ${
             isCurrentUser
