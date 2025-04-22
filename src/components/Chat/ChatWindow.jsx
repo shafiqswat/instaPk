@@ -17,14 +17,22 @@ import MessageInput from "./MessageInput";
 import Image from "next/image";
 
 const ChatWindow = () => {
-  const [newMessage, setNewMessage] = useState("");
+  // const [newMessage, setNewMessage] = useState("");
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [selectedMessage, setSelectedMessage] = useState(null);
   const [selectedImage, setSelectedImage] = useState(null);
-  const [imagePreview, setImagePreview] = useState(null);
+  // const [imagePreview, setImagePreview] = useState(null);
   const [isUploading, setIsUploading] = useState(false);
-  const { activeThread, messages, sendMessageToUser, deleteMessageForUser } =
-    useChat();
+  const {
+    activeThread,
+    messages,
+    sendMessageToUser,
+    deleteMessageForUser,
+    newMessage,
+    setNewMessage,
+    imagePreview,
+    setImagePreview,
+  } = useChat();
   const { user } = useAuth();
   const messagesEndRef = useRef(null);
   const router = useRouter();

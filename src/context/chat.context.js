@@ -11,6 +11,8 @@ export const ChatProvider = ({ children, user }) => {
   const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [newMessage, setNewMessage] = useState("");
+  const [imagePreview, setImagePreview] = useState(null);
   const userId = user?._id;
   useEffect(() => {
     if (!userId) return;
@@ -90,6 +92,10 @@ export const ChatProvider = ({ children, user }) => {
         deleteMessageForUser,
         loading,
         error,
+        newMessage,
+        setNewMessage,
+        imagePreview,
+        setImagePreview,
       }}>
       {children}
     </ChatContext.Provider>

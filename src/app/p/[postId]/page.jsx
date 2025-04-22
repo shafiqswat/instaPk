@@ -5,7 +5,7 @@ import LoadingSkeleton from "@/components/elements/loading-skeleton/loadingSkele
 import Comment from "@/components/modals/comment/Comment";
 import { usePost } from "@/context/post.context";
 import Image from "next/image";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
 const PostPage = () => {
@@ -13,6 +13,7 @@ const PostPage = () => {
   const [postLoading, setPostLoading] = useState(false);
   const { singlePost, loading, myPosts, myPostsData } = usePost();
   const [postData, setPostData] = useState(null);
+  const router = useRouter();
 
   const fetchPost = async () => {
     setPostLoading(true);
@@ -73,6 +74,7 @@ const PostPage = () => {
                         height={0}
                         sizes='100vw'
                         className='w-full h-[400px] object-cover border cursor-pointer shadow-sm bg-red'
+                        onClick={() => router.push(`/p/${item?.id}`)}
                       />
                     </div>
                   ))

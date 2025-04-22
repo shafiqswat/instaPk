@@ -8,10 +8,17 @@ import { useChat } from "@/context/chat.context";
 import { useSearchParams } from "next/navigation";
 
 const Chat = () => {
-  const { setActiveThread, activeThread, conversations } = useChat();
+  const { setActiveThread, activeThread, conversations, setNewMessage } =
+    useChat();
   const searchParams = useSearchParams();
   const threadId = searchParams.get("threadId");
-
+  const postId = searchParams.get("postId");
+  useEffect(() => {
+    if (postId) {
+      const postLink = `https://insta-pk.vercel.app/p/${postId}`;
+      setNewMessage(postLink);
+    }
+  }, [postId]);
   useEffect(() => {
     if (threadId) {
       if (!activeThread) {

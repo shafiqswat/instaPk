@@ -29,6 +29,7 @@ const Report = ({ showModal, setShowModal, selectedUser, selectedPost }) => {
   const toggleSave = () => {
     if (!selectedPost?._id || !user?._id) return;
     savePost(selectedPost._id, user._id, saved, setSaved);
+    console.log("save is Clicked");
   };
 
   const dummyHandlers = {
@@ -63,7 +64,7 @@ const Report = ({ showModal, setShowModal, selectedUser, selectedPost }) => {
           </li>
           {modalItems.map((item, i) => (
             <li
-              key={i}
+              key={item.text + i}
               className={`border-b p-3 text-sm cursor-pointer ${
                 item.text === "Report" || item.text === "Unfollow"
                   ? "text-red-500 font-semibold"

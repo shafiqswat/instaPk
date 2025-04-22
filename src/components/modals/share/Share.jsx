@@ -20,11 +20,10 @@ const Share = ({ showModal, setShowModal, postId }) => {
   const [isFocus, setIsFocus] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedUsers, setSelectedUsers] = useState([]);
-  const [message, setMessage] = useState("");
-  const [isUploading, setIsUploading] = useState(false);
+
   const { allUsers, user } = useAuth();
   const ref = useRef();
-  const { setActiveThread, sendMessageToUser } = useChat();
+  const { setActiveThread } = useChat();
   const router = useRouter();
 
   const filteredUsers = allUsers?.filter(
@@ -41,9 +40,8 @@ const Share = ({ showModal, setShowModal, postId }) => {
       setSelectedUsers([...selectedUsers, selectedUser]);
     }
   };
-  // setMessage(postLink);
+
   const handleShare = async () => {
-    const postLink = `https://insta-pk.vercel.app/post/${postId}`;
     if (selectedUsers.length === 0) return;
     // Share with each selected user
     for (const selectedUser of selectedUsers) {
@@ -54,11 +52,11 @@ const Share = ({ showModal, setShowModal, postId }) => {
         _id: threadId,
       });
       // Redirect to the message thread
-      router.push(`/message?threadId=${threadId}`);
+      router.push(`/message?threadId=${threadId}&postId=${postId}`);
     }
-    setMessage(postLink);
     setShowModal(false);
   };
+
   const iconsData = [
     {
       icon: <CopyIcon />,
@@ -109,6 +107,7 @@ const Share = ({ showModal, setShowModal, postId }) => {
         ),
     },
   ];
+
   return (
     <div>
       <Modal
