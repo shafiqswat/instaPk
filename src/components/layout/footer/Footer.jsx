@@ -17,7 +17,7 @@ const Footer = () => {
   const [showModal, setShowModal] = useState(false);
   const { user } = useAuth();
   const pathName = usePathname();
-  ///issue
+
   const icons = [
     {
       icon: (
