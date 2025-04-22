@@ -46,7 +46,9 @@ const CommentsForm = ({
   const formattedTime = useCompactTimeFormat(postData?.createdAt);
   const isLiked = isPostLiked(postData?.id);
   const likeCount = getLikeCount(postData?.id) || postData?.likeCount || 0;
-  const caption = expanded ? postData.caption : postData.caption?.slice(0, 100);
+  const caption = expanded
+    ? postData?.caption
+    : postData?.caption?.slice(0, 100);
 
   useEffect(() => {
     if (postData?.id && user?._id) {
@@ -66,7 +68,7 @@ const CommentsForm = ({
   const submitComment = (e) => {
     e.preventDefault();
     if (!comment.trim()) return;
-    addComment(postData.id, user, comment.trim());
+    addComment(postData?.id, user, comment.trim());
     setComment("");
   };
 
@@ -90,7 +92,7 @@ const CommentsForm = ({
           <ShareIcon
             className='hover:text-gray-400'
             onClick={() =>
-              setShowShareModal({ visible: true, postId: postData.id })
+              setShowShareModal({ visible: true, postId: postData?.id })
             }
           />
           <div className='ml-auto'>

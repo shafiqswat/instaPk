@@ -114,7 +114,7 @@ const Share = ({ showModal, setShowModal, postId }) => {
       <Modal
         showModal={showModal}
         setShowModal={setShowModal}
-        className='w-[90%] max-w-[500px] max-h-[97vh] overflow-hidden'>
+        className='w-[90%]  max-w-[500px] max-h-[97vh] overflow-hidden'>
         <div className='p-4 border-b text-center relative'>
           <h2 className='font-semibold text-xl'>Share Post</h2>
           {selectedUsers.length > 0 && (

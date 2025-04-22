@@ -168,6 +168,7 @@ export const PostProvider = ({ children }) => {
     <PostContext.Provider
       value={{
         loading,
+        setLoading,
         error,
         addPost,
         myPosts,

@@ -4,8 +4,12 @@ import React, { useEffect, useState } from "react";
 import Modal from "../modal/Modal";
 import { ReportModalData } from "@/constants";
 import { useAuth } from "@/context/auth.context";
+import { useRouter } from "next/navigation";
+import Share from "../share/Share";
 
 const Report = ({ showModal, setShowModal, selectedUser, selectedPost }) => {
+  const [showShareModal, setShowShareModal] = useState(false);
+  const router = useRouter();
   const { user, savePost, handleFollow, isFollow, setIsFollow } = useAuth();
   const [saved, setSaved] = useState(
     user?.favorites?.includes(selectedPost?.id)
@@ -29,8 +33,14 @@ const Report = ({ showModal, setShowModal, selectedUser, selectedPost }) => {
 
   const dummyHandlers = {
     handleReport: () => console.log("Report clicked"),
-    handleGoToPost: () => console.log("Go to post clicked"),
-    handleShare: () => console.log("Share clicked"),
+    handleGoToPost: () => {
+      router.push(`/p/${selectedPost?.id}`);
+      setShowModal(false);
+    },
+    handleShare: () => {
+      setShowModal(false);
+      setShowShareModal(true);
+    },
     handleCopyLink: () => console.log("Copy link clicked"),
     handleEmbed: () => console.log("Embed clicked"),
     handleAboutAccount: () => console.log("About this account clicked"),
@@ -64,6 +74,11 @@ const Report = ({ showModal, setShowModal, selectedUser, selectedPost }) => {
             </li>
           ))}
         </ul>
+        <Share
+          showModal={showShareModal}
+          setShowModal={setShowShareModal}
+          postId={selectedPost?.id}
+        />
       </Modal>
     </div>
   );
