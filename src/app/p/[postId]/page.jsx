@@ -50,11 +50,11 @@ const PostPage = () => {
               postPage={true}
             />
 
-            <section className='px-16'>
+            <section className='px-10 sm:px-16'>
               <hr className='my-10' />
               <p className='font-semibold text-sm text-gray-600'>
                 More posts from{" "}
-                <strong className='text-black'>
+                <strong className='text-black font-semibold'>
                   {postData?.user?.userName}
                 </strong>
               </p>
@@ -73,7 +73,7 @@ const PostPage = () => {
                         width={0}
                         height={0}
                         sizes='100vw'
-                        className='w-full h-[400px] object-cover border cursor-pointer shadow-sm bg-red'
+                        className='w-full lg:h-[400px] md:h-[250px] h-[150px] object-cover border cursor-pointer shadow-sm bg-red'
                         onClick={() => router.push(`/p/${item?.id}`)}
                       />
                     </div>
