@@ -124,7 +124,7 @@ const Comment = ({
               width={1200}
               height={600}
               alt={`slider ${i + 1}`}
-              className='h-[600px]'
+              className='h-[600px] object-cover object-center'
             />
           ))}
         </CarouselCustom>
@@ -184,7 +184,7 @@ const Comment = ({
           </div>
         )}
 
-        <div className='comment h-96 overflow-y-scroll border'>
+        <div className='comment md:h-96 h-40  overflow-y-scroll border'>
           {renderComments()}
         </div>
 

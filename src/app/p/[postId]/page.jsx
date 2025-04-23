@@ -73,7 +73,7 @@ const PostPage = () => {
                         width={0}
                         height={0}
                         sizes='100vw'
-                        className='w-full lg:h-[400px] md:h-[250px] h-[150px] object-cover border cursor-pointer shadow-sm bg-red'
+                        className='w-full lg:h-[400px] md:h-[250px] h-[150px] object-cover border cursor-pointer shadow-lg bg-red'
                         onClick={() => router.push(`/p/${item?.id}`)}
                       />
                     </div>
