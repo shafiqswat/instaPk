@@ -14,11 +14,12 @@ import { usePathname } from "next/navigation";
 import { LikeProvider } from "@/context/likes.context";
 import SidebarWrapper from "./sidebarWrapper/SidebarWrapper";
 import Footer from "./footer/Footer";
+import { useFirebaseNotification } from "../hooks/useFirebaseNotification";
+import { NotificationProvider } from "@/context/notification.context";
 
 const LayoutContent = ({ children }) => {
   const { isAuthLoading, isAuthenticated, user } = useAuth();
   const pathName = usePathname();
-
   if (isAuthLoading) {
     return <Loading />;
   }
@@ -36,6 +37,8 @@ const LayoutContent = ({ children }) => {
 };
 
 const Layout = ({ children }) => {
+  useFirebaseNotification();
+
   return (
     <AuthProvider>
       <PostProvider>
@@ -43,7 +46,9 @@ const Layout = ({ children }) => {
           <NoteProvider>
             <CommentsProvider>
               <LikeProvider>
-                <LayoutContent>{children}</LayoutContent>
+                <NotificationProvider>
+                  <LayoutContent>{children}</LayoutContent>
+                </NotificationProvider>
               </LikeProvider>
             </CommentsProvider>
           </NoteProvider>
